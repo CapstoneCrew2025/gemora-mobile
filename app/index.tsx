@@ -1,10 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import "../global.css"
+
 
 const index = () => {
   return (
     <View>
-      <Text style={{ fontSize: 24 , color: 'blue' }}>index</Text>
+      <Text className="text-3xl text-blue-700">index</Text>
     </View>
   )
 }
