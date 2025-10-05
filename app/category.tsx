@@ -1,4 +1,4 @@
-import { Link } from 'expo-router'
+import { router } from 'expo-router'
 import React from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
@@ -17,11 +17,12 @@ const category = () => {
       <View className="px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <Link href="/" asChild>
-            <TouchableOpacity className="mb-4 flex-row items-center">
-              <Text className="text-blue-600 text-lg">← Back to Home</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity 
+            className="mb-4 flex-row items-center" 
+            onPress={() => router.back()}
+          >
+            <Text className="text-blue-600 text-lg">← Back</Text>
+          </TouchableOpacity>
           <Text className="text-3xl font-bold text-gray-800 mb-2">Browse Categories</Text>
           <Text className="text-gray-600">Explore our diverse product categories</Text>
         </View>
