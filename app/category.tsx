@@ -17,17 +17,23 @@ const category = () => {
       <View className="px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <Link href="/" className="mb-4">
-            <Text className="text-blue-600 text-lg">← Back to Home</Text>
+          <Link href="/" asChild>
+            <TouchableOpacity className="mb-4 flex-row items-center">
+              <Text className="text-blue-600 text-lg">← Back to Home</Text>
+            </TouchableOpacity>
           </Link>
-          <Text className="text-3xl font-bold text-gray-800 mb-2">Categories</Text>
-          <Text className="text-gray-600">Browse products by category</Text>
+          <Text className="text-3xl font-bold text-gray-800 mb-2">Browse Categories</Text>
+          <Text className="text-gray-600">Explore our diverse product categories</Text>
         </View>
 
         {/* Category Grid */}
         <View className="space-y-4">
           {categories.map((cat) => (
-            <TouchableOpacity key={cat.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <TouchableOpacity 
+              key={cat.id} 
+              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+              activeOpacity={0.7}
+            >
               <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center space-x-4">
                   <View className={`w-12 h-12 ${cat.color} rounded-full items-center justify-center`}>
@@ -46,15 +52,24 @@ const category = () => {
           ))}
         </View>
 
+        {/* Browse All Categories Button */}
+        <TouchableOpacity className="mt-6 bg-blue-600 rounded-xl p-4 active:bg-blue-700" activeOpacity={0.8}>
+          <Text className="text-white text-center font-semibold text-lg">Browse All Categories</Text>
+          <Text className="text-blue-100 text-center text-sm mt-1">View complete category list</Text>
+        </TouchableOpacity>
+
         {/* Featured Section */}
-        <View className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6">
+        <TouchableOpacity 
+          className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 active:opacity-90" 
+          activeOpacity={0.9}
+        >
           <Text className="text-white text-2xl font-bold mb-2">Featured Category</Text>
-          <Text className="text-indigo-100 mb-4">This week's most popular category</Text>
+          <Text className="text-indigo-100 mb-4">This week's most popular category - Tap to explore</Text>
           <View className="bg-white bg-opacity-20 rounded-lg p-4">
             <Text className="text-white text-lg font-semibold">Electronics 📱</Text>
             <Text className="text-indigo-100">Latest gadgets and tech accessories</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   )

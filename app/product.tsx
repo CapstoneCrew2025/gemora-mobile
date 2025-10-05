@@ -56,28 +56,41 @@ const product = () => {
       <View className="px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <Link href="/" className="mb-4">
-            <Text className="text-blue-600 text-lg">← Back to Home</Text>
+          <Link href="/" asChild>
+            <TouchableOpacity className="mb-4 flex-row items-center">
+              <Text className="text-blue-600 text-lg">← Back to Home</Text>
+            </TouchableOpacity>
           </Link>
           <Text className="text-3xl font-bold text-gray-800 mb-2">Products</Text>
           <Text className="text-gray-600">Discover our amazing collection</Text>
+          
+          {/* Browse Categories Link */}
+          <Link href="/category" asChild>
+            <TouchableOpacity className="mt-3 bg-green-100 border border-green-200 rounded-lg p-3 active:bg-green-200" activeOpacity={0.8}>
+              <Text className="text-green-700 font-semibold text-center">🏷️ Browse Categories</Text>
+              <Text className="text-green-600 text-sm text-center">Explore products by category</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
 
         {/* Filter Section */}
         <View className="mb-6">
           <Text className="text-lg font-semibold text-gray-800 mb-3">Filter by Category</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="space-x-3">
-            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-full mr-3">
+            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-full mr-3 active:bg-blue-700" activeOpacity={0.8}>
               <Text className="text-white font-medium">All</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3">
+            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3 active:bg-gray-300" activeOpacity={0.8}>
               <Text className="text-gray-700 font-medium">Electronics</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3">
+            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3 active:bg-gray-300" activeOpacity={0.8}>
               <Text className="text-gray-700 font-medium">Sports</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3">
+            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3 active:bg-gray-300" activeOpacity={0.8}>
               <Text className="text-gray-700 font-medium">Fashion</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="bg-gray-200 px-4 py-2 rounded-full mr-3 active:bg-gray-300" activeOpacity={0.8}>
+              <Text className="text-gray-700 font-medium">Home</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -85,7 +98,11 @@ const product = () => {
         {/* Products Grid */}
         <View className="space-y-4">
           {products.map((product) => (
-            <TouchableOpacity key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <TouchableOpacity 
+              key={product.id} 
+              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden active:bg-gray-50" 
+              activeOpacity={0.9}
+            >
               <View className="p-6">
                 <View className="flex-row items-start justify-between mb-4">
                   <View className="flex-1">
@@ -93,7 +110,9 @@ const product = () => {
                       <Text className="text-4xl mr-3">{product.image}</Text>
                       <View className="flex-1">
                         <Text className="text-xl font-semibold text-gray-800">{product.name}</Text>
-                        <Text className="text-gray-500">{product.category}</Text>
+                        <TouchableOpacity activeOpacity={0.7}>
+                          <Text className="text-blue-600 underline">{product.category}</Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
                     
@@ -113,7 +132,10 @@ const product = () => {
 
                 <View className="flex-row items-center justify-between">
                   <Text className="text-2xl font-bold text-gray-800">{product.price}</Text>
-                  <TouchableOpacity className={`px-6 py-2 rounded-lg ${product.inStock ? 'bg-blue-600' : 'bg-gray-400'}`}>
+                  <TouchableOpacity 
+                    className={`px-6 py-2 rounded-lg ${product.inStock ? 'bg-blue-600 active:bg-blue-700' : 'bg-gray-400'}`}
+                    activeOpacity={0.8}
+                  >
                     <Text className="text-white font-semibold">
                       {product.inStock ? 'Add to Cart' : 'Notify Me'}
                     </Text>
@@ -124,9 +146,20 @@ const product = () => {
           ))}
         </View>
 
+        {/* Browse Categories Section */}
+        <View className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
+          <Text className="text-xl font-semibold text-gray-800 mb-2">Looking for something specific?</Text>
+          <Text className="text-gray-600 mb-4">Browse our categories to find exactly what you need</Text>
+          <Link href="/category" asChild>
+            <TouchableOpacity className="bg-blue-600 rounded-lg p-3 active:bg-blue-700" activeOpacity={0.8}>
+              <Text className="text-white font-semibold text-center">🏷️ Browse All Categories</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
+
         {/* Load More Section */}
-        <View className="mt-8 items-center">
-          <TouchableOpacity className="bg-gray-200 px-6 py-3 rounded-lg">
+        <View className="mt-6 items-center">
+          <TouchableOpacity className="bg-gray-200 px-6 py-3 rounded-lg active:bg-gray-300" activeOpacity={0.8}>
             <Text className="text-gray-700 font-semibold">Load More Products</Text>
           </TouchableOpacity>
         </View>
