@@ -11,7 +11,7 @@ const categories = [
   { id: 6, name: 'Beauty', icon: '💄', count: 15, color: 'bg-rose-500' },
 ]
 
-const category = () => {
+const index = () => {
   return (
     <ScrollView className="flex-1 bg-gray-50">
       <View className="px-6 py-8">
@@ -75,4 +75,4 @@ const category = () => {
   )
 }
 
-export default category
+export default index

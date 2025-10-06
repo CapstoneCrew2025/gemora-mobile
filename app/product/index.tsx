@@ -50,7 +50,7 @@ const products = [
   },
 ]
 
-const product = () => {
+const index = () => {
   return (
     <ScrollView className="flex-1 bg-gray-50">
       <View className="px-6 py-8">
@@ -168,4 +168,4 @@ const product = () => {
   )
 }
 
-export default product
+export default index
