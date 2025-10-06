@@ -1,4 +1,4 @@
-import { Link } from 'expo-router'
+import { router } from 'expo-router'
 import React from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
@@ -56,21 +56,24 @@ const index = () => {
       <View className="px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <Link href="/" asChild>
-            <TouchableOpacity className="flex-row items-center mb-4">
-              <Text className="text-lg text-blue-600">← Back to Home</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity 
+            className="flex-row items-center mb-4"
+            onPress={() => router.back()}
+          >
+            <Text className="text-lg text-blue-600">← Back to Home</Text>
+          </TouchableOpacity>
           <Text className="mb-2 text-3xl font-bold text-gray-800">Products</Text>
           <Text className="text-gray-600">Discover our amazing collection</Text>
           
           {/* Browse Categories Link */}
-          <Link href="/category" asChild>
-            <TouchableOpacity className="p-3 mt-3 bg-green-100 border border-green-200 rounded-lg active:bg-green-200" activeOpacity={0.8}>
-              <Text className="font-semibold text-center text-green-700">🏷️ Browse Categories</Text>
-              <Text className="text-sm text-center text-green-600">Explore products by category</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity 
+            className="p-3 mt-3 bg-green-100 border border-green-200 rounded-lg active:bg-green-200" 
+            activeOpacity={0.8}
+            onPress={() => router.push('/category')}
+          >
+            <Text className="font-semibold text-center text-green-700">🏷️ Browse Categories</Text>
+            <Text className="text-sm text-center text-green-600">Explore products by category</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Filter Section */}
@@ -150,11 +153,13 @@ const index = () => {
         <View className="p-6 mt-8 border border-blue-100 bg-blue-50 rounded-xl">
           <Text className="mb-2 text-xl font-semibold text-gray-800">Looking for something specific?</Text>
           <Text className="mb-4 text-gray-600">Browse our categories to find exactly what you need</Text>
-          <Link href="/category" asChild>
-            <TouchableOpacity className="p-3 bg-blue-600 rounded-lg active:bg-blue-700" activeOpacity={0.8}>
-              <Text className="font-semibold text-center text-white">🏷️ Browse All Categories</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity 
+            className="p-3 bg-blue-600 rounded-lg active:bg-blue-700" 
+            activeOpacity={0.8}
+            onPress={() => router.push('/category')}
+          >
+            <Text className="font-semibold text-center text-white">🏷️ Browse All Categories</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Load More Section */}
