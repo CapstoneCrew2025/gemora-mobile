@@ -1,15 +1,12 @@
 import { router } from 'expo-router'
-import React, { useState } from 'react'
+import React from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import "../global.css"
 
 
 const index = () => {
-  const [activeTab, setActiveTab] = useState('home')
-
   return (
-    <View className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-100">
-      <ScrollView className="flex-1">
+    <ScrollView className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-100">
       <View className="flex-1 px-6 py-8">
         {/* Header */}
         <View className="mb-8">
@@ -101,71 +98,6 @@ const index = () => {
         </View>
       </View>
     </ScrollView>
-
-    {/* Footer Navigation */}
-    <View className="bg-white border-t border-gray-200 shadow-lg">
-      <View className="flex-row items-center justify-around px-4 py-3">
-        {/* Home Tab */}
-        <TouchableOpacity 
-          className="items-center flex-1"
-          onPress={() => setActiveTab('home')}
-        >
-          <Text className={`text-2xl mb-1 ${activeTab === 'home' ? 'opacity-100' : 'opacity-40'}`}>🏠</Text>
-          <Text className={`text-xs font-medium ${activeTab === 'home' ? 'text-blue-600' : 'text-gray-500'}`}>
-            Home
-          </Text>
-        </TouchableOpacity>
-
-        {/* Cart Tab */}
-        <TouchableOpacity 
-          className="items-center flex-1"
-          onPress={() => {
-            setActiveTab('cart')
-            router.push('/cart/index')
-          }}
-        >
-          <View className="relative">
-            <Text className={`text-2xl mb-1 ${activeTab === 'cart' ? 'opacity-100' : 'opacity-40'}`}>🛒</Text>
-            {/* Cart Badge */}
-            <View className="absolute items-center justify-center w-4 h-4 bg-red-500 rounded-full -top-1 -right-1">
-              <Text className="text-xs font-bold text-white">3</Text>
-            </View>
-          </View>
-          <Text className={`text-xs font-medium ${activeTab === 'cart' ? 'text-blue-600' : 'text-gray-500'}`}>
-            Cart
-          </Text>
-        </TouchableOpacity>
-
-        {/* Notifications Tab */}
-        <TouchableOpacity 
-          className="items-center flex-1"
-          onPress={() => setActiveTab('notifications')}
-        >
-          <View className="relative">
-            <Text className={`text-2xl mb-1 ${activeTab === 'notifications' ? 'opacity-100' : 'opacity-40'}`}>🔔</Text>
-            {/* Notification Badge */}
-            <View className="absolute items-center justify-center w-4 h-4 bg-red-500 rounded-full -top-1 -right-1">
-              <Text className="text-xs font-bold text-white">5</Text>
-            </View>
-          </View>
-          <Text className={`text-xs font-medium ${activeTab === 'notifications' ? 'text-blue-600' : 'text-gray-500'}`}>
-            Alerts
-          </Text>
-        </TouchableOpacity>
-
-        {/* Profile Tab */}
-        <TouchableOpacity 
-          className="items-center flex-1"
-          onPress={() => setActiveTab('profile')}
-        >
-          <Text className={`text-2xl mb-1 ${activeTab === 'profile' ? 'opacity-100' : 'opacity-40'}`}>👤</Text>
-          <Text className={`text-xs font-medium ${activeTab === 'profile' ? 'text-blue-600' : 'text-gray-500'}`}>
-            Profile
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </View>
   )
 }
 

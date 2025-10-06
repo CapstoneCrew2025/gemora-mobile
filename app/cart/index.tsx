@@ -68,12 +68,6 @@ const CartPage = () => {
         <View className="px-6 py-8">
           {/* Header */}
           <View className="mb-8">
-            <TouchableOpacity 
-              className="flex-row items-center mb-4"
-              onPress={() => router.back()}
-            >
-              <Text className="text-lg text-blue-600">← Back</Text>
-            </TouchableOpacity>
             <Text className="mb-2 text-3xl font-bold text-gray-800">Shopping Cart</Text>
             <Text className="text-gray-600">{cartItems.length} items in your cart</Text>
           </View>
