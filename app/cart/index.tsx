@@ -140,7 +140,7 @@ const CartPage = () => {
               <Text className="mb-6 text-gray-600">Add some items to get started</Text>
               <TouchableOpacity 
                 className="px-6 py-3 bg-blue-600 rounded-lg active:bg-blue-700"
-                onPress={() => router.push('/product')}
+                onPress={() => router.push('/shop/products')}
               >
                 <Text className="font-semibold text-white">Browse Products</Text>
               </TouchableOpacity>
@@ -195,7 +195,7 @@ const CartPage = () => {
 
               <TouchableOpacity 
                 className="p-4 bg-white border-2 border-blue-600 rounded-xl active:bg-gray-50"
-                onPress={() => router.push('/product')}
+                onPress={() => router.push('/shop/products')}
               >
                 <Text className="text-lg font-bold text-center text-blue-600">
                   Continue Shopping

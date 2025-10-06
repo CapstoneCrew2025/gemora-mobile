@@ -50,18 +50,12 @@ const products = [
   },
 ]
 
-const index = () => {
+const ProductsPage = () => {
   return (
     <ScrollView className="flex-1 bg-gray-50">
       <View className="px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <TouchableOpacity 
-            className="flex-row items-center mb-4"
-            onPress={() => router.back()}
-          >
-            <Text className="text-lg text-blue-600">← Back to Home</Text>
-          </TouchableOpacity>
           <Text className="mb-2 text-3xl font-bold text-gray-800">Products</Text>
           <Text className="text-gray-600">Discover our amazing collection</Text>
           
@@ -69,7 +63,7 @@ const index = () => {
           <TouchableOpacity 
             className="p-3 mt-3 bg-green-100 border border-green-200 rounded-lg active:bg-green-200" 
             activeOpacity={0.8}
-            onPress={() => router.push('/category')}
+            onPress={() => router.push('./categories')}
           >
             <Text className="font-semibold text-center text-green-700">🏷️ Browse Categories</Text>
             <Text className="text-sm text-center text-green-600">Explore products by category</Text>
@@ -156,7 +150,7 @@ const index = () => {
           <TouchableOpacity 
             className="p-3 bg-blue-600 rounded-lg active:bg-blue-700" 
             activeOpacity={0.8}
-            onPress={() => router.push('/category')}
+            onPress={() => router.push('./categories')}
           >
             <Text className="font-semibold text-center text-white">🏷️ Browse All Categories</Text>
           </TouchableOpacity>
@@ -173,4 +167,4 @@ const index = () => {
   )
 }
 
-export default index
+export default ProductsPage

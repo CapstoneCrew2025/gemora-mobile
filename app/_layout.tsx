@@ -137,11 +137,19 @@ export default function RootLayout() {
         }} 
       />
       <Tabs.Screen 
+        name="shop" 
+        options={{
+          title: 'Shop',
+          headerShown: false,
+          href: null, // Hide from tab bar but keep accessible via navigation
+        }} 
+      />
+      <Tabs.Screen 
         name="category/index" 
         options={{
           title: 'Categories',
           headerShown: true,
-          href: null, // Hide from tab bar but keep accessible via navigation
+          href: null, 
         }} 
       />
       <Tabs.Screen 
@@ -149,7 +157,7 @@ export default function RootLayout() {
         options={{
           title: 'Products',
           headerShown: true,
-          href: null, // Hide from tab bar but keep accessible via navigation
+          href: null, 
         }} 
       />
     </Tabs>

@@ -1,4 +1,3 @@
-import { router } from 'expo-router'
 import React from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
@@ -11,18 +10,12 @@ const categories = [
   { id: 6, name: 'Beauty', icon: '💄', count: 15, color: 'bg-rose-500' },
 ]
 
-const index = () => {
+const CategoriesPage = () => {
   return (
     <ScrollView className="flex-1 bg-gray-50">
       <View className="px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <TouchableOpacity 
-            className="flex-row items-center mb-4"
-            onPress={() => router.back()}
-          >
-            <Text className="text-lg text-blue-600">← Back to Home</Text>
-          </TouchableOpacity>
           <Text className="mb-2 text-3xl font-bold text-gray-800">Browse Categories</Text>
           <Text className="text-gray-600">Explore our diverse product categories</Text>
         </View>
@@ -76,4 +69,4 @@ const index = () => {
   )
 }
 
-export default index
+export default CategoriesPage

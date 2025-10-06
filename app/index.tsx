@@ -18,7 +18,7 @@ const index = () => {
         <View className="mb-8 space-y-4">
           <TouchableOpacity 
             className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl active:bg-gray-50"
-            onPress={() => router.push('/product')}
+            onPress={() => router.push('/shop/products')}
           >
             <Text className="mb-2 text-2xl font-semibold text-gray-800">📱 Latest Products</Text>
             <Text className="mb-4 text-gray-600">Discover our newest and most popular items</Text>
@@ -29,7 +29,7 @@ const index = () => {
 
           <TouchableOpacity 
             className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl active:bg-gray-50"
-            onPress={() => router.push('/category')}
+            onPress={() => router.push('/shop/categories')}
           >
             <Text className="mb-2 text-2xl font-semibold text-gray-800">🏷️ Browse Categories</Text>
             <Text className="mb-4 text-gray-600">Explore products organized by different categories</Text>
@@ -45,7 +45,7 @@ const index = () => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="space-x-3">
             <TouchableOpacity 
               className="bg-blue-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-blue-600"
-              onPress={() => router.push('/category')}
+              onPress={() => router.push('/shop/categories')}
             >
               <Text className="mb-2 text-3xl text-center">📱</Text>
               <Text className="font-semibold text-center text-white">Electronics</Text>
@@ -53,7 +53,7 @@ const index = () => {
             </TouchableOpacity>
             <TouchableOpacity 
               className="bg-pink-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-pink-600"
-              onPress={() => router.push('/category')}
+              onPress={() => router.push('/shop/categories')}
             >
               <Text className="mb-2 text-3xl text-center">👕</Text>
               <Text className="font-semibold text-center text-white">Fashion</Text>
@@ -61,7 +61,7 @@ const index = () => {
             </TouchableOpacity>
             <TouchableOpacity 
               className="bg-green-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-green-600"
-              onPress={() => router.push('/category')}
+              onPress={() => router.push('/shop/categories')}
             >
               <Text className="mb-2 text-3xl text-center">🏠</Text>
               <Text className="font-semibold text-center text-white">Home</Text>
@@ -69,7 +69,7 @@ const index = () => {
             </TouchableOpacity>
             <TouchableOpacity 
               className="bg-orange-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-orange-600"
-              onPress={() => router.push('/category')}
+              onPress={() => router.push('/shop/categories')}
             >
               <Text className="mb-2 text-3xl text-center">⚽</Text>
               <Text className="font-semibold text-center text-white">Sports</Text>
