@@ -119,7 +119,10 @@ const index = () => {
         {/* Cart Tab */}
         <TouchableOpacity 
           className="items-center flex-1"
-          onPress={() => setActiveTab('cart')}
+          onPress={() => {
+            setActiveTab('cart')
+            router.push('/cart/index')
+          }}
         >
           <View className="relative">
             <Text className={`text-2xl mb-1 ${activeTab === 'cart' ? 'opacity-100' : 'opacity-40'}`}>🛒</Text>
