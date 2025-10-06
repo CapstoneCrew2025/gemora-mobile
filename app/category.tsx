@@ -18,11 +18,11 @@ const category = () => {
         {/* Header */}
         <View className="mb-8">
           <Link href="/" asChild>
-            <TouchableOpacity className="mb-4 flex-row items-center">
-              <Text className="text-blue-600 text-lg">← Back to Home</Text>
+            <TouchableOpacity className="flex-row items-center mb-4">
+              <Text className="text-lg text-blue-600">← Back to Home</Text>
             </TouchableOpacity>
           </Link>
-          <Text className="text-3xl font-bold text-gray-800 mb-2">Browse Categories</Text>
+          <Text className="mb-2 text-3xl font-bold text-gray-800">Browse Categories</Text>
           <Text className="text-gray-600">Explore our diverse product categories</Text>
         </View>
 
@@ -31,7 +31,7 @@ const category = () => {
           {categories.map((cat) => (
             <TouchableOpacity 
               key={cat.id} 
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+              className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl active:bg-gray-50"
               activeOpacity={0.7}
             >
               <View className="flex-row items-center justify-between">
@@ -44,8 +44,8 @@ const category = () => {
                     <Text className="text-gray-500">{cat.count} items available</Text>
                   </View>
                 </View>
-                <View className="bg-gray-100 px-3 py-1 rounded-full">
-                  <Text className="text-gray-600 font-medium">{cat.count}</Text>
+                <View className="px-3 py-1 bg-gray-100 rounded-full">
+                  <Text className="font-medium text-gray-600">{cat.count}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -53,20 +53,20 @@ const category = () => {
         </View>
 
         {/* Browse All Categories Button */}
-        <TouchableOpacity className="mt-6 bg-blue-600 rounded-xl p-4 active:bg-blue-700" activeOpacity={0.8}>
-          <Text className="text-white text-center font-semibold text-lg">Browse All Categories</Text>
-          <Text className="text-blue-100 text-center text-sm mt-1">View complete category list</Text>
+        <TouchableOpacity className="p-4 mt-6 bg-blue-600 rounded-xl active:bg-blue-700" activeOpacity={0.8}>
+          <Text className="text-lg font-semibold text-center text-white">Browse All Categories</Text>
+          <Text className="mt-1 text-sm text-center text-blue-100">View complete category list</Text>
         </TouchableOpacity>
 
         {/* Featured Section */}
         <TouchableOpacity 
-          className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 active:opacity-90" 
+          className="p-6 mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl active:opacity-90" 
           activeOpacity={0.9}
         >
-          <Text className="text-white text-2xl font-bold mb-2">Featured Category</Text>
-          <Text className="text-indigo-100 mb-4">This week's most popular category - Tap to explore</Text>
-          <View className="bg-white bg-opacity-20 rounded-lg p-4">
-            <Text className="text-white text-lg font-semibold">Electronics 📱</Text>
+          <Text className="mb-2 text-2xl font-bold text-white">Featured Category</Text>
+          <Text className="mb-4 text-indigo-100">This week's most popular category - Tap to explore</Text>
+          <View className="p-4 bg-white rounded-lg bg-opacity-20">
+            <Text className="text-lg font-semibold text-white">Electronics 📱</Text>
             <Text className="text-indigo-100">Latest gadgets and tech accessories</Text>
           </View>
         </TouchableOpacity>

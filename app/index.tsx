@@ -10,28 +10,28 @@ const index = () => {
       <View className="flex-1 px-6 py-8">
         {/* Header */}
         <View className="mb-8">
-          <Text className="text-4xl font-bold text-gray-800 mb-2">Welcome</Text>
+          <Text className="mb-2 text-4xl font-bold text-gray-800">Welcome</Text>
           <Text className="text-lg text-gray-600">Explore our amazing products and categories</Text>
         </View>
 
         {/* Feature Cards */}
-        <View className="space-y-4 mb-8">
-          <TouchableOpacity className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 active:bg-gray-50">
-            <Text className="text-2xl font-semibold text-gray-800 mb-2">📱 Latest Products</Text>
-            <Text className="text-gray-600 mb-4">Discover our newest and most popular items</Text>
+        <View className="mb-8 space-y-4">
+          <TouchableOpacity className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl active:bg-gray-50">
+            <Text className="mb-2 text-2xl font-semibold text-gray-800">📱 Latest Products</Text>
+            <Text className="mb-4 text-gray-600">Discover our newest and most popular items</Text>
             <Link href="/product" asChild>
-              <TouchableOpacity className="bg-blue-600 px-6 py-3 rounded-lg active:bg-blue-700">
-                <Text className="text-white font-semibold text-center">View Products</Text>
+              <TouchableOpacity className="px-6 py-3 bg-blue-600 rounded-lg active:bg-blue-700">
+                <Text className="font-semibold text-center text-white">View Products</Text>
               </TouchableOpacity>
             </Link>
           </TouchableOpacity>
 
-          <TouchableOpacity className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 active:bg-gray-50">
-            <Text className="text-2xl font-semibold text-gray-800 mb-2">🏷️ Browse Categories</Text>
-            <Text className="text-gray-600 mb-4">Explore products organized by different categories</Text>
+          <TouchableOpacity className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl active:bg-gray-50">
+            <Text className="mb-2 text-2xl font-semibold text-gray-800">🏷️ Browse Categories</Text>
+            <Text className="mb-4 text-gray-600">Explore products organized by different categories</Text>
             <Link href="/category" asChild>
-              <TouchableOpacity className="bg-green-600 px-6 py-3 rounded-lg active:bg-green-700">
-                <Text className="text-white font-semibold text-center">Browse Categories</Text>
+              <TouchableOpacity className="px-6 py-3 bg-green-600 rounded-lg active:bg-green-700">
+                <Text className="font-semibold text-center text-white">Browse Categories</Text>
               </TouchableOpacity>
             </Link>
           </TouchableOpacity>
@@ -39,42 +39,42 @@ const index = () => {
 
         {/* Popular Categories Quick Access */}
         <View className="mb-8">
-          <Text className="text-2xl font-semibold text-gray-800 mb-4">Popular Categories</Text>
+          <Text className="mb-4 text-2xl font-semibold text-gray-800">Popular Categories</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="space-x-3">
             <Link href="/category" asChild>
               <TouchableOpacity className="bg-blue-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-blue-600">
-                <Text className="text-3xl mb-2 text-center">📱</Text>
-                <Text className="text-white font-semibold text-center">Electronics</Text>
-                <Text className="text-blue-100 text-sm text-center">45 items</Text>
+                <Text className="mb-2 text-3xl text-center">📱</Text>
+                <Text className="font-semibold text-center text-white">Electronics</Text>
+                <Text className="text-sm text-center text-blue-100">45 items</Text>
               </TouchableOpacity>
             </Link>
             <Link href="/category" asChild>
               <TouchableOpacity className="bg-pink-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-pink-600">
-                <Text className="text-3xl mb-2 text-center">👕</Text>
-                <Text className="text-white font-semibold text-center">Fashion</Text>
-                <Text className="text-pink-100 text-sm text-center">32 items</Text>
+                <Text className="mb-2 text-3xl text-center">👕</Text>
+                <Text className="font-semibold text-center text-white">Fashion</Text>
+                <Text className="text-sm text-center text-pink-100">32 items</Text>
               </TouchableOpacity>
             </Link>
             <Link href="/category" asChild>
               <TouchableOpacity className="bg-green-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-green-600">
-                <Text className="text-3xl mb-2 text-center">🏠</Text>
-                <Text className="text-white font-semibold text-center">Home</Text>
-                <Text className="text-green-100 text-sm text-center">28 items</Text>
+                <Text className="mb-2 text-3xl text-center">🏠</Text>
+                <Text className="font-semibold text-center text-white">Home</Text>
+                <Text className="text-sm text-center text-green-100">28 items</Text>
               </TouchableOpacity>
             </Link>
             <Link href="/category" asChild>
               <TouchableOpacity className="bg-orange-500 rounded-lg p-4 mr-3 min-w-[120px] active:bg-orange-600">
-                <Text className="text-3xl mb-2 text-center">⚽</Text>
-                <Text className="text-white font-semibold text-center">Sports</Text>
-                <Text className="text-orange-100 text-sm text-center">19 items</Text>
+                <Text className="mb-2 text-3xl text-center">⚽</Text>
+                <Text className="font-semibold text-center text-white">Sports</Text>
+                <Text className="text-sm text-center text-orange-100">19 items</Text>
               </TouchableOpacity>
             </Link>
           </ScrollView>
         </View>
 
         {/* Stats Section */}
-        <View className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">Quick Stats</Text>
+        <View className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl">
+          <Text className="mb-4 text-xl font-semibold text-gray-800">Quick Stats</Text>
           <View className="flex-row justify-between">
             <View className="items-center">
               <Text className="text-2xl font-bold text-blue-600">150+</Text>
