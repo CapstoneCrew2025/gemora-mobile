@@ -6,7 +6,7 @@ import { Link } from "expo-router";
 export default function Index() {
   return (
     <View className="flex-1 justify-center items-center bg-white px-4">
-      <Text className="text-2xl font-bold mb-6">Welcome to Gemora</Text>
+      <Text className="text-2xl font-bold mb-6">GeMora</Text>
 
       {/* Login Button */}
       <Link href="/login" asChild>
