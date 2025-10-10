@@ -1,7 +1,38 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Platform } from 'react-native';
 
-const BASE_URL = 'http://localhost:8080/api';
+// Different base URLs for different platforms
+const getBaseUrl = () => {
+  if (__DEV__) {
+    // For development - you need to replace this with your actual IP address
+    // To find your IP: 
+    // Windows: ipconfig | findstr IPv4
+    // Mac/Linux: ifconfig | grep inet
+    
+    // Option 1: Use your computer's IP address (recommended for Expo)
+    // Replace 192.168.1.100 with your actual IP address
+    const YOUR_IP = '172.20.10.5'; // Your actual IP address
+    
+    if (Platform.OS === 'android') {
+      // For Android emulator, use 10.0.2.2
+      // For Android device/Expo Go, use your computer's IP
+      return `http://${YOUR_IP}:8080/api`;
+    } else if (Platform.OS === 'ios') {
+      // For iOS simulator and device, use your computer's IP
+      return `http://${YOUR_IP}:8080/api`;
+    } else {
+      // For web development
+      return 'http://localhost:8080/api';
+    }
+  }
+  // For production, use your actual API URL
+  return 'https://your-api-domain.com/api';
+};
+
+const BASE_URL = getBaseUrl();
+
+console.log('API Base URL:', BASE_URL); // Debug log
 
 class ApiClient {
   private instance: AxiosInstance;

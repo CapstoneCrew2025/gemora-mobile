@@ -54,6 +54,7 @@ class AuthService {
    */
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
+      console.log('Attempting registration with:', { email: userData.email, name: userData.name });
       const response = await apiClient.post<AuthResponse>('/auth/register', userData);
       
       // Store token and role in AsyncStorage
@@ -65,6 +66,17 @@ class AuthService {
       return response;
     } catch (error: any) {
       console.error('Registration error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      
+      if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+        throw new Error('Unable to connect to server. Please check your internet connection and try again.');
+      }
+      
       throw new Error(error.response?.data?.message || 'Registration failed');
     }
   }
