@@ -29,10 +29,12 @@ export default function LoginScreen() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    console.log('Login screen: Auth state changed:', { isAuthenticated, isLoading });
+    if (isAuthenticated && !isLoading) {
+      console.log('Login screen: Redirecting to home...');
       router.replace('/');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading]);
 
   // Clear API error when inputs change
   useEffect(() => {
@@ -75,14 +77,32 @@ export default function LoginScreen() {
     }
 
     try {
+      console.log('Starting login process...');
       await login({
         email: email.trim().toLowerCase(),
         password: password,
       });
       
-      // Success - user will be redirected by useEffect
-      Alert.alert('Success', 'Login successful!');
+      console.log('Login successful, authentication state should be updated');
+      
+      // Clear form fields after successful login
+      setEmail('');
+      setPassword('');
+      setEmailError('');
+      setPasswordError('');
+      
+      // Clear any remaining errors
+      clearError();
+      
+      // Manual navigation as backup
+      setTimeout(() => {
+        if (isAuthenticated) {
+          router.replace('/');
+        }
+      }, 100);
+      
     } catch (error: any) {
+      console.error('Login failed:', error);
       // Error is handled by the store and displayed via error state
       Alert.alert('Login Failed', error.message || 'Please check your credentials and try again.');
     }

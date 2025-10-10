@@ -28,10 +28,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   // Login action
   login: async (credentials: LoginRequest) => {
+    console.log('Auth store: Starting login...');
     set({ isLoading: true, error: null });
     
     try {
       const response: AuthResponse = await authService.login(credentials);
+      console.log('Auth store: Login service successful, updating state...');
       
       // Create user object
       const user: User = {
@@ -42,6 +44,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // Store user data
       await authService.storeUser(user);
       
+      console.log('Auth store: Setting authenticated state...');
       set({
         isAuthenticated: true,
         user,
@@ -49,7 +52,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isLoading: false,
         error: null,
       });
+      
+      console.log('Auth store: Login completed successfully');
     } catch (error: any) {
+      console.error('Auth store: Login failed:', error);
       set({
         isAuthenticated: false,
         user: null,
@@ -63,13 +69,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   // Register action
   register: async (userData: RegisterRequest) => {
+    console.log('Auth store: Starting registration...');
     set({ isLoading: true, error: null });
     
     try {
-      console.log('Store: Starting registration...');
       const response: AuthResponse = await authService.register(userData);
-      
-      console.log('Store: Registration service completed, response:', response);
+      console.log('Auth store: Registration service successful, updating state...');
       
       // Create user object
       const user: User = {
@@ -78,12 +83,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         role: response.role,
       };
       
-      console.log('Store: Created user object:', user);
-      
       // Store user data
       await authService.storeUser(user);
       
-      console.log('Store: Setting successful state...');
+      console.log('Auth store: Setting authenticated state...');
       set({
         isAuthenticated: true,
         user,
@@ -92,17 +95,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null,
       });
       
-      console.log('Store: Registration completed successfully');
-      
-      // Double-check that error is cleared
-      const currentState = get();
-      console.log('Store: Final state after registration:', {
-        isAuthenticated: currentState.isAuthenticated,
-        error: currentState.error,
-        role: currentState.role
-      });
+      console.log('Auth store: Registration completed successfully');
     } catch (error: any) {
-      console.error('Store: Registration failed:', error);
+      console.error('Auth store: Registration failed:', error);
       set({
         isAuthenticated: false,
         user: null,

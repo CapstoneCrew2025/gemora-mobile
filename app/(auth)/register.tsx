@@ -26,9 +26,6 @@ export default function RegisterScreen() {
   const { isLoading, error, isAuthenticated } = useAuth();
   const { register, clearError } = useAuthActions();
 
-  // Debug logging
-  console.log('Component state:', { isLoading, error, isAuthenticated });
-
   // Clear errors when component mounts
   useEffect(() => {
     clearError();
@@ -36,10 +33,12 @@ export default function RegisterScreen() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    console.log('Register screen: Auth state changed:', { isAuthenticated, isLoading });
+    if (isAuthenticated && !isLoading) {
+      console.log('Register screen: Redirecting to home...');
       router.replace('/');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading]);
 
   // Clear API error when inputs change
   useEffect(() => {
@@ -102,18 +101,35 @@ export default function RegisterScreen() {
     }
 
     try {
-      console.log('Component: Starting registration...');
+      console.log('Starting registration process...');
       await register({
         name: name.trim(),
         email: email.trim().toLowerCase(),
         password: password,
       });
       
-      console.log('Component: Registration completed successfully');
-      // Success - user will be redirected by useEffect
-      Alert.alert('Success', 'Account created successfully!');
+      console.log('Registration successful, authentication state should be updated');
+      
+      // Clear form fields and errors after successful registration
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setNameError('');
+      setEmailError('');
+      setPasswordError('');
+      setConfirmPasswordError('');
+      clearError();
+      
+      // Manual navigation as backup
+      setTimeout(() => {
+        if (isAuthenticated) {
+          router.replace('/');
+        }
+      }, 100);
+      
     } catch (error: any) {
-      console.error('Component: Registration failed:', error);
+      console.error('Registration failed:', error);
       // Error is handled by the store and displayed via error state
       Alert.alert('Registration Failed', error.message || 'Please try again.');
     }
@@ -129,14 +145,14 @@ export default function RegisterScreen() {
         keyboardShouldPersistTaps="handled"
         className="flex-1"
       >
-        <View className="flex-1 justify-center px-6 py-12">
+        <View className="justify-center flex-1 px-6 py-12">
           {/* Header */}
           <View className="items-center mb-12">
-            <View className="w-20 h-20 bg-green-600 rounded-full items-center justify-center mb-6">
-              <Text className="text-white text-2xl font-bold">G</Text>
+            <View className="items-center justify-center w-20 h-20 mb-6 bg-green-600 rounded-full">
+              <Text className="text-2xl font-bold text-white">G</Text>
             </View>
-            <Text className="text-3xl font-bold text-gray-900 mb-2">Create Account</Text>
-            <Text className="text-gray-600 text-center">
+            <Text className="mb-2 text-3xl font-bold text-gray-900">Create Account</Text>
+            <Text className="text-center text-gray-600">
               Join GeMora and start your journey
             </Text>
           </View>
@@ -190,8 +206,8 @@ export default function RegisterScreen() {
 
             {/* Error Message */}
             {error && (
-              <View className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <Text className="text-red-700 text-sm text-center">
+              <View className="p-4 border border-red-200 rounded-lg bg-red-50">
+                <Text className="text-sm text-center text-red-700">
                   {error}
                 </Text>
               </View>
@@ -206,11 +222,11 @@ export default function RegisterScreen() {
             />
 
             {/* Terms and Privacy */}
-            <Text className="text-xs text-gray-500 text-center mt-4 leading-5">
+            <Text className="mt-4 text-xs leading-5 text-center text-gray-500">
               By creating an account, you agree to our{' '}
-              <Text className="text-green-600 font-medium">Terms of Service</Text>
+              <Text className="font-medium text-green-600">Terms of Service</Text>
               {' '}and{' '}
-              <Text className="text-green-600 font-medium">Privacy Policy</Text>
+              <Text className="font-medium text-green-600">Privacy Policy</Text>
             </Text>
           </View>
 
@@ -219,7 +235,7 @@ export default function RegisterScreen() {
             <Text className="text-gray-600">Already have an account? </Text>
             <Link href="/(auth)/login" asChild>
               <TouchableOpacity>
-                <Text className="text-green-600 font-semibold">Sign In</Text>
+                <Text className="font-semibold text-green-600">Sign In</Text>
               </TouchableOpacity>
             </Link>
           </View>

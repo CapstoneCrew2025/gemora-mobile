@@ -66,22 +66,8 @@ class ApiClient {
 
     // Response interceptor for error handling
     this.instance.interceptors.response.use(
-      (response: AxiosResponse) => {
-        console.log('API Response received:', {
-          status: response.status,
-          data: response.data,
-          url: response.config?.url
-        });
-        return response;
-      },
+      (response: AxiosResponse) => response,
       async (error) => {
-        console.error('API Error intercepted:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message,
-          url: error.config?.url
-        });
-        
         if (error.response?.status === 401) {
           // Token expired or invalid, clear storage
           await AsyncStorage.removeItem('auth_token');
