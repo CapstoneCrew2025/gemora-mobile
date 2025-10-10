@@ -26,6 +26,9 @@ export default function RegisterScreen() {
   const { isLoading, error, isAuthenticated } = useAuth();
   const { register, clearError } = useAuthActions();
 
+  // Debug logging
+  console.log('Component state:', { isLoading, error, isAuthenticated });
+
   // Clear errors when component mounts
   useEffect(() => {
     clearError();
@@ -99,15 +102,18 @@ export default function RegisterScreen() {
     }
 
     try {
+      console.log('Component: Starting registration...');
       await register({
         name: name.trim(),
         email: email.trim().toLowerCase(),
         password: password,
       });
       
+      console.log('Component: Registration completed successfully');
       // Success - user will be redirected by useEffect
       Alert.alert('Success', 'Account created successfully!');
     } catch (error: any) {
+      console.error('Component: Registration failed:', error);
       // Error is handled by the store and displayed via error state
       Alert.alert('Registration Failed', error.message || 'Please try again.');
     }

@@ -57,12 +57,17 @@ class AuthService {
       console.log('Attempting registration with:', { email: userData.email, name: userData.name });
       const response = await apiClient.post<AuthResponse>('/auth/register', userData);
       
+      console.log('Registration response received:', response);
+      console.log('Response token:', response.token);
+      console.log('Response role:', response.role);
+      
       // Store token and role in AsyncStorage
       await this.storeAuthData(response.token, response.role);
       
       // Set token in API client for future requests
       apiClient.setAuthToken(response.token);
       
+      console.log('Registration successful, returning response');
       return response;
     } catch (error: any) {
       console.error('Registration error:', error);
