@@ -149,7 +149,7 @@ export default function LoginScreen() {
     Alert.alert('Facebook Login', 'Facebook authentication coming soon!');
   };
 
-  return (
+ return (
   <KeyboardAvoidingView
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     className="flex-1 bg-emerald-500"
@@ -159,8 +159,8 @@ export default function LoginScreen() {
       keyboardShouldPersistTaps="handled"
       className="flex-1"
     >
-      {/* Top emerald section with background diamond and welcome text */}
-      <View className="bg-emerald-500 pt-16 pb-8 items-center relative">
+      {/* Top emerald section with background diamond and welcome text - Increased height */}
+      <View className="bg-emerald-500 pt-16 pb-12 items-center relative">
         {/* Background diamond image with opacity */}
         <View className="absolute inset-0 items-center justify-center opacity-15">
           <Image
@@ -171,16 +171,16 @@ export default function LoginScreen() {
         </View>
         
         {/* Welcome text on top of diamond */}
-        <Text className="text-3xl font-bold text-white z-10">Welcome</Text>
+        <Text className="text-3xl font-bold text-gray-800 z-10 mt-4">Welcome</Text>
       </View>
 
-      {/* White rounded card container */}
-      <View className="flex-1 bg-white rounded-t-3xl px-8 pt-10">
+      {/* White rounded card container with larger border radius */}
+      <View className="flex-1 bg-white rounded-t-[40px] px-8 pt-10">
         {/* Login Form */}
         <View className="space-y-4">
           {/* Email Input */}
           <View className="mb-4">
-            <Text className="text-gray-700 font-medium mb-2">Username or Email</Text>
+            <Text className="text-gray-700 font-medium mb-2">Username Or Email</Text>
             <Input
               value={email}
               onChangeText={setEmail}
@@ -194,7 +194,7 @@ export default function LoginScreen() {
           </View>
 
           {/* Password Input */}
-          <View className="mb-6">
+          <View className="mb-8">
             <Text className="text-gray-700 font-medium mb-2">Password</Text>
             <Input
               value={password}
