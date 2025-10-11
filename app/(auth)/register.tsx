@@ -220,7 +220,7 @@ export default function RegisterScreen() {
             <Input
               value={mobile}
               onChangeText={setMobile}
-              placeholder="+94 455 789"
+              placeholder="+94 765554321"
               keyboardType="phone-pad"
               autoComplete="tel"
               error={mobileError}

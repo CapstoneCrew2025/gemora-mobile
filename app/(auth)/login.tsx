@@ -150,136 +150,140 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-emerald-500"
+  <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    className="flex-1 bg-emerald-500"
+  >
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      className="flex-1"
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        className="flex-1"
-      >
-        {/* Top emerald section with welcome text */}
-        <View className="bg-emerald-500 pt-16 pb-8 items-center">
-          {/* Small gem icon */}
+      {/* Top emerald section with background diamond and welcome text */}
+      <View className="bg-emerald-500 pt-16 pb-8 items-center relative">
+        {/* Background diamond image with opacity */}
+        <View className="absolute inset-0 items-center justify-center opacity-15">
           <Image
             source={require("../../assets/images/diamond.png")}
             resizeMode="contain"
-            className="w-16 h-16 mb-4"
+            className="w-40 h-40"
           />
-          <Text className="text-3xl font-bold text-white">Welcome</Text>
         </View>
+        
+        {/* Welcome text on top of diamond */}
+        <Text className="text-3xl font-bold text-white z-10">Welcome</Text>
+      </View>
 
-        {/* White rounded card container */}
-        <View className="flex-1 bg-white rounded-t-3xl px-8 pt-10">
-          {/* Login Form */}
-          <View className="space-y-4">
-            {/* Email Input */}
-            <View className="mb-4">
-              <Text className="text-gray-700 font-medium mb-2">Username Or Email</Text>
-              <Input
-                value={email}
-                onChangeText={setEmail}
-                placeholder="example@example.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                error={emailError}
-                className="bg-gray-50"
-              />
-            </View>
+      {/* White rounded card container */}
+      <View className="flex-1 bg-white rounded-t-3xl px-8 pt-10">
+        {/* Login Form */}
+        <View className="space-y-4">
+          {/* Email Input */}
+          <View className="mb-4">
+            <Text className="text-gray-700 font-medium mb-2">Username or Email</Text>
+            <Input
+              value={email}
+              onChangeText={setEmail}
+              placeholder="example@example.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              error={emailError}
+              className="bg-gray-50"
+            />
+          </View>
 
-            {/* Password Input */}
-            <View className="mb-6">
-              <Text className="text-gray-700 font-medium mb-2">Password</Text>
-              <Input
-                value={password}
-                onChangeText={setPassword}
-                placeholder="••••••••"
-                secureTextEntry
-                autoComplete="password"
-                error={passwordError}
-                className="bg-gray-50"
-              />
-            </View>
+          {/* Password Input */}
+          <View className="mb-6">
+            <Text className="text-gray-700 font-medium mb-2">Password</Text>
+            <Input
+              value={password}
+              onChangeText={setPassword}
+              placeholder="••••••••"
+              secureTextEntry
+              autoComplete="password"
+              error={passwordError}
+              className="bg-gray-50"
+            />
+          </View>
 
-            {/* Error Message */}
-            {error && (
-              <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-                <Text className="text-red-700 text-sm text-center">
-                  {error}
-                </Text>
-              </View>
-            )}
-
-            {/* Login Button */}
-            <TouchableOpacity
-              onPress={handleLogin}
-              disabled={isLoading}
-              className="w-full bg-emerald-500 py-4 rounded-full items-center mb-4"
-              activeOpacity={0.85}
-            >
-              <Text className="text-white font-bold text-base">
-                {isLoading ? 'Signing In...' : 'Log In'}
+          {/* Error Message */}
+          {error && (
+            <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+              <Text className="text-red-700 text-sm text-center">
+                {error}
               </Text>
+            </View>
+          )}
+
+          {/* Login Button */}
+          <TouchableOpacity
+            onPress={handleLogin}
+            disabled={isLoading}
+            className="w-full bg-emerald-500 py-4 rounded-full items-center mb-4"
+            activeOpacity={0.85}
+          >
+            <Text className="text-white font-bold text-base">
+              {isLoading ? 'Signing In...' : 'Log In'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Forgot Password Link */}
+          <Link href="/(auth)/forgot" asChild>
+            <TouchableOpacity className="items-center mb-6">
+              <Text className="text-gray-600 text-sm">Forgot Password?</Text>
+            </TouchableOpacity>
+          </Link>
+
+          {/* Divider with "or sign up with" */}
+          <View className="flex-row items-center mb-6">
+            <View className="flex-1 h-px bg-gray-300" />
+            <Text className="mx-4 text-gray-500 text-sm">or sign up with</Text>
+            <View className="flex-1 h-px bg-gray-300" />
+          </View>
+
+          {/* Social Login Buttons */}
+          <View className="flex-row justify-center items-center mb-6">
+            {/* Google */}
+            <TouchableOpacity 
+              className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white mr-4"
+              activeOpacity={0.7}
+              onPress={handleGoogleLogin}
+            >
+              <GoogleIcon size={24} />
             </TouchableOpacity>
 
-            {/* Forgot Password Link */}
-            <Link href="/(auth)/forgot" asChild>
-              <TouchableOpacity className="items-center mb-6">
-                <Text className="text-gray-600 text-sm">Forgot Password?</Text>
+            {/* Facebook */}
+            <TouchableOpacity 
+              className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white"
+              activeOpacity={0.7}
+              onPress={handleFacebookLogin}
+            >
+              <FontAwesome name="facebook" size={24} color="#1877F2" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Don't have account */}
+          <View className="flex-row justify-center items-center">
+            <Text className="text-gray-600 text-sm">Don't have an account? </Text>
+            <Link href="/(auth)/register" asChild>
+              <TouchableOpacity>
+                <Text className="text-emerald-500 font-semibold text-sm">Sign Up</Text>
               </TouchableOpacity>
             </Link>
-
-            {/* Divider with "or sign up with" */}
-            <View className="flex-row items-center mb-6">
-              <View className="flex-1 h-px bg-gray-300" />
-              <Text className="mx-4 text-gray-500 text-sm">or sign up with</Text>
-              <View className="flex-1 h-px bg-gray-300" />
-            </View>
-
-            {/* Social Login Buttons */}
-            <View className="flex-row justify-center space-x-8 mb-6">
-              {/* Google */}
-              <TouchableOpacity 
-                className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white mr-4"
-                activeOpacity={0.7}
-                onPress={handleGoogleLogin}
-              >
-                <GoogleIcon size={24} />
-              </TouchableOpacity>
-
-              {/* Facebook */}
-              <TouchableOpacity 
-                className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white"
-                activeOpacity={0.7}
-                onPress={handleFacebookLogin}
-              >
-                <FontAwesome name="facebook" size={24} color="#1877F2" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Don't have account */}
-            <View className="flex-row justify-center items-center">
-              <Text className="text-gray-600 text-sm">Don't have an account? </Text>
-              <Link href="/(auth)/register" asChild>
-                <TouchableOpacity>
-                  <Text className="text-emerald-500 font-semibold text-sm">Sign Up</Text>
-                </TouchableOpacity>
-              </Link>
-            </View>
           </View>
         </View>
+      </View>
 
-        {/* Back button (top-left) */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="absolute left-4 top-12 w-10 h-10 rounded-full bg-white/20 items-center justify-center"
-          activeOpacity={0.85}
-        >
-          <Text className="text-white text-xl">‹</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
+      {/* Back button (top-left) */}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        className="absolute left-4 top-12 w-10 h-10 rounded-full bg-white/20 items-center justify-center"
+        activeOpacity={0.85}
+      >
+        <Text className="text-white text-xl">‹</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  </KeyboardAvoidingView>
+);
 }
