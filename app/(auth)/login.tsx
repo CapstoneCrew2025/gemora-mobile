@@ -176,7 +176,7 @@ export default function LoginScreen() {
           <View className="space-y-4">
             {/* Email Input */}
             <View className="mb-4">
-              <Text className="text-gray-700 font-medium mb-2">Username <optgroup></optgroup>r Email</Text>
+              <Text className="text-gray-700 font-medium mb-2">Username Or Email</Text>
               <Input
                 value={email}
                 onChangeText={setEmail}
@@ -242,7 +242,7 @@ export default function LoginScreen() {
             <View className="flex-row justify-center space-x-8 mb-6">
               {/* Google */}
               <TouchableOpacity 
-                className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white"
+                className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white mr-4"
                 activeOpacity={0.7}
                 onPress={handleGoogleLogin}
               >
