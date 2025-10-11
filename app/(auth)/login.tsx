@@ -8,10 +8,39 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Image,
 } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import Svg, { Path } from 'react-native-svg';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
+
+// Custom Google Icon Component with official colors
+const GoogleIcon = ({ size = 24 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    {/* Blue */}
+    <Path
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      fill="#4285F4"
+    />
+    {/* Green */}
+    <Path
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      fill="#34A853"
+    />
+    {/* Yellow */}
+    <Path
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      fill="#FBBC05"
+    />
+    {/* Red */}
+    <Path
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      fill="#EA4335"
+    />
+  </Svg>
+);
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -108,56 +137,75 @@ export default function LoginScreen() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    // Add your Google login logic here
+    console.log('Google login pressed');
+    Alert.alert('Google Login', 'Google authentication coming soon!');
+  };
+
+  const handleFacebookLogin = () => {
+    // Add your Facebook login logic here
+    console.log('Facebook login pressed');
+    Alert.alert('Facebook Login', 'Facebook authentication coming soon!');
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-green-50"
+      className="flex-1 bg-emerald-500"
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         className="flex-1"
       >
-        <View className="flex-1 justify-center px-6 py-12">
-          {/* Header */}
-          <View className="items-center mb-12">
-            <View className="w-20 h-20 bg-green-600 rounded-full items-center justify-center mb-6">
-              <Text className="text-white text-2xl font-bold">G</Text>
-            </View>
-            <Text className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</Text>
-            <Text className="text-gray-600 text-center">
-              Sign in to your GeMora account
-            </Text>
-          </View>
+        {/* Top emerald section with welcome text */}
+        <View className="bg-emerald-500 pt-16 pb-8 items-center">
+          {/* Small gem icon */}
+          <Image
+            source={require("../../assets/images/diamond.png")}
+            resizeMode="contain"
+            className="w-16 h-16 mb-4"
+          />
+          <Text className="text-3xl font-bold text-white">Welcome</Text>
+        </View>
 
+        {/* White rounded card container */}
+        <View className="flex-1 bg-white rounded-t-3xl px-8 pt-10">
           {/* Login Form */}
-          <View className="space-y-6">
+          <View className="space-y-4">
             {/* Email Input */}
-            <Input
-              label="Email Address"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Enter your email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              error={emailError}
-            />
+            <View className="mb-4">
+              <Text className="text-gray-700 font-medium mb-2">Username <optgroup></optgroup>r Email</Text>
+              <Input
+                value={email}
+                onChangeText={setEmail}
+                placeholder="example@example.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                error={emailError}
+                className="bg-gray-50"
+              />
+            </View>
 
             {/* Password Input */}
-            <Input
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Enter your password"
-              secureTextEntry
-              autoComplete="password"
-              error={passwordError}
-            />
+            <View className="mb-6">
+              <Text className="text-gray-700 font-medium mb-2">Password</Text>
+              <Input
+                value={password}
+                onChangeText={setPassword}
+                placeholder="••••••••"
+                secureTextEntry
+                autoComplete="password"
+                error={passwordError}
+                className="bg-gray-50"
+              />
+            </View>
 
             {/* Error Message */}
             {error && (
-              <View className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
                 <Text className="text-red-700 text-sm text-center">
                   {error}
                 </Text>
@@ -165,31 +213,72 @@ export default function LoginScreen() {
             )}
 
             {/* Login Button */}
-            <Button
-              title="Sign In"
+            <TouchableOpacity
               onPress={handleLogin}
-              isLoading={isLoading}
-              className="w-full mt-6"
-            />
-
-            {/* Forgot Password Link */}
-            <TouchableOpacity className="items-center mt-4">
-              <Text className="text-green-600 font-medium">
-                Forgot your password?
+              disabled={isLoading}
+              className="w-full bg-emerald-500 py-4 rounded-full items-center mb-4"
+              activeOpacity={0.85}
+            >
+              <Text className="text-white font-bold text-base">
+                {isLoading ? 'Signing In...' : 'Log In'}
               </Text>
             </TouchableOpacity>
-          </View>
 
-          {/* Register Link */}
-          <View className="flex-row items-center justify-center mt-8">
-            <Text className="text-gray-600">Don't have an account? </Text>
-            <Link href="/(auth)/register" asChild>
-              <TouchableOpacity>
-                <Text className="text-green-600 font-semibold">Sign Up</Text>
+            {/* Forgot Password Link */}
+            <Link href="/(auth)/forgot" asChild>
+              <TouchableOpacity className="items-center mb-6">
+                <Text className="text-gray-600 text-sm">Forgot Password?</Text>
               </TouchableOpacity>
             </Link>
+
+            {/* Divider with "or sign up with" */}
+            <View className="flex-row items-center mb-6">
+              <View className="flex-1 h-px bg-gray-300" />
+              <Text className="mx-4 text-gray-500 text-sm">or sign up with</Text>
+              <View className="flex-1 h-px bg-gray-300" />
+            </View>
+
+            {/* Social Login Buttons */}
+            <View className="flex-row justify-center space-x-8 mb-6">
+              {/* Google */}
+              <TouchableOpacity 
+                className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white"
+                activeOpacity={0.7}
+                onPress={handleGoogleLogin}
+              >
+                <GoogleIcon size={24} />
+              </TouchableOpacity>
+
+              {/* Facebook */}
+              <TouchableOpacity 
+                className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white"
+                activeOpacity={0.7}
+                onPress={handleFacebookLogin}
+              >
+                <FontAwesome name="facebook" size={24} color="#1877F2" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Don't have account */}
+            <View className="flex-row justify-center items-center">
+              <Text className="text-gray-600 text-sm">Don't have an account? </Text>
+              <Link href="/(auth)/register" asChild>
+                <TouchableOpacity>
+                  <Text className="text-emerald-500 font-semibold text-sm">Sign Up</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
           </View>
         </View>
+
+        {/* Back button (top-left) */}
+        <TouchableOpacity
+          onPress={() => router.back()}
+          className="absolute left-4 top-12 w-10 h-10 rounded-full bg-white/20 items-center justify-center"
+          activeOpacity={0.85}
+        >
+          <Text className="text-white text-xl">‹</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
