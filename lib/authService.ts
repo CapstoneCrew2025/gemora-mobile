@@ -13,6 +13,15 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface RegisterWithImagesRequest {
+  name: string;
+  email: string;
+  password: string;
+  idFrontImage: string; // file URI
+  idBackImage: string;  // file URI
+  selfieImage: string;  // file URI
+}
+
 export interface AuthResponse {
   token: string;
   role: string;
@@ -46,6 +55,69 @@ class AuthService {
     } catch (error: any) {
       console.error('Login error:', error);
       throw new Error(error.response?.data?.message || 'Login failed');
+    }
+  }
+
+  /**
+   * Register new user with images (multipart/form-data)
+   */
+  async registerWithImages(userData: RegisterWithImagesRequest): Promise<AuthResponse> {
+    try {
+      console.log('Attempting registration with images:', { email: userData.email, name: userData.name });
+      
+      // Create FormData for multipart/form-data
+      const formData = new FormData();
+      formData.append('name', userData.name);
+      formData.append('email', userData.email);
+      formData.append('password', userData.password);
+      
+      // Add image files
+      formData.append('idFrontImage', {
+        uri: userData.idFrontImage,
+        type: 'image/jpeg',
+        name: 'id_front.jpg',
+      } as any);
+      
+      formData.append('idBackImage', {
+        uri: userData.idBackImage,
+        type: 'image/jpeg',
+        name: 'id_back.jpg',
+      } as any);
+      
+      formData.append('selfieImage', {
+        uri: userData.selfieImage,
+        type: 'image/jpeg',
+        name: 'selfie.jpg',
+      } as any);
+      
+      // Make request with multipart/form-data
+      const response = await apiClient.post<AuthResponse>('/auth/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      // Store token and role in AsyncStorage
+      await this.storeAuthData(response.token, response.role);
+      
+      // Set token in API client for future requests
+      apiClient.setAuthToken(response.token);
+      
+      return response;
+    } catch (error: any) {
+      console.error('Registration with images error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      
+      if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+        throw new Error('Unable to connect to server. Please check your internet connection and try again.');
+      }
+      
+      throw new Error(error.response?.data?.message || 'Registration failed');
     }
   }
 
