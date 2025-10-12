@@ -1,26 +1,23 @@
+import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-    Image,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
-import * as ImagePicker from 'expo-image-picker';
 
 // Type definition for registration data
 interface RegistrationData {
   name: string;
   email: string;
-  mobile: string;
-  dateOfBirth: string;
   password: string;
   confirmPassword: string;
   frontIdPhoto: string | null;
@@ -36,8 +33,6 @@ export default function RegisterScreen() {
   const [registrationData, setRegistrationData] = useState<RegistrationData>({
     name: '',
     email: '',
-    mobile: '',
-    dateOfBirth: '',
     password: '',
     confirmPassword: '',
     frontIdPhoto: null,
@@ -49,8 +44,6 @@ export default function RegisterScreen() {
   const [errors, setErrors] = useState({
     name: '',
     email: '',
-    mobile: '',
-    dateOfBirth: '',
     password: '',
     confirmPassword: '',
     frontIdPhoto: '',
@@ -59,7 +52,7 @@ export default function RegisterScreen() {
   });
 
   const { isLoading, error, isAuthenticated } = useAuth();
-  const { register, clearError } = useAuthActions();
+  const { register, registerWithImages, clearError } = useAuthActions();
 
   // Clear errors when component mounts
   useEffect(() => {
@@ -106,25 +99,6 @@ export default function RegisterScreen() {
       isValid = false;
     } else {
       newErrors.email = '';
-    }
-
-    // Mobile validation
-    if (!registrationData.mobile.trim()) {
-      newErrors.mobile = 'Mobile number is required';
-      isValid = false;
-    } else if (!/^[+]?[\d\s-]{10,}$/.test(registrationData.mobile)) {
-      newErrors.mobile = 'Please enter a valid mobile number';
-      isValid = false;
-    } else {
-      newErrors.mobile = '';
-    }
-
-    // Date of Birth validation
-    if (!registrationData.dateOfBirth.trim()) {
-      newErrors.dateOfBirth = 'Date of birth is required';
-      isValid = false;
-    } else {
-      newErrors.dateOfBirth = '';
     }
 
     // Password validation
@@ -306,19 +280,21 @@ export default function RegisterScreen() {
     try {
       console.log('Starting registration process...');
       
-      // Here you would typically upload the images first and get URLs
-      // For now, we'll proceed with basic registration
-      await register({
+      // Validate that all images are present
+      if (!registrationData.frontIdPhoto || !registrationData.backIdPhoto || !registrationData.selfiePhoto) {
+        Alert.alert('Missing Images', 'Please upload all required images before proceeding.');
+        return;
+      }
+      
+      // Use the new registerWithImages method
+      await registerWithImages({
         name: registrationData.name.trim(),
         email: registrationData.email.trim().toLowerCase(),
         password: registrationData.password,
-        mobile: registrationData.mobile.trim(),
-        dateOfBirth: registrationData.dateOfBirth.trim(),
-        // Add image URLs if your backend supports it
-        // frontIdPhoto: frontIdPhotoUrl,
-        // backIdPhoto: backIdPhotoUrl,
-        // selfiePhoto: selfiePhotoUrl,
-      } as any);
+        idFrontImage: registrationData.frontIdPhoto,
+        idBackImage: registrationData.backIdPhoto,
+        selfieImage: registrationData.selfiePhoto,
+      });
       
       console.log('Registration successful');
       
@@ -326,8 +302,6 @@ export default function RegisterScreen() {
       setRegistrationData({
         name: '',
         email: '',
-        mobile: '',
-        dateOfBirth: '',
         password: '',
         confirmPassword: '',
         frontIdPhoto: null,
@@ -337,8 +311,6 @@ export default function RegisterScreen() {
       setErrors({
         name: '',
         email: '',
-        mobile: '',
-        dateOfBirth: '',
         password: '',
         confirmPassword: '',
         frontIdPhoto: '',
@@ -526,32 +498,6 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
           autoCapitalize="none"
           autoComplete="email"
           error={errors.email}
-          className="bg-gray-50"
-        />
-      </View>
-
-      {/* Mobile Number Input */}
-      <View className="mb-2">
-        <Text className="text-gray-700 font-medium mb-2">Mobile Number</Text>
-        <Input
-          value={data.mobile}
-          onChangeText={(text) => updateData('mobile', text)}
-          placeholder="+94 765554321"
-          keyboardType="phone-pad"
-          autoComplete="tel"
-          error={errors.mobile}
-          className="bg-gray-50"
-        />
-      </View>
-
-      {/* Date of Birth Input */}
-      <View className="mb-2">
-        <Text className="text-gray-700 font-medium mb-2">Date Of Birth</Text>
-        <Input
-          value={data.dateOfBirth}
-          onChangeText={(text) => updateData('dateOfBirth', text)}
-          placeholder="DD / MM / YYYY"
-          error={errors.dateOfBirth}
           className="bg-gray-50"
         />
       </View>
