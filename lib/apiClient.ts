@@ -86,25 +86,14 @@ class ApiClient {
 
   public async post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     try {
-      console.log('Making POST request to:', `${BASE_URL}${url}`);
-      console.log('Request config:', JSON.stringify(config?.headers, null, 2));
-      console.log('Request data type:', typeof data);
-      
       const response = await this.instance.post<T>(url, data, config);
-      
-      console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
-      console.log('Response headers:', JSON.stringify(response.headers, null, 2));
-      console.log('Raw response data:', JSON.stringify(response.data, null, 2));
-      
       return response.data;
     } catch (error: any) {
       console.error('POST request failed:', error.message);
       console.error('Error details:', {
         status: error.response?.status,
         statusText: error.response?.statusText,
-        data: error.response?.data,
-        config: error.config
+        data: error.response?.data
       });
       throw error;
     }

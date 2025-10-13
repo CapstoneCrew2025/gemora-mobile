@@ -42,32 +42,10 @@ class AuthService {
    * Test backend connectivity
    */
   async testConnection(): Promise<boolean> {
-    try {
-      console.log('Testing backend connectivity to: http://192.168.1.102:8080');
-      
-      // Try a simple GET request to the base API endpoint
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-      
-      const response = await fetch('http://192.168.1.102:8080/api', {
-        method: 'GET',
-        signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      clearTimeout(timeoutId);
-      console.log('Connection test status:', response.status);
-      console.log('Connection test successful');
-      return true; // Any response means server is reachable
-    } catch (error: any) {
-      console.error('Connection test failed:', error.message);
-      // For now, let's continue even if connection test fails
-      // to avoid blocking registration attempts
-      console.log('Continuing with registration despite connection test failure...');
-      return true;
-    }
+    // Skip connectivity test for now since it's causing issues
+    // The actual API calls work fine, so this test is unnecessary
+    console.log('Skipping connectivity test - proceeding with API calls');
+    return true;
   }
 
   /**
@@ -94,39 +72,21 @@ class AuthService {
    * Register new user with images (multipart/form-data)
    */
   async registerWithImages(userData: RegisterWithImagesRequest): Promise<AuthResponse> {
-    console.log('=== REGISTER WITH IMAGES STARTED ===');
-    console.log('UserData received:', {
-      name: userData.name,
-      email: userData.email,
-      hasPassword: !!userData.password,
-      idFrontImage: userData.idFrontImage?.substring(0, 50) + '...',
-      idBackImage: userData.idBackImage?.substring(0, 50) + '...',
-      selfieImage: userData.selfieImage?.substring(0, 50) + '...'
-    });
-    
     try {
-      console.log('Attempting registration with images...');
-      
       // Test connectivity first
-      console.log('Starting connectivity test...');
       const isConnected = await this.testConnection();
-      console.log('Connectivity test result:', isConnected);
       
       if (!isConnected) {
         throw new Error('Cannot connect to server. Please check your internet connection and backend status.');
       }
-      console.log('Backend connectivity test passed');
       
       // Create FormData for multipart/form-data
-      console.log('Creating FormData...');
       const formData = new FormData();
       
-      console.log('Adding text fields to FormData...');
       formData.append('name', userData.name);
       formData.append('email', userData.email);
       formData.append('password', userData.password);
       
-      console.log('Adding image files to FormData...');
       // Add image files
       formData.append('idFrontImage', {
         uri: userData.idFrontImage,
@@ -146,10 +106,7 @@ class AuthService {
         name: 'selfie.jpg',
       } as any);
       
-      console.log('FormData created successfully');
-      
       // Make request with multipart/form-data
-      console.log('Making request to backend...');
       const response = await apiClient.post('/auth/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -157,26 +114,17 @@ class AuthService {
         timeout: 60000, // 60 seconds for file upload
       });
       
-      console.log('Registration response received:', JSON.stringify(response));
-      
       // Handle the new JSON response format: { message, token, role }
       if (response && typeof response === 'object' && !Array.isArray(response)) {
         const responseData = response as any;
-        console.log('Response message:', responseData.message);
-        console.log('Response token:', responseData.token);
-        console.log('Response role:', responseData.role);
         
         // Check for the exact format we expect
         if (responseData.message && responseData.token && responseData.role) {
-          console.log('Found complete response with message, token, and role');
-          
           const authResponse: AuthResponse = {
             token: responseData.token,
             role: responseData.role,
           };
 
-          console.log('Created auth response from JSON:', authResponse);
-          
           // Store auth data
           await this.storeAuthData(authResponse.token, authResponse.role);
           apiClient.setAuthToken(authResponse.token);
@@ -186,8 +134,6 @@ class AuthService {
         } 
         // Check if we have token and role but no message
         else if (responseData.token && responseData.role) {
-          console.log('Found token and role without message');
-          
           const authResponse: AuthResponse = {
             token: responseData.token,
             role: responseData.role,
@@ -196,13 +142,11 @@ class AuthService {
           await this.storeAuthData(authResponse.token, authResponse.role);
           apiClient.setAuthToken(authResponse.token);
 
-          console.log('Registration with images completed successfully (no message)');
+          console.log('Registration with images completed successfully');
           return authResponse;
         }
         // Check if it's a success message without token
         else if (responseData.message && responseData.message.toLowerCase().includes('success')) {
-          console.log('Found success message without token, creating temporary auth');
-          
           const authResponse: AuthResponse = {
             token: `temp_token_${Date.now()}`,
             role: responseData.role || 'USER',
@@ -214,8 +158,6 @@ class AuthService {
           return authResponse;
         } else {
           console.error('Invalid response: missing required fields', responseData);
-          console.error('Expected: { message, token, role } or { token, role }');
-          console.error('Received keys:', Object.keys(responseData));
           throw new Error(responseData.message || 'Registration failed: Invalid response format');
         }
       }

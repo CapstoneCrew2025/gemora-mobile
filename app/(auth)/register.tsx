@@ -2,14 +2,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
@@ -203,7 +203,7 @@ export default function RegisterScreen() {
 
       // Launch image picker
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: 'images' as any,
         allowsEditing: true,
         aspect: [4, 3],
         quality: 0.8,
