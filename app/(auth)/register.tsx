@@ -321,7 +321,7 @@ export default function RegisterScreen() {
         selfiePhoto: '',
       });
       
-      // Show success message
+      // Show success message and navigate directly
       Alert.alert(
         'Registration Successful!', 
         'Your account has been created successfully.',
@@ -329,16 +329,9 @@ export default function RegisterScreen() {
           {
             text: 'OK',
             onPress: () => {
-              // Check if user is authenticated and navigate
-              setTimeout(() => {
-                if (isAuthenticated) {
-                  console.log('User is authenticated, navigating to home...');
-                  router.replace('/');
-                } else {
-                  console.log('User not yet authenticated, navigating to login...');
-                  router.replace('/(auth)/login');
-                }
-              }, 100);
+              console.log('Registration successful, navigating to home...');
+              // Navigate directly to home since registration was successful
+              router.replace('/');
             }
           }
         ]
