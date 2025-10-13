@@ -12,7 +12,7 @@ const getBaseUrl = () => {
     
     // Option 1: Use your computer's IP address (recommended for Expo)
     // Replace 192.168.1.100 with your actual IP address
-    const YOUR_IP = '172.20.10.5'; // Your actual IP address
+    const YOUR_IP = '192.168.1.101'; // Your actual IP address
     
     if (Platform.OS === 'android') {
       // For Android emulator, use 10.0.2.2
@@ -40,7 +40,7 @@ class ApiClient {
   constructor() {
     this.instance = axios.create({
       baseURL: BASE_URL,
-      timeout: 10000,
+      timeout: 30000, // Increased to 30 seconds for file uploads
       headers: {
         'Content-Type': 'application/json',
       },
@@ -85,8 +85,18 @@ class ApiClient {
   }
 
   public async post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.instance.post<T>(url, data, config);
-    return response.data;
+    try {
+      const response = await this.instance.post<T>(url, data, config);
+      return response.data;
+    } catch (error: any) {
+      console.error('POST request failed:', error.message);
+      console.error('Error details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data
+      });
+      throw error;
+    }
   }
 
   public async put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
