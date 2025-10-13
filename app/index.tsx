@@ -1,7 +1,7 @@
 // app/index.tsx
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { Text, TouchableOpacity, View, Image } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useAuth, useAuthActions } from "../store/useAuthStore";
 
 export default function Index() {
