@@ -12,7 +12,7 @@ const getBaseUrl = () => {
     
     // Option 1: Use your computer's IP address (recommended for Expo)
     // Replace 192.168.1.100 with your actual IP address
-    const YOUR_IP = '172.20.10.5'; // Your actual IP address
+    const YOUR_IP = '192.168.1.101'; // Your actual IP address
     
     if (Platform.OS === 'android') {
       // For Android emulator, use 10.0.2.2

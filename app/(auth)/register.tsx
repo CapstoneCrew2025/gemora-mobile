@@ -277,17 +277,20 @@ export default function RegisterScreen() {
 
   // Final registration submission
   const handleRegister = async () => {
+    console.log('Starting registration process...');
+    clearError(); // Clear any previous errors
+    
     try {
-      console.log('Starting registration process...');
-      
       // Validate that all images are present
       if (!registrationData.frontIdPhoto || !registrationData.backIdPhoto || !registrationData.selfiePhoto) {
         Alert.alert('Missing Images', 'Please upload all required images before proceeding.');
         return;
       }
       
+      console.log('All images present, proceeding with registration...');
+      
       // Use the new registerWithImages method
-      await registerWithImages({
+      const result = await registerWithImages({
         name: registrationData.name.trim(),
         email: registrationData.email.trim().toLowerCase(),
         password: registrationData.password,
@@ -296,7 +299,7 @@ export default function RegisterScreen() {
         selfieImage: registrationData.selfiePhoto,
       });
       
-      console.log('Registration successful');
+      console.log('Registration call completed, result:', result);
       
       // Clear form
       setRegistrationData({
@@ -317,17 +320,52 @@ export default function RegisterScreen() {
         backIdPhoto: '',
         selfiePhoto: '',
       });
-      clearError();
       
-      setTimeout(() => {
-        if (isAuthenticated) {
-          router.replace('/');
-        }
-      }, 100);
+      // Show success message
+      Alert.alert(
+        'Registration Successful!', 
+        'Your account has been created successfully.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Check if user is authenticated and navigate
+              setTimeout(() => {
+                if (isAuthenticated) {
+                  console.log('User is authenticated, navigating to home...');
+                  router.replace('/');
+                } else {
+                  console.log('User not yet authenticated, navigating to login...');
+                  router.replace('/(auth)/login');
+                }
+              }, 100);
+            }
+          }
+        ]
+      );
       
     } catch (error: any) {
       console.error('Registration failed:', error);
-      Alert.alert('Registration Failed', error.message || 'Please try again.');
+      
+      // Check if the user was actually authenticated despite the error
+      setTimeout(() => {
+        if (isAuthenticated) {
+          console.log('Registration had error but user is authenticated, treating as success');
+          Alert.alert(
+            'Registration Successful!',
+            'Your account has been created successfully.',
+            [
+              {
+                text: 'OK',
+                onPress: () => router.replace('/')
+              }
+            ]
+          );
+        } else {
+          // Only show error if user is not authenticated
+          Alert.alert('Registration Failed', error.message || 'Please try again.');
+        }
+      }, 500);
     }
   };
 
@@ -342,7 +380,7 @@ export default function RegisterScreen() {
         className="flex-1"
       >
         {/* Top emerald section with background image and title */}
-        <View className="bg-emerald-500 pt-16 pb-8 items-center relative">
+        <View className="relative items-center pt-16 pb-8 bg-emerald-500">
           {/* Background diamond image with opacity */}
           <View className="absolute inset-0 items-center justify-center opacity-20">
             <Image
@@ -353,11 +391,11 @@ export default function RegisterScreen() {
           </View>
           
           {/* Create Account text on top */}
-          <Text className="text-3xl font-bold text-gray-800 z-10">Create Account</Text>
+          <Text className="z-10 text-3xl font-bold text-gray-800">Create Account</Text>
         </View>
 
         {/* White rounded card container */}
-        <View className="flex-1 bg-white rounded-t-3xl px-8 pt-10">
+        <View className="flex-1 px-8 pt-10 bg-white rounded-t-3xl">
           {/* Progress Indicator - ONLY shown on steps 2, 3, and 4 */}
           {currentStep > 1 && (
             <View className="flex-row justify-center mb-8">
@@ -418,8 +456,8 @@ export default function RegisterScreen() {
 
           {/* Error Message */}
           {error && (
-            <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 mt-4">
-              <Text className="text-red-700 text-sm text-center">
+            <View className="p-3 mt-4 mb-4 border border-red-200 rounded-lg bg-red-50">
+              <Text className="text-sm text-center text-red-700">
                 {error}
               </Text>
             </View>
@@ -429,21 +467,21 @@ export default function RegisterScreen() {
           <TouchableOpacity
             onPress={handleNext}
             disabled={isLoading}
-            className="w-full bg-emerald-500 py-4 rounded-full items-center mb-4 mt-4"
+            className="items-center w-full py-4 mt-4 mb-4 rounded-full bg-emerald-500"
             activeOpacity={0.85}
           >
-            <Text className="text-white font-bold text-base">
+            <Text className="text-base font-bold text-white">
               {isLoading ? 'Processing...' : currentStep === 4 ? 'COMPLETE' : 'NEXT'}
             </Text>
           </TouchableOpacity>
 
           {/* Already have account - ONLY shown on step 1 */}
           {currentStep === 1 && (
-            <View className="flex-row justify-center items-center mt-2 mb-8">
-              <Text className="text-gray-600 text-sm">Already have an account? </Text>
+            <View className="flex-row items-center justify-center mt-2 mb-8">
+              <Text className="text-sm text-gray-600">Already have an account? </Text>
               <Link href="/(auth)/login" asChild>
                 <TouchableOpacity>
-                  <Text className="text-emerald-500 font-semibold text-sm">Log In</Text>
+                  <Text className="text-sm font-semibold text-emerald-500">Log In</Text>
                 </TouchableOpacity>
               </Link>
             </View>
@@ -453,10 +491,10 @@ export default function RegisterScreen() {
         {/* Back button (top-left) */}
         <TouchableOpacity
           onPress={handleBack}
-          className="absolute left-4 top-12 w-10 h-10 rounded-full bg-white/20 items-center justify-center"
+          className="absolute items-center justify-center w-10 h-10 rounded-full left-4 top-12 bg-white/20"
           activeOpacity={0.85}
         >
-          <Text className="text-white text-xl">‹</Text>
+          <Text className="text-xl text-white">‹</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -475,7 +513,7 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
     <View className="space-y-2">
       {/* Full Name Input */}
       <View className="mb-2">
-        <Text className="text-gray-700 font-medium mb-2">Full Name</Text>
+        <Text className="mb-2 font-medium text-gray-700">Full Name</Text>
         <Input
           value={data.name}
           onChangeText={(text) => updateData('name', text)}
@@ -489,7 +527,7 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
 
       {/* Email Input */}
       <View className="mb-2">
-        <Text className="text-gray-700 font-medium mb-2">Email</Text>
+        <Text className="mb-2 font-medium text-gray-700">Email</Text>
         <Input
           value={data.email}
           onChangeText={(text) => updateData('email', text)}
@@ -504,7 +542,7 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
 
       {/* Password Input */}
       <View className="mb-2">
-        <Text className="text-gray-700 font-medium mb-2">Password</Text>
+        <Text className="mb-2 font-medium text-gray-700">Password</Text>
         <Input
           value={data.password}
           onChangeText={(text) => updateData('password', text)}
@@ -518,7 +556,7 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
 
       {/* Confirm Password Input */}
       <View className="mb-4">
-        <Text className="text-gray-700 font-medium mb-2">Confirm Password</Text>
+        <Text className="mb-2 font-medium text-gray-700">Confirm Password</Text>
         <Input
           value={data.confirmPassword}
           onChangeText={(text) => updateData('confirmPassword', text)}
@@ -544,15 +582,15 @@ function Step2FrontID({ userName, frontIdPhoto, onUpload }: Step2Props) {
   return (
     <View className="items-center justify-center flex-1 py-8">
       {/* Greeting */}
-      <Text className="text-2xl font-bold text-emerald-500 mb-8">
+      <Text className="mb-8 text-2xl font-bold text-emerald-500">
         HI {userName.toUpperCase()}!
       </Text>
 
       {/* Instructions */}
-      <Text className="text-gray-600 text-center mb-2">
+      <Text className="mb-2 text-center text-gray-600">
         Please provide a Photo of the
       </Text>
-      <Text className="text-gray-800 font-semibold text-center mb-8">
+      <Text className="mb-8 font-semibold text-center text-gray-800">
         Front of your Identity Card
       </Text>
 
@@ -560,7 +598,7 @@ function Step2FrontID({ userName, frontIdPhoto, onUpload }: Step2Props) {
       {frontIdPhoto ? (
         <TouchableOpacity
           onPress={onUpload}
-          className="w-64 h-64 rounded-2xl overflow-hidden border-2 border-emerald-500 mb-4"
+          className="w-64 h-64 mb-4 overflow-hidden border-2 rounded-2xl border-emerald-500"
           activeOpacity={0.85}
         >
           <Image
@@ -572,14 +610,14 @@ function Step2FrontID({ userName, frontIdPhoto, onUpload }: Step2Props) {
       ) : (
         <TouchableOpacity
           onPress={onUpload}
-          className="w-64 h-64 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 items-center justify-center mb-4"
+          className="items-center justify-center w-64 h-64 mb-4 bg-gray-100 border-2 border-gray-300 border-dashed rounded-2xl"
           activeOpacity={0.85}
         >
           <View className="items-center">
-            <View className="w-16 h-16 rounded-full bg-emerald-500 items-center justify-center mb-4">
-              <Text className="text-white text-3xl">📷</Text>
+            <View className="items-center justify-center w-16 h-16 mb-4 rounded-full bg-emerald-500">
+              <Text className="text-3xl text-white">📷</Text>
             </View>
-            <Text className="text-gray-600 font-medium">Tap to upload</Text>
+            <Text className="font-medium text-gray-600">Tap to upload</Text>
           </View>
         </TouchableOpacity>
       )}
@@ -587,13 +625,13 @@ function Step2FrontID({ userName, frontIdPhoto, onUpload }: Step2Props) {
       {/* Upload Button */}
       <TouchableOpacity
         onPress={onUpload}
-        className="bg-emerald-500 px-8 py-3 rounded-full flex-row items-center"
+        className="flex-row items-center px-8 py-3 rounded-full bg-emerald-500"
         activeOpacity={0.85}
       >
-        <View className="w-6 h-6 rounded-full bg-white items-center justify-center mr-2">
-          <Text className="text-emerald-500 text-lg">📷</Text>
+        <View className="items-center justify-center w-6 h-6 mr-2 bg-white rounded-full">
+          <Text className="text-lg text-emerald-500">📷</Text>
         </View>
-        <Text className="text-white font-bold">
+        <Text className="font-bold text-white">
           {frontIdPhoto ? 'Change Photo' : 'Photo Of Front ID'}
         </Text>
       </TouchableOpacity>
@@ -612,15 +650,15 @@ function Step3BackID({ userName, backIdPhoto, onUpload }: Step3Props) {
   return (
     <View className="items-center justify-center flex-1 py-8">
       {/* Greeting */}
-      <Text className="text-2xl font-bold text-emerald-500 mb-8">
+      <Text className="mb-8 text-2xl font-bold text-emerald-500">
         HI {userName.toUpperCase()}!
       </Text>
 
       {/* Instructions */}
-      <Text className="text-gray-600 text-center mb-2">
+      <Text className="mb-2 text-center text-gray-600">
         Please provide a Photo of the
       </Text>
-      <Text className="text-gray-800 font-semibold text-center mb-8">
+      <Text className="mb-8 font-semibold text-center text-gray-800">
         Back of your Identity Card
       </Text>
 
@@ -628,7 +666,7 @@ function Step3BackID({ userName, backIdPhoto, onUpload }: Step3Props) {
       {backIdPhoto ? (
         <TouchableOpacity
           onPress={onUpload}
-          className="w-64 h-64 rounded-2xl overflow-hidden border-2 border-emerald-500 mb-4"
+          className="w-64 h-64 mb-4 overflow-hidden border-2 rounded-2xl border-emerald-500"
           activeOpacity={0.85}
         >
           <Image
@@ -640,14 +678,14 @@ function Step3BackID({ userName, backIdPhoto, onUpload }: Step3Props) {
       ) : (
         <TouchableOpacity
           onPress={onUpload}
-          className="w-64 h-64 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 items-center justify-center mb-4"
+          className="items-center justify-center w-64 h-64 mb-4 bg-gray-100 border-2 border-gray-300 border-dashed rounded-2xl"
           activeOpacity={0.85}
         >
           <View className="items-center">
-            <View className="w-16 h-16 rounded-full bg-emerald-500 items-center justify-center mb-4">
-              <Text className="text-white text-3xl">📷</Text>
+            <View className="items-center justify-center w-16 h-16 mb-4 rounded-full bg-emerald-500">
+              <Text className="text-3xl text-white">📷</Text>
             </View>
-            <Text className="text-gray-600 font-medium">Tap to upload</Text>
+            <Text className="font-medium text-gray-600">Tap to upload</Text>
           </View>
         </TouchableOpacity>
       )}
@@ -655,13 +693,13 @@ function Step3BackID({ userName, backIdPhoto, onUpload }: Step3Props) {
       {/* Upload Button */}
       <TouchableOpacity
         onPress={onUpload}
-        className="bg-emerald-500 px-8 py-3 rounded-full flex-row items-center"
+        className="flex-row items-center px-8 py-3 rounded-full bg-emerald-500"
         activeOpacity={0.85}
       >
-        <View className="w-6 h-6 rounded-full bg-white items-center justify-center mr-2">
-          <Text className="text-emerald-500 text-lg">📷</Text>
+        <View className="items-center justify-center w-6 h-6 mr-2 bg-white rounded-full">
+          <Text className="text-lg text-emerald-500">📷</Text>
         </View>
-        <Text className="text-white font-bold">
+        <Text className="font-bold text-white">
           {backIdPhoto ? 'Change Photo' : 'Photo Of Back ID'}
         </Text>
       </TouchableOpacity>
@@ -680,21 +718,21 @@ function Step4Selfie({ userName, selfiePhoto, onUpload }: Step4Props) {
   return (
     <View className="items-center justify-center flex-1 py-8">
       {/* Avatar placeholder using emoji instead of image */}
-      <View className="mb-2 w-24 h-24 rounded-full bg-emerald-100 items-center justify-center">
+      <View className="items-center justify-center w-24 h-24 mb-2 rounded-full bg-emerald-100">
         <Text className="text-5xl">👤</Text>
       </View>
 
       {/* Greeting */}
-      <Text className="text-2xl font-bold text-emerald-500 mb-4">
+      <Text className="mb-4 text-2xl font-bold text-emerald-500">
         HI {userName.toUpperCase()}!
       </Text>
 
       {/* Instructions */}
-      <Text className="text-gray-600 text-center mb-1">
+      <Text className="mb-1 text-center text-gray-600">
         Finally we just need a
       </Text>
-      <Text className="text-gray-800 font-semibold text-center mb-8">
-        <Text className="text-emerald-500 font-bold">the Selfie </Text>
+      <Text className="mb-8 font-semibold text-center text-gray-800">
+        <Text className="font-bold text-emerald-500">the Selfie </Text>
         of you straight on
       </Text>
 
@@ -702,7 +740,7 @@ function Step4Selfie({ userName, selfiePhoto, onUpload }: Step4Props) {
       {selfiePhoto ? (
         <TouchableOpacity
           onPress={onUpload}
-          className="w-48 h-48 rounded-full overflow-hidden border-4 border-emerald-500 mb-4"
+          className="w-48 h-48 mb-4 overflow-hidden border-4 rounded-full border-emerald-500"
           activeOpacity={0.85}
         >
           <Image
@@ -714,14 +752,14 @@ function Step4Selfie({ userName, selfiePhoto, onUpload }: Step4Props) {
       ) : (
         <TouchableOpacity
           onPress={onUpload}
-          className="w-48 h-48 rounded-full bg-gray-100 border-4 border-dashed border-gray-300 items-center justify-center mb-6"
+          className="items-center justify-center w-48 h-48 mb-6 bg-gray-100 border-4 border-gray-300 border-dashed rounded-full"
           activeOpacity={0.85}
         >
           <View className="items-center">
-            <View className="w-16 h-16 rounded-full bg-emerald-500 items-center justify-center mb-2">
-              <Text className="text-white text-3xl">🤳</Text>
+            <View className="items-center justify-center w-16 h-16 mb-2 rounded-full bg-emerald-500">
+              <Text className="text-3xl text-white">🤳</Text>
             </View>
-            <Text className="text-gray-600 font-medium text-sm">Tap to take selfie</Text>
+            <Text className="text-sm font-medium text-gray-600">Tap to take selfie</Text>
           </View>
         </TouchableOpacity>
       )}
@@ -729,23 +767,23 @@ function Step4Selfie({ userName, selfiePhoto, onUpload }: Step4Props) {
       {/* Upload Button */}
       <TouchableOpacity
         onPress={onUpload}
-        className="bg-emerald-500 px-8 py-3 rounded-full flex-row items-center"
+        className="flex-row items-center px-8 py-3 rounded-full bg-emerald-500"
         activeOpacity={0.85}
       >
-        <View className="w-6 h-6 rounded-full bg-white items-center justify-center mr-2">
-          <Text className="text-emerald-500 text-lg">📷</Text>
+        <View className="items-center justify-center w-6 h-6 mr-2 bg-white rounded-full">
+          <Text className="text-lg text-emerald-500">📷</Text>
         </View>
-        <Text className="text-white font-bold">
+        <Text className="font-bold text-white">
           {selfiePhoto ? 'Retake Selfie' : 'Photo Of Selfie'}
         </Text>
       </TouchableOpacity>
 
       {/* Already have account link */}
-      <View className="flex-row justify-center items-center mt-8">
-        <Text className="text-gray-600 text-sm">Already have an account? </Text>
+      <View className="flex-row items-center justify-center mt-8">
+        <Text className="text-sm text-gray-600">Already have an account? </Text>
         <Link href="/(auth)/login" asChild>
           <TouchableOpacity>
-            <Text className="text-emerald-500 font-semibold text-sm">Log In</Text>
+            <Text className="text-sm font-semibold text-emerald-500">Log In</Text>
           </TouchableOpacity>
         </Link>
       </View>
