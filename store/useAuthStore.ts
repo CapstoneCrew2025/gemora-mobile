@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authService, type AuthResponse, type LoginRequest, type RegisterRequest, type User } from '../lib/authService';
+import { authService, type AuthResponse, type LoginRequest, type RegisterRequest, type RegisterWithImagesRequest, type User } from '../lib/authService';
 
 interface AuthState {
   // State
@@ -12,6 +12,7 @@ interface AuthState {
   // Actions
   login: (credentials: LoginRequest) => Promise<void>;
   register: (userData: RegisterRequest) => Promise<void>;
+  registerWithImages: (userData: RegisterWithImagesRequest) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
   initializeAuth: () => Promise<void>;
@@ -98,6 +99,48 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.log('Auth store: Registration completed successfully');
     } catch (error: any) {
       console.error('Auth store: Registration failed:', error);
+      set({
+        isAuthenticated: false,
+        user: null,
+        role: null,
+        isLoading: false,
+        error: error.message || 'Registration failed',
+      });
+      throw error;
+    }
+  },
+
+  // Register with images action
+  registerWithImages: async (userData: RegisterWithImagesRequest) => {
+    console.log('Auth store: Starting registration with images...');
+    set({ isLoading: true, error: null });
+    
+    try {
+      const response: AuthResponse = await authService.registerWithImages(userData);
+      console.log('Auth store: Registration with images service successful, updating state...');
+      
+      // Create user object
+      const user: User = {
+        name: userData.name,
+        email: userData.email,
+        role: response.role,
+      };
+      
+      // Store user data
+      await authService.storeUser(user);
+      
+      console.log('Auth store: Setting authenticated state...');
+      set({
+        isAuthenticated: true,
+        user,
+        role: response.role,
+        isLoading: false,
+        error: null,
+      });
+      
+      console.log('Auth store: Registration with images completed successfully');
+    } catch (error: any) {
+      console.error('Auth store: Registration with images failed:', error);
       set({
         isAuthenticated: false,
         user: null,
@@ -199,6 +242,7 @@ export const useAuthActions = () => {
   return {
     login: store.login,
     register: store.register,
+    registerWithImages: store.registerWithImages,
     logout: store.logout,
     clearError: store.clearError,
     initializeAuth: store.initializeAuth,
