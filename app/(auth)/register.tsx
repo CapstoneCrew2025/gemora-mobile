@@ -20,6 +20,7 @@ interface RegistrationData {
   email: string;
   password: string;
   confirmPassword: string;
+  contactNumber: string;
   frontIdPhoto: string | null;
   backIdPhoto: string | null;
   selfiePhoto: string | null;
@@ -35,6 +36,7 @@ export default function RegisterScreen() {
     email: '',
     password: '',
     confirmPassword: '',
+    contactNumber: '',
     frontIdPhoto: null,
     backIdPhoto: null,
     selfiePhoto: null,
@@ -46,6 +48,7 @@ export default function RegisterScreen() {
     email: '',
     password: '',
     confirmPassword: '',
+    contactNumber: '',
     frontIdPhoto: '',
     backIdPhoto: '',
     selfiePhoto: '',
@@ -114,6 +117,17 @@ export default function RegisterScreen() {
       isValid = false;
     } else {
       newErrors.confirmPassword = '';
+    }
+
+    // Contact number validation
+    if (!registrationData.contactNumber.trim()) {
+      newErrors.contactNumber = 'Contact number is required';
+      isValid = false;
+    } else if (!/^[0-9]{10}$/.test(registrationData.contactNumber.replace(/\s/g, ''))) {
+      newErrors.contactNumber = 'Please enter a valid 10-digit mobile number';
+      isValid = false;
+    } else {
+      newErrors.contactNumber = '';
     }
 
     setErrors(newErrors);
@@ -270,7 +284,6 @@ export default function RegisterScreen() {
 
   // Final registration submission
   const handleRegister = async () => {
-    console.log('Starting registration process...');
     clearError(); // Clear any previous errors
     
     try {
@@ -280,26 +293,23 @@ export default function RegisterScreen() {
         return;
       }
       
-      console.log('All images present, proceeding with registration...');
-      
       // Use the new registerWithImages method
       const result = await registerWithImages({
         name: registrationData.name.trim(),
         email: registrationData.email.trim().toLowerCase(),
         password: registrationData.password,
+        contactNumber: registrationData.contactNumber.trim(),
         idFrontImage: registrationData.frontIdPhoto,
         idBackImage: registrationData.backIdPhoto,
         selfieImage: registrationData.selfiePhoto,
       });
       
-      console.log('Registration call completed, result:', result);
-      
-      // Clear form
       setRegistrationData({
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
+        contactNumber: '',
         frontIdPhoto: null,
         backIdPhoto: null,
         selfiePhoto: null,
@@ -309,6 +319,7 @@ export default function RegisterScreen() {
         email: '',
         password: '',
         confirmPassword: '',
+        contactNumber: '',
         frontIdPhoto: '',
         backIdPhoto: '',
         selfiePhoto: '',
@@ -322,7 +333,6 @@ export default function RegisterScreen() {
           {
             text: 'OK',
             onPress: () => {
-              console.log('Registration successful - auth state will handle navigation');
               // No manual navigation - let auth state change handle it
             }
           }
@@ -335,7 +345,6 @@ export default function RegisterScreen() {
       // Check if the user was actually authenticated despite the error
       setTimeout(() => {
         if (isAuthenticated) {
-          console.log('Registration had error but user is authenticated, treating as success');
           Alert.alert(
             'Registration Successful!',
             'Your account has been created successfully.',
@@ -542,7 +551,7 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
       </View>
 
       {/* Confirm Password Input */}
-      <View className="mb-4">
+      <View className="mb-2">
         <Text className="mb-2 font-medium text-gray-700">Confirm Password</Text>
         <Input
           value={data.confirmPassword}
@@ -551,6 +560,20 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
           secureTextEntry
           autoComplete="new-password"
           error={errors.confirmPassword}
+          className="bg-gray-50"
+        />
+      </View>
+
+      {/* Contact Number Input */}
+      <View className="mb-4">
+        <Text className="mb-2 font-medium text-gray-700">Contact Number</Text>
+        <Input
+          value={data.contactNumber}
+          onChangeText={(text) => updateData('contactNumber', text)}
+          placeholder="0771234567"
+          keyboardType="phone-pad"
+          autoComplete="tel"
+          error={errors.contactNumber}
           className="bg-gray-50"
         />
       </View>

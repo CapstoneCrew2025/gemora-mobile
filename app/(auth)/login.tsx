@@ -2,14 +2,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Input } from '../../components/common/Input';
@@ -96,21 +96,16 @@ export default function LoginScreen() {
     }
 
     try {
-      console.log('Starting login process...');
       await login({
         email: email.trim().toLowerCase(),
         password: password,
       });
       
-      console.log('Login successful, authentication state should be updated');
-      
-      // Clear form fields after successful login
       setEmail('');
       setPassword('');
       setEmailError('');
       setPasswordError('');
       
-      // Clear any remaining errors
       clearError();
       
       // No manual navigation - let the index page handle routing based on auth state
@@ -123,14 +118,10 @@ export default function LoginScreen() {
   };
 
   const handleGoogleLogin = () => {
-    // Add your Google login logic here
-    console.log('Google login pressed');
     Alert.alert('Google Login', 'Google authentication coming soon!');
   };
 
   const handleFacebookLogin = () => {
-    // Add your Facebook login logic here
-    console.log('Facebook login pressed');
     Alert.alert('Facebook Login', 'Facebook authentication coming soon!');
   };
 

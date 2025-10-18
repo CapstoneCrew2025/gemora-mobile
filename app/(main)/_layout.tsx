@@ -1,4 +1,3 @@
-// app/(main)/_layout.tsx
 import { Redirect, Tabs } from "expo-router";
 import React from "react";
 import { Text } from "react-native";
@@ -21,12 +20,12 @@ export default function MainLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#10b981', // emerald-500
-        tabBarInactiveTintColor: '#9ca3af', // gray-400
+        tabBarActiveTintColor: '#10b981', 
+        tabBarInactiveTintColor: '#9ca3af', 
         tabBarStyle: {
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
-          borderTopColor: '#e5e7eb', // gray-200
+          borderTopColor: '#e5e7eb', 
           paddingBottom: 8,
           paddingTop: 8,
           height: 60,
