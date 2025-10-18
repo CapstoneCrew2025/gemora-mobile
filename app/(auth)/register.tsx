@@ -59,13 +59,6 @@ export default function RegisterScreen() {
     clearError();
   }, [clearError]);
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated && !isLoading) {
-      router.replace('/(main)/home');
-    }
-  }, [isAuthenticated, isLoading]);
-
   // Update registration data
   const updateData = (field: keyof RegistrationData, value: string | null) => {
     setRegistrationData(prev => ({ ...prev, [field]: value }));
@@ -329,9 +322,8 @@ export default function RegisterScreen() {
           {
             text: 'OK',
             onPress: () => {
-              console.log('Registration successful, navigating to home...');
-              // Navigate directly to home since registration was successful
-              router.replace('/(main)/home');
+              console.log('Registration successful - auth state will handle navigation');
+              // No manual navigation - let auth state change handle it
             }
           }
         ]
@@ -350,7 +342,9 @@ export default function RegisterScreen() {
             [
               {
                 text: 'OK',
-                onPress: () => router.replace('/(main)/home')
+                onPress: () => {
+                  // No manual navigation - let auth state handle it
+                }
               }
             ]
           );

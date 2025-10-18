@@ -21,8 +21,8 @@ export default function MainLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="home" />
-      <Stack.Screen name="marketplace" />
+      <Stack.Screen name="home/index" />
+      <Stack.Screen name="marketplace/index" />
     </Stack>
   );
 }

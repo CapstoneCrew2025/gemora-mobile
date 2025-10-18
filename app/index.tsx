@@ -11,8 +11,8 @@ export default function Index() {
   useEffect(() => {
     // Only redirect if we're authenticated and not loading
     if (!isLoading && isAuthenticated && user) {
-      // Use push instead of replace to avoid navigation issues
-      router.push('/(main)/home');
+      // Use replace to avoid creating multiple navigation stacks
+      router.replace('/(main)/home');
     }
   }, [isAuthenticated, user, isLoading, router]);
 

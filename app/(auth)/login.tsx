@@ -2,14 +2,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Input } from '../../components/common/Input';
@@ -54,15 +54,6 @@ export default function LoginScreen() {
   useEffect(() => {
     clearError();
   }, [clearError]);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    console.log('Login screen: Auth state changed:', { isAuthenticated, isLoading });
-    if (isAuthenticated && !isLoading) {
-      console.log('Login screen: Redirecting to home...');
-      router.replace('/(main)/home');
-    }
-  }, [isAuthenticated, isLoading]);
 
   // Clear API error when inputs change
   useEffect(() => {
@@ -122,12 +113,7 @@ export default function LoginScreen() {
       // Clear any remaining errors
       clearError();
       
-      // Manual navigation as backup
-      setTimeout(() => {
-        if (isAuthenticated) {
-          router.replace('/(main)/home');
-        }
-      }, 100);
+      // No manual navigation - let the index page handle routing based on auth state
       
     } catch (error: any) {
       console.error('Login failed:', error);
