@@ -1,11 +1,38 @@
 // app/(main)/home/index.tsx
-import React, { useCallback } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { Alert, BackHandler, Text, TouchableOpacity, View } from "react-native";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
 
 export default function Home() {
   const { user, isLoading } = useAuth();
   const { logout } = useAuthActions();
+
+  // Handle back button to close app instead of navigating back
+  useEffect(() => {
+    const backAction = () => {
+      // Show confirmation before closing app
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel'
+          },
+          {
+            text: 'Exit',
+            onPress: () => BackHandler.exitApp()
+          }
+        ]
+      );
+      return true; // Prevent default back action
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
 
   const handleLogout = useCallback(async () => {
     try {

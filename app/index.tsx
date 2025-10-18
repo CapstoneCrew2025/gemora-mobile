@@ -25,13 +25,9 @@ export default function Index() {
     );
   }
 
-  // Don't show anything while redirecting to avoid flash
+  // If authenticated, the redirect will happen via useEffect, just show loading briefly
   if (isAuthenticated && user) {
-    return (
-      <View className="items-center justify-center flex-1 bg-green-50">
-        <Text className="text-lg text-gray-600">Redirecting...</Text>
-      </View>
-    );
+    return null; // Don't show anything while redirecting
   }
 
   // Show welcome screen for unauthenticated users
