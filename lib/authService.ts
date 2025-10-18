@@ -11,12 +11,14 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+  contactNumber: string;
 }
 
 export interface RegisterWithImagesRequest {
   name: string;
   email: string;
   password: string;
+  contactNumber: string; // mobile number
   idFrontImage: string; // file URI
   idBackImage: string;  // file URI
   selfieImage: string;  // file URI
@@ -86,6 +88,7 @@ class AuthService {
       formData.append('name', userData.name);
       formData.append('email', userData.email);
       formData.append('password', userData.password);
+      formData.append('contactNumber', userData.contactNumber);
       
       // Add image files
       formData.append('idFrontImage', {

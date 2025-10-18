@@ -20,6 +20,7 @@ interface RegistrationData {
   email: string;
   password: string;
   confirmPassword: string;
+  contactNumber: string;
   frontIdPhoto: string | null;
   backIdPhoto: string | null;
   selfiePhoto: string | null;
@@ -35,6 +36,7 @@ export default function RegisterScreen() {
     email: '',
     password: '',
     confirmPassword: '',
+    contactNumber: '',
     frontIdPhoto: null,
     backIdPhoto: null,
     selfiePhoto: null,
@@ -46,6 +48,7 @@ export default function RegisterScreen() {
     email: '',
     password: '',
     confirmPassword: '',
+    contactNumber: '',
     frontIdPhoto: '',
     backIdPhoto: '',
     selfiePhoto: '',
@@ -114,6 +117,17 @@ export default function RegisterScreen() {
       isValid = false;
     } else {
       newErrors.confirmPassword = '';
+    }
+
+    // Contact number validation
+    if (!registrationData.contactNumber.trim()) {
+      newErrors.contactNumber = 'Contact number is required';
+      isValid = false;
+    } else if (!/^[0-9]{10}$/.test(registrationData.contactNumber.replace(/\s/g, ''))) {
+      newErrors.contactNumber = 'Please enter a valid 10-digit mobile number';
+      isValid = false;
+    } else {
+      newErrors.contactNumber = '';
     }
 
     setErrors(newErrors);
@@ -287,6 +301,7 @@ export default function RegisterScreen() {
         name: registrationData.name.trim(),
         email: registrationData.email.trim().toLowerCase(),
         password: registrationData.password,
+        contactNumber: registrationData.contactNumber.trim(),
         idFrontImage: registrationData.frontIdPhoto,
         idBackImage: registrationData.backIdPhoto,
         selfieImage: registrationData.selfiePhoto,
@@ -300,6 +315,7 @@ export default function RegisterScreen() {
         email: '',
         password: '',
         confirmPassword: '',
+        contactNumber: '',
         frontIdPhoto: null,
         backIdPhoto: null,
         selfiePhoto: null,
@@ -309,6 +325,7 @@ export default function RegisterScreen() {
         email: '',
         password: '',
         confirmPassword: '',
+        contactNumber: '',
         frontIdPhoto: '',
         backIdPhoto: '',
         selfiePhoto: '',
@@ -542,7 +559,7 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
       </View>
 
       {/* Confirm Password Input */}
-      <View className="mb-4">
+      <View className="mb-2">
         <Text className="mb-2 font-medium text-gray-700">Confirm Password</Text>
         <Input
           value={data.confirmPassword}
@@ -551,6 +568,20 @@ function Step1BasicInfo({ data, errors, updateData }: Step1Props) {
           secureTextEntry
           autoComplete="new-password"
           error={errors.confirmPassword}
+          className="bg-gray-50"
+        />
+      </View>
+
+      {/* Contact Number Input */}
+      <View className="mb-4">
+        <Text className="mb-2 font-medium text-gray-700">Contact Number</Text>
+        <Input
+          value={data.contactNumber}
+          onChangeText={(text) => updateData('contactNumber', text)}
+          placeholder="0771234567"
+          keyboardType="phone-pad"
+          autoComplete="tel"
+          error={errors.contactNumber}
           className="bg-gray-50"
         />
       </View>
