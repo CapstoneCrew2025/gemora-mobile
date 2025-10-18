@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiClient } from './apiClient';
 
-// Types
 export interface LoginRequest {
   email: string;
   password: string;
@@ -18,10 +17,10 @@ export interface RegisterWithImagesRequest {
   name: string;
   email: string;
   password: string;
-  contactNumber: string; // mobile number
-  idFrontImage: string; // file URI
-  idBackImage: string;  // file URI
-  selfieImage: string;  // file URI
+  contactNumber: string;
+  idFrontImage: string;
+  idBackImage: string;
+  selfieImage: string;
 }
 
 export interface AuthResponse {
@@ -40,27 +39,15 @@ class AuthService {
   private readonly ROLE_KEY = 'user_role';
   private readonly USER_KEY = 'user_data';
 
-  /**
-   * Test backend connectivity
-   */
   async testConnection(): Promise<boolean> {
-    // Skip connectivity test for now since it's causing issues
-    // The actual API calls work fine, so this test is unnecessary
-    console.log('Skipping connectivity test - proceeding with API calls');
     return true;
   }
 
-  /**
-   * Login user with email and password
-   */
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
       const response = await apiClient.post<AuthResponse>('/auth/login', credentials);
       
-      // Store token and role in AsyncStorage
       await this.storeAuthData(response.token, response.role);
-      
-      // Set token in API client for future requests
       apiClient.setAuthToken(response.token);
       
       return response;
@@ -70,19 +57,14 @@ class AuthService {
     }
   }
 
-  /**
-   * Register new user with images (multipart/form-data)
-   */
   async registerWithImages(userData: RegisterWithImagesRequest): Promise<AuthResponse> {
     try {
-      // Test connectivity first
       const isConnected = await this.testConnection();
       
       if (!isConnected) {
         throw new Error('Cannot connect to server. Please check your internet connection and backend status.');
       }
       
-      // Create FormData for multipart/form-data
       const formData = new FormData();
       
       formData.append('name', userData.name);
@@ -90,7 +72,6 @@ class AuthService {
       formData.append('password', userData.password);
       formData.append('contactNumber', userData.contactNumber);
       
-      // Add image files
       formData.append('idFrontImage', {
         uri: userData.idFrontImage,
         type: 'image/jpeg',
@@ -109,34 +90,28 @@ class AuthService {
         name: 'selfie.jpg',
       } as any);
       
-      // Make request with multipart/form-data
       const response = await apiClient.post('/auth/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        timeout: 60000, // 60 seconds for file upload
+        timeout: 60000,
       });
       
-      // Handle the new JSON response format: { message, token, role }
       if (response && typeof response === 'object' && !Array.isArray(response)) {
         const responseData = response as any;
         
-        // Check for the exact format we expect
         if (responseData.message && responseData.token && responseData.role) {
           const authResponse: AuthResponse = {
             token: responseData.token,
             role: responseData.role,
           };
 
-          // Store auth data
+          
           await this.storeAuthData(authResponse.token, authResponse.role);
           apiClient.setAuthToken(authResponse.token);
 
-          console.log('Registration with images completed successfully');
           return authResponse;
-        } 
-        // Check if we have token and role but no message
-        else if (responseData.token && responseData.role) {
+        } else if (responseData.token && responseData.role) {
           const authResponse: AuthResponse = {
             token: responseData.token,
             role: responseData.role,
@@ -145,11 +120,8 @@ class AuthService {
           await this.storeAuthData(authResponse.token, authResponse.role);
           apiClient.setAuthToken(authResponse.token);
 
-          console.log('Registration with images completed successfully');
           return authResponse;
-        }
-        // Check if it's a success message without token
-        else if (responseData.message && responseData.message.toLowerCase().includes('success')) {
+        } else if (responseData.message && responseData.message.toLowerCase().includes('success')) {
           const authResponse: AuthResponse = {
             token: `temp_token_${Date.now()}`,
             role: responseData.role || 'USER',
@@ -214,18 +186,11 @@ class AuthService {
     }
   }
 
-  /**
-   * Register new user
-   */
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
-      console.log('Attempting registration with:', { email: userData.email, name: userData.name });
       const response = await apiClient.post<AuthResponse>('/auth/register', userData);
       
-      // Store token and role in AsyncStorage
       await this.storeAuthData(response.token, response.role);
-      
-      // Set token in API client for future requests
       apiClient.setAuthToken(response.token);
       
       return response;
@@ -246,15 +211,13 @@ class AuthService {
     }
   }
 
-  /**
-   * Logout user
-   */
+
   async logout(): Promise<void> {
     try {
-      // Clear stored data
+   
       await AsyncStorage.multiRemove([this.TOKEN_KEY, this.ROLE_KEY, this.USER_KEY]);
       
-      // Clear token from API client
+    
       apiClient.clearAuthToken();
     } catch (error) {
       console.error('Logout error:', error);
@@ -262,9 +225,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Get stored auth token
-   */
+ 
   async getToken(): Promise<string | null> {
     try {
       return await AsyncStorage.getItem(this.TOKEN_KEY);
@@ -274,9 +235,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Get stored user role
-   */
+
   async getRole(): Promise<string | null> {
     try {
       return await AsyncStorage.getItem(this.ROLE_KEY);
@@ -286,9 +245,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Check if user is authenticated
-   */
+
   async isAuthenticated(): Promise<boolean> {
     try {
       const token = await this.getToken();
@@ -299,16 +256,13 @@ class AuthService {
     }
   }
 
-  /**
-   * Initialize auth state (call on app startup)
-   */
+
   async initializeAuth(): Promise<{ isAuthenticated: boolean; role: string | null }> {
     try {
       const token = await this.getToken();
       const role = await this.getRole();
       
       if (token) {
-        // Set token in API client
         apiClient.setAuthToken(token);
         return { isAuthenticated: true, role };
       }
@@ -320,9 +274,6 @@ class AuthService {
     }
   }
 
-  /**
-   * Store authentication data
-   */
   private async storeAuthData(token: string, role: string): Promise<void> {
     try {
       await AsyncStorage.multiSet([
@@ -335,9 +286,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Store user data
-   */
+  
   async storeUser(user: User): Promise<void> {
     try {
       await AsyncStorage.setItem(this.USER_KEY, JSON.stringify(user));
@@ -347,9 +296,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Get stored user data
-   */
+
   async getUser(): Promise<User | null> {
     try {
       const userData = await AsyncStorage.getItem(this.USER_KEY);
@@ -361,6 +308,6 @@ class AuthService {
   }
 }
 
-// Export singleton instance
+
 export const authService = new AuthService();
 export default authService;

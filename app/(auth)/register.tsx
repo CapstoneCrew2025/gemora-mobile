@@ -284,7 +284,6 @@ export default function RegisterScreen() {
 
   // Final registration submission
   const handleRegister = async () => {
-    console.log('Starting registration process...');
     clearError(); // Clear any previous errors
     
     try {
@@ -293,8 +292,6 @@ export default function RegisterScreen() {
         Alert.alert('Missing Images', 'Please upload all required images before proceeding.');
         return;
       }
-      
-      console.log('All images present, proceeding with registration...');
       
       // Use the new registerWithImages method
       const result = await registerWithImages({
@@ -307,9 +304,6 @@ export default function RegisterScreen() {
         selfieImage: registrationData.selfiePhoto,
       });
       
-      console.log('Registration call completed, result:', result);
-      
-      // Clear form
       setRegistrationData({
         name: '',
         email: '',
@@ -339,7 +333,6 @@ export default function RegisterScreen() {
           {
             text: 'OK',
             onPress: () => {
-              console.log('Registration successful - auth state will handle navigation');
               // No manual navigation - let auth state change handle it
             }
           }
@@ -352,7 +345,6 @@ export default function RegisterScreen() {
       // Check if the user was actually authenticated despite the error
       setTimeout(() => {
         if (isAuthenticated) {
-          console.log('Registration had error but user is authenticated, treating as success');
           Alert.alert(
             'Registration Successful!',
             'Your account has been created successfully.',
