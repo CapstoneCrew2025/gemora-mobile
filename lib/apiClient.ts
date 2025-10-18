@@ -2,29 +2,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Platform } from 'react-native';
 
-// Different base URLs for different platforms
+// Development server IP configuration
+export const DEV_SERVER_IP = '192.168.8.153';
+export const BACKEND_IMAGE_SERVER_IP = '192.168.8.101'; 
+
+export const getAccessibleImageUrl = (imageUrl: string): string => {
+  if (!imageUrl) return imageUrl;
+  return imageUrl.replace(BACKEND_IMAGE_SERVER_IP, DEV_SERVER_IP);
+};
+
 const getBaseUrl = () => {
   if (__DEV__) {
-   
-    const YOUR_IP = '192.168.8.153';
+    const YOUR_IP = DEV_SERVER_IP;
     
     if (Platform.OS === 'android') {
-    
       return `http://${YOUR_IP}:8080/api`;
     } else if (Platform.OS === 'ios') {
-      
       return `http://${YOUR_IP}:8080/api`;
     } else {
-     
       return 'http://localhost:8080/api';
     }
   }
   return 'https://your-api-domain.com/api';
 };
 
-const BASE_URL = getBaseUrl();
-
-console.log('API Base URL:', BASE_URL); 
+const BASE_URL = getBaseUrl(); 
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -32,13 +34,12 @@ class ApiClient {
   constructor() {
     this.instance = axios.create({
       baseURL: BASE_URL,
-      timeout: 30000, // Increased to 30 seconds for file uploads
+      timeout: 30000, 
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    // Request interceptor to add auth token
     this.instance.interceptors.request.use(
       async (config) => {
         try {
@@ -47,7 +48,6 @@ class ApiClient {
             config.headers.Authorization = `Bearer ${token}`;
           }
         } catch (error) {
-          console.error('Error getting token from storage:', error);
         }
         return config;
       },
@@ -56,15 +56,12 @@ class ApiClient {
       }
     );
 
-    // Response interceptor for error handling
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          // Token expired or invalid, clear storage
           await AsyncStorage.removeItem('auth_token');
           await AsyncStorage.removeItem('user_role');
-          // You can add navigation to login screen here if needed
         }
         return Promise.reject(error);
       }
@@ -81,12 +78,6 @@ class ApiClient {
       const response = await this.instance.post<T>(url, data, config);
       return response.data;
     } catch (error: any) {
-      console.error('POST request failed:', error.message);
-      console.error('Error details:', {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data
-      });
       throw error;
     }
   }
@@ -106,17 +97,15 @@ class ApiClient {
     return response.data;
   }
 
-  // Method to set token manually
   public setAuthToken(token: string) {
     this.instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
-  // Method to clear token
   public clearAuthToken() {
     delete this.instance.defaults.headers.common['Authorization'];
   }
 }
 
-// Export singleton instance
+
 export const apiClient = new ApiClient();
 export default apiClient;

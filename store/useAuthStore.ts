@@ -2,14 +2,12 @@ import { create } from 'zustand';
 import { authService, type AuthResponse, type LoginRequest, type RegisterRequest, type RegisterWithImagesRequest, type User } from '../lib/authService';
 
 interface AuthState {
-  // State
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
   role: string | null;
   error: string | null;
 
-  // Actions
   login: (credentials: LoginRequest) => Promise<void>;
   register: (userData: RegisterRequest) => Promise<void>;
   registerWithImages: (userData: RegisterWithImagesRequest) => Promise<void>;
@@ -20,32 +18,25 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
-  // Initial state
   isAuthenticated: false,
   isLoading: false,
   user: null,
   role: null,
   error: null,
 
-  // Login action
   login: async (credentials: LoginRequest) => {
-    console.log('Auth store: Starting login...');
     set({ isLoading: true, error: null });
     
     try {
       const response: AuthResponse = await authService.login(credentials);
-      console.log('Auth store: Login service successful, updating state...');
       
-      // Create user object
       const user: User = {
         email: credentials.email,
         role: response.role,
       };
       
-      // Store user data
       await authService.storeUser(user);
       
-      console.log('Auth store: Setting authenticated state...');
       set({
         isAuthenticated: true,
         user,
@@ -54,7 +45,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null,
       });
       
-      console.log('Auth store: Login completed successfully');
     } catch (error: any) {
       console.error('Auth store: Login failed:', error);
       set({
@@ -68,26 +58,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // Register action
   register: async (userData: RegisterRequest) => {
-    console.log('Auth store: Starting registration...');
     set({ isLoading: true, error: null });
     
     try {
       const response: AuthResponse = await authService.register(userData);
-      console.log('Auth store: Registration service successful, updating state...');
       
-      // Create user object
       const user: User = {
         name: userData.name,
         email: userData.email,
         role: response.role,
       };
       
-      // Store user data
       await authService.storeUser(user);
       
-      console.log('Auth store: Setting authenticated state...');
       set({
         isAuthenticated: true,
         user,
@@ -96,7 +80,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null,
       });
       
-      console.log('Auth store: Registration completed successfully');
     } catch (error: any) {
       console.error('Auth store: Registration failed:', error);
       set({
@@ -110,26 +93,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // Register with images action
   registerWithImages: async (userData: RegisterWithImagesRequest) => {
-    console.log('Auth store: Starting registration with images...');
     set({ isLoading: true, error: null });
     
     try {
       const response: AuthResponse = await authService.registerWithImages(userData);
-      console.log('Auth store: Registration with images service successful, updating state...');
       
-      // Create user object
       const user: User = {
         name: userData.name,
         email: userData.email,
         role: response.role,
       };
       
-      // Store user data
       await authService.storeUser(user);
       
-      console.log('Auth store: Setting authenticated state...');
       set({
         isAuthenticated: true,
         user,
@@ -138,7 +115,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null,
       });
       
-      console.log('Auth store: Registration with images completed successfully');
     } catch (error: any) {
       console.error('Auth store: Registration with images failed:', error);
       set({
@@ -152,7 +128,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // Logout action
   logout: async () => {
     set({ isLoading: true });
     
@@ -174,12 +149,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // Clear error action
   clearError: () => {
     set({ error: null });
   },
 
-  // Initialize auth on app startup
   initializeAuth: async () => {
     set({ isLoading: true });
     
@@ -187,7 +160,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { isAuthenticated, role } = await authService.initializeAuth();
       
       if (isAuthenticated) {
-        // Get stored user data
         const user = await authService.getUser();
         
         set({
@@ -217,16 +189,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // Set user action
   setUser: (user: User) => {
     set({ user });
-    // Also store in AsyncStorage
     authService.storeUser(user);
   },
 }));
 
-// Selectors for convenient access
-export const useAuth = () => {
+export const useAuth= () => {
   const store = useAuthStore();
   return {
     isAuthenticated: store.isAuthenticated,
