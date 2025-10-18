@@ -1,18 +1,17 @@
+import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
     Alert,
+    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
     Text,
     TouchableOpacity,
     View,
-    Image,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
-import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
 
@@ -61,7 +60,7 @@ export default function LoginScreen() {
     console.log('Login screen: Auth state changed:', { isAuthenticated, isLoading });
     if (isAuthenticated && !isLoading) {
       console.log('Login screen: Redirecting to home...');
-      router.replace('/');
+      router.replace('/(main)/home');
     }
   }, [isAuthenticated, isLoading]);
 
@@ -126,7 +125,7 @@ export default function LoginScreen() {
       // Manual navigation as backup
       setTimeout(() => {
         if (isAuthenticated) {
-          router.replace('/');
+          router.replace('/(main)/home');
         }
       }, 100);
       

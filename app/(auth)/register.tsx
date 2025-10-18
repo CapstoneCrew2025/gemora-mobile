@@ -62,7 +62,7 @@ export default function RegisterScreen() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.replace('/');
+      router.replace('/(main)/home');
     }
   }, [isAuthenticated, isLoading]);
 
@@ -331,7 +331,7 @@ export default function RegisterScreen() {
             onPress: () => {
               console.log('Registration successful, navigating to home...');
               // Navigate directly to home since registration was successful
-              router.replace('/');
+              router.replace('/(main)/home');
             }
           }
         ]
@@ -350,7 +350,7 @@ export default function RegisterScreen() {
             [
               {
                 text: 'OK',
-                onPress: () => router.replace('/')
+                onPress: () => router.replace('/(main)/home')
               }
             ]
           );
