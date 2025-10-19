@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
@@ -11,11 +11,20 @@ export default function Profile() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [imageRefreshKey, setImageRefreshKey] = useState(Date.now()); // For cache busting
 
   // Load profile data on component mount
   useEffect(() => {
     loadProfile();
   }, []);
+
+  // Reload profile data when screen comes into focus (e.g., after returning from edit screen)
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile();
+      setImageRefreshKey(Date.now()); // Force image refresh
+    }, [])
+  );
 
   const loadProfile = useCallback(async () => {
     try {
@@ -106,7 +115,10 @@ export default function Profile() {
           <View className="mb-4">
             {displayData.selfieImageUrl && !imageError ? (
               <Image 
-                source={{ uri: getAccessibleImageUrl(displayData.selfieImageUrl) }}
+                key={`profile-image-${imageRefreshKey}`}
+                source={{ 
+                  uri: `${getAccessibleImageUrl(displayData.selfieImageUrl)}?t=${imageRefreshKey}`
+                }}
                 resizeMode="cover"
                 onError={(e) => {
                   setImageError(true);
