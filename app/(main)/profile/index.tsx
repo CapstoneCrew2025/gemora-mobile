@@ -11,7 +11,8 @@ export default function Profile() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [imageError, setImageError] = useState(false);
-  const [imageRefreshKey, setImageRefreshKey] = useState(Date.now()); // For cache busting
+  const [imageRefreshKey, setImageRefreshKey] = useState(Date.now());
+  const [profileLoadError, setProfileLoadError] = useState(false);
 
   // Load profile data on component mount
   useEffect(() => {
@@ -30,11 +31,13 @@ export default function Profile() {
     try {
       setIsLoadingProfile(true);
       setImageError(false);
+      setProfileLoadError(false);
       const profile = await profileService.getProfile();
       setProfileData(profile);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load profile:', error);
-      Alert.alert('Error', 'Failed to load profile data');
+      setProfileData(null);
+      setProfileLoadError(true);
     } finally {
       setIsLoadingProfile(false);
     }
@@ -155,10 +158,40 @@ export default function Profile() {
 
       {/* Menu Items */}
       <ScrollView className="flex-1 px-6" style={{ paddingTop: 60 }}>
+        {/* Warning Banner if profile failed to load */}
+        {profileLoadError && (
+          <View className="flex-row items-center p-4 mb-4 bg-yellow-100 border border-yellow-300 rounded-2xl">
+            <Text className="mr-2 text-xl">⚠️</Text>
+            <View className="flex-1">
+              <Text className="font-semibold text-yellow-800">Profile data unavailable</Text>
+              <Text className="text-sm text-yellow-700">Using cached data. Logout is still available.</Text>
+            </View>
+            <TouchableOpacity 
+              onPress={loadProfile}
+              className="px-3 py-2 ml-2 bg-yellow-500 rounded-lg"
+            >
+              <Text className="text-xs font-semibold text-white">Retry</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={{ gap: 16 }}>
           {/* Edit Profile */}
           <TouchableOpacity 
-            onPress={() => router.push('/(main)/profile/edit')}
+            onPress={() => {
+              if (!profileData) {
+                Alert.alert(
+                  'Profile Unavailable',
+                  'Cannot edit profile at this time. Please try reloading or contact support.',
+                  [
+                    { text: 'Retry', onPress: loadProfile },
+                    { text: 'OK', style: 'cancel' }
+                  ]
+                );
+                return;
+              }
+              router.push('/(main)/profile/edit');
+            }}
             className="flex-row items-center p-4 bg-blue-500 shadow-sm rounded-2xl"
           >
             <View className="items-center justify-center w-12 h-12 mr-4 bg-white/30 rounded-2xl">
