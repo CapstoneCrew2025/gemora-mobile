@@ -1,18 +1,17 @@
+import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
     Alert,
+    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
     Text,
     TouchableOpacity,
     View,
-    Image,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
-import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
 
@@ -56,15 +55,6 @@ export default function LoginScreen() {
     clearError();
   }, [clearError]);
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    console.log('Login screen: Auth state changed:', { isAuthenticated, isLoading });
-    if (isAuthenticated && !isLoading) {
-      console.log('Login screen: Redirecting to home...');
-      router.replace('/');
-    }
-  }, [isAuthenticated, isLoading]);
-
   // Clear API error when inputs change
   useEffect(() => {
     if (error) {
@@ -106,29 +96,19 @@ export default function LoginScreen() {
     }
 
     try {
-      console.log('Starting login process...');
       await login({
         email: email.trim().toLowerCase(),
         password: password,
       });
       
-      console.log('Login successful, authentication state should be updated');
-      
-      // Clear form fields after successful login
       setEmail('');
       setPassword('');
       setEmailError('');
       setPasswordError('');
       
-      // Clear any remaining errors
       clearError();
       
-      // Manual navigation as backup
-      setTimeout(() => {
-        if (isAuthenticated) {
-          router.replace('/');
-        }
-      }, 100);
+      // No manual navigation - let the index page handle routing based on auth state
       
     } catch (error: any) {
       console.error('Login failed:', error);
@@ -138,14 +118,10 @@ export default function LoginScreen() {
   };
 
   const handleGoogleLogin = () => {
-    // Add your Google login logic here
-    console.log('Google login pressed');
     Alert.alert('Google Login', 'Google authentication coming soon!');
   };
 
   const handleFacebookLogin = () => {
-    // Add your Facebook login logic here
-    console.log('Facebook login pressed');
     Alert.alert('Facebook Login', 'Facebook authentication coming soon!');
   };
 
