@@ -80,41 +80,41 @@ export default function Home() {
     {/* Main Content Area */}
     <View className="flex-1 px-6 pt-8 bg-gray-50 rounded-t-[40px]">
       
-      {/* Buy Gem Card */}
-      <TouchableOpacity className="flex-row items-center mb-4 overflow-hidden bg-emerald-500 rounded-3xl">
+      {/* Buy Gem Card - Increased Size */}
+      <TouchableOpacity className="flex-row items-center mb-5 overflow-hidden bg-emerald-500 rounded-3xl h-28">
         {/* Icon Section with vertical divider */}
-        <View className="items-center justify-center w-24 h-24">
-          <View className="items-center justify-center w-16 h-16 border-4 border-white rounded-full bg-emerald-400">
-            <Text className="text-3xl">💎</Text>
+        <View className="items-center justify-center w-28 h-28">
+          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">
+            <Text className="text-4xl">💎</Text>
           </View>
         </View>
         
         {/* Vertical Divider */}
-        <View className="w-px h-16 bg-white/30" />
+        <View className="w-px h-20 bg-white/30" />
         
         {/* Text Section */}
         <View className="flex-1 px-6">
-          <Text className="text-lg font-bold text-white">Buy Gem</Text>
-          <Text className="text-xs text-white/90">Bid For Your Gem</Text>
+          <Text className="text-xl font-bold text-white mb-1">Buy Gem</Text>
+          <Text className="text-sm text-white/90">Bid For Your Gem</Text>
         </View>
       </TouchableOpacity>
 
-      {/* Sell Gem Card */}
-      <TouchableOpacity className="flex-row items-center mb-6 overflow-hidden bg-emerald-500 rounded-3xl">
+      {/* Sell Gem Card - Increased Size */}
+      <TouchableOpacity className="flex-row items-center mb-6 overflow-hidden bg-emerald-500 rounded-3xl h-28">
         {/* Icon Section with vertical divider */}
-        <View className="items-center justify-center w-24 h-24">
-          <View className="items-center justify-center w-16 h-16 border-4 border-white rounded-full bg-emerald-400">
-            <Text className="text-3xl">💰</Text>
+        <View className="items-center justify-center w-28 h-28">
+          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">
+            <Text className="text-4xl">💰</Text>
           </View>
         </View>
         
         {/* Vertical Divider */}
-        <View className="w-px h-16 bg-white/30" />
+        <View className="w-px h-20 bg-white/30" />
         
         {/* Text Section */}
         <View className="flex-1 px-6">
-          <Text className="text-lg font-bold text-white">Sell Gem</Text>
-          <Text className="text-xs text-white/90">Sell Your Precious Gems</Text>
+          <Text className="text-xl font-bold text-white mb-1">Sell Gem</Text>
+          <Text className="text-sm text-white/90">Sell Your Precious Gems</Text>
         </View>
       </TouchableOpacity>
 
