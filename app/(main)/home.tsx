@@ -68,7 +68,7 @@ export default function Home() {
         </View>
         <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-full bg-white">
           <View className="items-center justify-center w-6 h-6 bg-red-500 rounded-full">
-            <Text className="text-xs font-bold text-white">3</Text>
+              <Text className="text-2xl">🔔</Text>
           </View>
         </TouchableOpacity>
       </View>
