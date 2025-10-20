@@ -52,12 +52,12 @@ export default function Home() {
   }
 
   
-    return (
+   return (
   <View className="flex-1 bg-emerald-500">
     {/* Header Section with background diamond */}
     <View className="px-6 pt-16 pb-12 relative">
-      {/* Background diamond image with opacity */}
-      <View className="absolute inset-0 items-center justify-center opacity-15">
+      {/* Background diamond image with opacity - centered in emerald area */}
+      <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
         <Text className="text-9xl">💎</Text>
       </View>
       
@@ -66,13 +66,9 @@ export default function Home() {
           <Text className="text-xl font-bold text-gray-800">Welcome GeMora</Text>
           <Text className="text-sm text-gray-700">Good Morning</Text>
         </View>
-        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-full bg-white relative">
-          {/* Notification Bell Icon */}
-          <Text className="text-2xl">🔔</Text>
-          {/* Red badge with notification count */}
-          <View className="absolute top-0 right-0 items-center justify-center w-5 h-5 bg-red-500 rounded-full border-2 border-white">
-            <Text className="text-xs font-bold text-white">3</Text>
-          </View>
+        <TouchableOpacity className="p-2">
+          {/* Notification Bell Icon Only */}
+          <Text className="text-3xl">🔔</Text>
         </TouchableOpacity>
       </View>
     </View>
