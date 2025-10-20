@@ -66,9 +66,12 @@ export default function Home() {
           <Text className="text-xl font-bold text-gray-800">Welcome GeMora</Text>
           <Text className="text-sm text-gray-700">Good Morning</Text>
         </View>
-        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-full bg-white">
-          <View className="items-center justify-center w-6 h-6 bg-red-500 rounded-full">
-              <Text className="text-2xl">🔔</Text>
+        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-full bg-white relative">
+          {/* Notification Bell Icon */}
+          <Text className="text-2xl">🔔</Text>
+          {/* Red badge with notification count */}
+          <View className="absolute top-0 right-0 items-center justify-center w-5 h-5 bg-red-500 rounded-full border-2 border-white">
+            <Text className="text-xs font-bold text-white">3</Text>
           </View>
         </TouchableOpacity>
       </View>
