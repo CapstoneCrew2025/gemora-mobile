@@ -1,6 +1,6 @@
 // app/(main)/home.tsx
 import React, { useEffect } from "react";
-import { Alert, BackHandler, Text, TouchableOpacity, View } from "react-native";
+import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../store/useAuthStore";
 
 export default function Home() {
@@ -58,7 +58,11 @@ export default function Home() {
     <View className="px-6 pt-16 pb-12 relative">
       {/* Background diamond image with opacity - centered in emerald area */}
       <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
-        <Text className="text-9xl">💎</Text>
+        <Image
+          source={require("../../assets/images/diamond.png")}
+          resizeMode="contain"
+          className="w-40 h-40"
+        />
       </View>
       
       <View className="flex-row items-center justify-between mb-6 z-10">
