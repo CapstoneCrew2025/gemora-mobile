@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Platform } from 'react-native';
 
 // Development server IP configuration
-export const DEV_SERVER_IP = '192.168.8.153';
+export const DEV_SERVER_IP = '192.168.8.101';
 export const BACKEND_IMAGE_SERVER_IP = '192.168.8.101'; 
 
 export const getAccessibleImageUrl = (imageUrl: string): string => {
