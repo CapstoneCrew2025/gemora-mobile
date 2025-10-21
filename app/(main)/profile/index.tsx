@@ -189,7 +189,7 @@ return (
       </View>
 
       {/* Name and ID */}
-      <View className="items-center mb-8 mt-20">
+      <View className="items-center mb-0 mt-0">
         <Text className="text-xl font-bold text-gray-800 mb-1">
           {profileData?.name ?? displayData.name}
         </Text>
