@@ -115,7 +115,7 @@ return (
     <Stack.Screen options={{ headerShown: false }} />
 
     {/* Emerald header */}
-    <View className="bg-emerald-500 px-6 pt-12 pb-16 relative">
+    <View className="bg-emerald-500 px-6 pt-12 pb-40 relative">
       {/* Top row: back, centered title, notification (icon only) */}
       <View className="flex-row items-center justify-between z-20">
         <TouchableOpacity
@@ -136,12 +136,12 @@ return (
     </View>
 
     {/* White content area overlapping header */}
-    <View className="flex-1 bg-white rounded-t-[40px] -mt-12 px-6 pt-20 relative">
+    <View className="flex-1 bg-white rounded-t-[40px] -mt-16 px-6 pt-20 relative">
       
       {/* Profile picture circle positioned at the boundary */}
       <View
         className="absolute left-0 right-0 items-center z-30"
-        style={{ top: -64 }} // Half of circle height to center it on the boundary
+        style={{ top: -64 }}
       >
         <View
           style={{
@@ -189,7 +189,7 @@ return (
       </View>
 
       {/* Name and ID */}
-      <View className="items-center mb-6 mt-12">
+      <View className="items-center mb-8 mt-20">
         <Text className="text-xl font-bold text-gray-800 mb-1">
           {profileData?.name ?? displayData.name}
         </Text>
@@ -225,7 +225,10 @@ return (
             <Text className="text-base font-medium text-gray-800 flex-1">Setting</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm">
+          <TouchableOpacity
+            onPress={handleLogout}
+            className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm"
+          >
             <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
               <Ionicons name="log-out-outline" size={22} color="#1e3a8a" />
             </View>
