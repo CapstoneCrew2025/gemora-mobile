@@ -200,25 +200,6 @@ export default function Profile() {
               </View>
             )}
           </View>
-
-          {/* Edit icon overlay */}
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              right: -8,
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: '#10b981',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderWidth: 3,
-              borderColor: 'white',
-            }}
-          >
-            <Ionicons name="pencil" size={20} color="white" />
-          </View>
         </TouchableOpacity>
 
         {/* Name and ID */}
