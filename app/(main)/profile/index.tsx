@@ -1,9 +1,10 @@
-import { router, useFocusEffect } from "expo-router";
+import { Stack, router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
@@ -13,6 +14,18 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   const [imageRefreshKey, setImageRefreshKey] = useState(Date.now());
   const [profileLoadError, setProfileLoadError] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // Handler to open edit/profile image picker — navigates to edit screen for now
+  const handleImagePicker = useCallback(async () => {
+    try {
+      // Navigate to edit profile screen (adjust route as needed)
+      router.push('/profile/edit');
+    } catch (error) {
+      console.error('Failed to open image picker or navigate:', error);
+      Alert.alert('Error', 'Unable to open image picker.');
+    }
+  }, []);
 
   // Load profile data on component mount
   useEffect(() => {
@@ -97,137 +110,130 @@ export default function Profile() {
     role: user.role
   };
 
-  return (
-    <View className="flex-1" style={{ backgroundColor: '#f0fdf4' }}>
-      {/* Header Section */}
-      <View className="relative px-6 pt-16 pb-8 bg-emerald-500">
-        {/* Header with back button and notification */}
-        <View className="flex-row items-center justify-between mb-8">
-          <TouchableOpacity>
-            <Text className="text-2xl text-white">←</Text>
-          </TouchableOpacity>
-          <Text className="text-lg font-semibold text-white">Profile</Text>
-          <TouchableOpacity className="items-center justify-center w-10 h-10 rounded-full bg-white/20">
-            <Text className="text-lg text-white">🔔</Text>
-          </TouchableOpacity>
-        </View>
+return (
+  <View className="flex-1 bg-gray-50">
+    <Stack.Screen options={{ headerShown: false }} />
 
-        {/* Profile Card */}
-        <View className="items-center p-6 mx-4 bg-white shadow-lg rounded-3xl" style={{ marginBottom: -50 }}>
-          {/* Profile Picture */}
-          <View className="mb-4">
-            {displayData.selfieImageUrl && !imageError ? (
-              <Image 
-                key={`profile-image-${imageRefreshKey}`}
-                source={{ 
-                  uri: `${getAccessibleImageUrl(displayData.selfieImageUrl)}?t=${imageRefreshKey}`
-                }}
-                resizeMode="cover"
-                onError={(e) => {
-                  setImageError(true);
-                }}
-                onLoad={() => {
-                  setImageError(false);
-                }}
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
-                  backgroundColor: '#f3f4f6',
-                }}
-              />
-            ) : (
-              <View style={{
-                width: 80,
-                height: 80,
-                borderRadius: 40,
+    {/* Emerald header */}
+    <View className="bg-emerald-500 px-6 pt-12 pb-16 relative">
+      {/* Top row: back, centered title, notification (icon only) */}
+      <View className="flex-row items-center justify-between z-20">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          className="w-10 h-10 items-center justify-center"
+        >
+          <Text className="text-white text-2xl font-bold">←</Text>
+        </TouchableOpacity>
+
+        {/* Title sits visually centered */}
+        <Text className="text-lg font-semibold text-gray-800">Profile</Text>
+
+        <TouchableOpacity className="p-2">
+          {/* Notification icon only */}
+          <Text className="text-2xl">🔔</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+
+    {/* White content area overlapping header */}
+    <View className="flex-1 bg-white rounded-t-[40px] -mt-12 px-6 pt-20 relative">
+      
+      {/* Profile picture circle positioned at the boundary */}
+      <View
+        className="absolute left-0 right-0 items-center z-30"
+        style={{ top: -64 }} // Half of circle height to center it on the boundary
+      >
+        <View
+          style={{
+            width: 128,
+            height: 128,
+            borderRadius: 64,
+            borderWidth: 6,
+            borderColor: 'white',
+            overflow: 'hidden',
+            backgroundColor: '#f3f4f6',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.12,
+            shadowRadius: 8,
+            elevation: 6,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {(selectedImage || (profileData && profileData.selfieImageUrl)) ? (
+            <Image
+              source={{
+                uri: selectedImage || getAccessibleImageUrl(profileData ? profileData.selfieImageUrl : ''),
+              }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+          ) : (
+            // Empty circle placeholder
+            <View
+              style={{
+                width: 88,
+                height: 88,
+                borderRadius: 44,
                 backgroundColor: '#e5e7eb',
+                opacity: 0.9,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
-                <Text style={{ fontSize: 40 }}>👤</Text>
-              </View>
-            )}
-          </View>
-          
-          {/* User Info */}
-          <Text className="mb-1 text-xl font-semibold text-gray-800">{displayData.name}</Text>
-          <Text className="text-sm text-gray-500">ID: {displayData.id.toString().padStart(6, '0')}</Text>
+              }}
+            >
+              <Text style={{ fontSize: 48 }}>👤</Text>
+            </View>
+          )}
         </View>
       </View>
 
-      {/* Menu Items */}
-      <ScrollView className="flex-1 px-6" style={{ paddingTop: 60 }}>
-        {/* Warning Banner if profile failed to load */}
-        {profileLoadError && (
-          <View className="flex-row items-center p-4 mb-4 bg-yellow-100 border border-yellow-300 rounded-2xl">
-            <Text className="mr-2 text-xl">⚠️</Text>
-            <View className="flex-1">
-              <Text className="font-semibold text-yellow-800">Profile data unavailable</Text>
-              <Text className="text-sm text-yellow-700">Using cached data. Logout is still available.</Text>
-            </View>
-            <TouchableOpacity 
-              onPress={loadProfile}
-              className="px-3 py-2 ml-2 bg-yellow-500 rounded-lg"
-            >
-              <Text className="text-xs font-semibold text-white">Retry</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+      {/* Name and ID */}
+      <View className="items-center mb-6 mt-12">
+        <Text className="text-xl font-bold text-gray-800 mb-1">
+          {profileData?.name ?? displayData.name}
+        </Text>
+        <Text className="text-sm text-gray-500">
+          ID: {(profileData?.id ?? displayData.id).toString().padStart(8, '0')}
+        </Text>
+      </View>
 
-        <View style={{ gap: 16 }}>
-          {/* Edit Profile */}
-          <TouchableOpacity 
-            onPress={() => {
-              if (!profileData) {
-                Alert.alert(
-                  'Profile Unavailable',
-                  'Cannot edit profile at this time. Please try reloading or contact support.',
-                  [
-                    { text: 'Retry', onPress: loadProfile },
-                    { text: 'OK', style: 'cancel' }
-                  ]
-                );
-                return;
-              }
-              router.push('/(main)/profile/edit');
-            }}
-            className="flex-row items-center p-4 bg-blue-500 shadow-sm rounded-2xl"
+      {/* Menu items */}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{ gap: 16, paddingBottom: 32 }}>
+          <TouchableOpacity
+            onPress={handleImagePicker}
+            className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm"
           >
-            <View className="items-center justify-center w-12 h-12 mr-4 bg-white/30 rounded-2xl">
-              <Text className="text-2xl text-white">👤</Text>
+            <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+              <Ionicons name="person-outline" size={22} color="#1e3a8a" />
             </View>
-            <Text className="text-lg font-semibold text-white">Edit Profile</Text>
+            <Text className="text-base font-medium text-gray-800 flex-1">Edit Profile</Text>
           </TouchableOpacity>
 
-          {/* Security */}
-          <TouchableOpacity className="flex-row items-center p-4 bg-blue-500 shadow-sm rounded-2xl">
-            <View className="items-center justify-center w-12 h-12 mr-4 bg-white/30 rounded-2xl">
-              <Text className="text-2xl text-white">🛡️</Text>
+          <TouchableOpacity className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm">
+            <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+              <Ionicons name="shield-checkmark-outline" size={22} color="#1e3a8a" />
             </View>
-            <Text className="text-lg font-semibold text-white">Security</Text>
+            <Text className="text-base font-medium text-gray-800 flex-1">Security</Text>
           </TouchableOpacity>
 
-          {/* Settings */}
-          <TouchableOpacity className="flex-row items-center p-4 bg-blue-500 shadow-sm rounded-2xl">
-            <View className="items-center justify-center w-12 h-12 mr-4 bg-white/30 rounded-2xl">
-              <Text className="text-2xl text-white">⚙️</Text>
+          <TouchableOpacity className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm">
+            <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+              <Ionicons name="settings-outline" size={22} color="#1e3a8a" />
             </View>
-            <Text className="text-lg font-semibold text-white">Setting</Text>
+            <Text className="text-base font-medium text-gray-800 flex-1">Setting</Text>
           </TouchableOpacity>
 
-          {/* Logout */}
-          <TouchableOpacity 
-            onPress={handleLogout}
-            className="flex-row items-center p-4 bg-blue-500 shadow-sm rounded-2xl"
-          >
-            <View className="items-center justify-center w-12 h-12 mr-4 bg-white/30 rounded-2xl">
-              <Text className="text-2xl text-white">📋</Text>
+          <TouchableOpacity className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm">
+            <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+              <Ionicons name="log-out-outline" size={22} color="#1e3a8a" />
             </View>
-            <Text className="text-lg font-semibold text-white">Logout</Text>
+            <Text className="text-base font-medium text-gray-800 flex-1">Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
-  );
+  </View>
+);
 }
