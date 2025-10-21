@@ -196,7 +196,7 @@ export default function EditProfile() {
           </TouchableOpacity>
 
           {/* Title sits visually centered */}
-          <Text className="text-lg font-semibold text-gray-800">Edit Profile</Text>
+          <Text className="text-lg font-semibold text-gray-800">Edit My Profile</Text>
 
           <TouchableOpacity className="p-2">
             {/* Notification icon only */}
@@ -208,75 +208,84 @@ export default function EditProfile() {
       {/* White content area overlapping header */}
       <View className="flex-1 bg-white rounded-t-[40px] -mt-16 px-6 pt-20 relative">
         
-        {/* Profile picture circle positioned at the boundary */}
-        <TouchableOpacity
-          onPress={handleImagePicker}
-          className="absolute left-0 right-0 items-center z-30"
-          style={{ top: -64 }}
-        >
-          <View
-            style={{
-              width: 128,
-              height: 128,
-              borderRadius: 64,
-              borderWidth: 6,
-              borderColor: 'white',
-              overflow: 'hidden',
-              backgroundColor: '#f3f4f6',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.12,
-              shadowRadius: 8,
-              elevation: 6,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {(selectedImage || profileData.selfieImageUrl) ? (
-              <Image
-                source={{
-                  uri: selectedImage || getAccessibleImageUrl(profileData.selfieImageUrl),
-                }}
-                style={{ width: '100%', height: '100%' }}
-                resizeMode="cover"
-              />
-            ) : (
-              // Empty circle placeholder
-              <View
-                style={{
-                  width: 88,
-                  height: 88,
-                  borderRadius: 44,
-                  backgroundColor: '#e5e7eb',
-                  opacity: 0.9,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ fontSize: 48 }}>👤</Text>
-              </View>
-            )}
-          </View>
+        {/* Profile picture circle with camera icon positioned at the boundary */}
+        <View className="absolute left-0 right-0 items-center z-30" style={{ top: -64 }}>
+          <View style={{ position: 'relative', width: 128, height: 128 }}>
+            <TouchableOpacity
+              onPress={handleImagePicker}
+              style={{
+                position: 'relative',
+                width: 128,
+                height: 128,
+                borderRadius: 64,
+                borderWidth: 6,
+                borderColor: 'white',
+                overflow: 'visible',
+                backgroundColor: '#f3f4f6',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.12,
+                shadowRadius: 8,
+                elevation: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {(selectedImage || profileData.selfieImageUrl) ? (
+                <Image
+                  source={{
+                    uri: selectedImage || getAccessibleImageUrl(profileData.selfieImageUrl),
+                  }}
+                  style={{ 
+                    width: '100%', 
+                    height: '100%',
+                    borderRadius: 64,
+                  }}
+                  resizeMode="cover"
+                />
+              ) : (
+                // Empty circle placeholder
+                <View
+                  style={{
+                    width: 88,
+                    height: 88,
+                    borderRadius: 44,
+                    backgroundColor: '#e5e7eb',
+                    opacity: 0.9,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 48 }}>👤</Text>
+                </View>
+              )}
+            </TouchableOpacity>
 
-          {/* Camera icon overlay at bottom-right */}
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              right: -8,
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: '#10b981',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderWidth: 3,
-              borderColor: 'white',
-            }}
-          >
-            <Ionicons name="camera" size={20} color="white" />
+            {/* Camera icon overlay - positioned on the photo using flex */}
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 12,
+                right: 4,
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: '#10b981',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderWidth: 2.5,
+                borderColor: 'white',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            >
+              <Ionicons name="camera" size={18} color="white" />
+            </View>
           </View>
-        </TouchableOpacity>
+        </View>
 
         {/* Name and ID */}
         <View className="items-center mb-6 mt-0">
@@ -292,18 +301,17 @@ export default function EditProfile() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ gap: 16, paddingBottom: 32 }}>
           
-
-            {/* User ID Display */}
+            {/* User ID Display (Read-only) */}
             <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-600 mb-2">Username</Text>
+              <Text className="text-sm font-medium text-gray-600 mb-2">User ID</Text>
               <Text className="text-base font-medium text-gray-700">
-                {profileData.name}
+                {(profileData?.id).toString().padStart(8, '0')}
               </Text>
             </View>
 
             {/* Full Name Input */}
             <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-gray-700 font-medium mb-2">Full Name</Text>
+              <Text className="text-gray-700 font-medium mb-2">Name</Text>
               <Input
                 value={formData.name}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, name: text }))}
@@ -313,7 +321,7 @@ export default function EditProfile() {
               />
             </View>
 
-            {/* Contact Number Input */}
+            {/* Phone Number Input */}
             <View className="bg-gray-50 rounded-2xl p-4">
               <Text className="text-gray-700 font-medium mb-2">Phone</Text>
               <Input
@@ -326,14 +334,13 @@ export default function EditProfile() {
               />
             </View>
 
-            {/* Email Display */}
+            {/* Email Display (Read-only) */}
             <View className="bg-gray-50 rounded-2xl p-4">
               <Text className="text-sm font-medium text-gray-600 mb-2">Email Address</Text>
               <Text className="text-base font-medium text-gray-700">
                 {profileData.email}
               </Text>
             </View>
-
 
             {/* Dark Theme Toggle */}
             <View className="flex-row items-center justify-between bg-gray-50 rounded-2xl p-4 mb-6">
