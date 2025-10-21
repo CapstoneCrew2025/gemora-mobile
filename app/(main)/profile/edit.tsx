@@ -291,76 +291,68 @@ export default function EditProfile() {
         {/* Form content */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ gap: 16, paddingBottom: 32 }}>
+          
+
             {/* User ID Display */}
-            <View className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-500 mb-2">User ID</Text>
-              <Text className="text-base font-semibold text-gray-800">
-                #{profileData.id.toString().padStart(8, '0')}
+            <View className="bg-gray-50 rounded-2xl p-4">
+              <Text className="text-sm font-medium text-gray-600 mb-2">Username</Text>
+              <Text className="text-base font-medium text-gray-700">
+                {profileData.name}
               </Text>
             </View>
 
             {/* Full Name Input */}
-            <View>
+            <View className="bg-gray-50 rounded-2xl p-4">
               <Text className="text-gray-700 font-medium mb-2">Full Name</Text>
               <Input
                 value={formData.name}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, name: text }))}
                 placeholder="Enter your full name"
                 error={errors.name}
-                className="bg-gray-50"
+                className="bg-white"
               />
             </View>
 
-            {/* Email Display */}
-            <View className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-500 mb-2">Email</Text>
-              <Text className="text-base font-medium text-gray-700">
-                {profileData.email}
-              </Text>
-            </View>
-
             {/* Contact Number Input */}
-            <View>
-              <Text className="text-gray-700 font-medium mb-2">Contact Number</Text>
+            <View className="bg-gray-50 rounded-2xl p-4">
+              <Text className="text-gray-700 font-medium mb-2">Phone</Text>
               <Input
                 value={formData.contactNumber}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, contactNumber: text }))}
                 placeholder="Enter your contact number"
                 keyboardType="phone-pad"
                 error={errors.contactNumber}
-                className="bg-gray-50"
+                className="bg-white"
               />
             </View>
 
-            {/* Role Display */}
-            <View className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-500 mb-2">Role</Text>
+            {/* Email Display */}
+            <View className="bg-gray-50 rounded-2xl p-4">
+              <Text className="text-sm font-medium text-gray-600 mb-2">Email Address</Text>
               <Text className="text-base font-medium text-gray-700">
-                {profileData.role}
+                {profileData.email}
               </Text>
             </View>
 
-            {/* Action Buttons */}
-            <View style={{ gap: 12, marginTop: 16 }}>
-              <TouchableOpacity
-                onPress={handleSave}
-                disabled={isUpdating}
-                className={`py-4 rounded-full items-center ${
-                  isUpdating ? 'bg-gray-400' : 'bg-emerald-500'
-                }`}
-              >
-                <Text className="text-white font-bold text-base">
-                  {isUpdating ? 'Saving Changes...' : 'Save Changes'}
-                </Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => router.back()}
-                className="py-4 rounded-full items-center border-2 border-emerald-500"
-              >
-                <Text className="text-emerald-500 font-bold text-base">Cancel</Text>
-              </TouchableOpacity>
+            {/* Dark Theme Toggle */}
+            <View className="flex-row items-center justify-between bg-gray-50 rounded-2xl p-4 mb-6">
+              <Text className="text-gray-800 font-medium">Turn Dark Theme</Text>
+              <View className="w-12 h-7 bg-gray-300 rounded-full" />
             </View>
+
+            {/* Update Profile Button */}
+            <TouchableOpacity
+              onPress={handleSave}
+              disabled={isUpdating}
+              className={`py-4 rounded-full items-center ${
+                isUpdating ? 'bg-gray-400' : 'bg-emerald-500'
+              }`}
+            >
+              <Text className="text-white font-bold text-base">
+                {isUpdating ? 'Updating Profile...' : 'Update Profile'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
