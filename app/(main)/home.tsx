@@ -1,7 +1,9 @@
 // app/(main)/home.tsx
 import React, { useEffect } from "react";
-import { Alert, BackHandler, Text, TouchableOpacity, View } from "react-native";
+import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
+
 import { useAuth } from "../../store/useAuthStore";
+
 
 export default function Home() {
   const { user, isLoading } = useAuth();
@@ -51,47 +53,74 @@ export default function Home() {
     );
   }
 
-  return (
-    <View className="flex-1 bg-emerald-500">
-      {/* Header Section */}
-      <View className="px-6 pt-16 pb-8">
-        <View className="flex-row items-center justify-between mb-6">
-          <View>
-            <Text className="text-lg font-medium text-white">Welcome GeMora</Text>
-            <Text className="text-sm text-white/80">Good Morning</Text>
-          </View>
-          <TouchableOpacity className="items-center justify-center w-10 h-10 rounded-full bg-white/20">
-            <Text className="text-lg text-white">�</Text>
-          </TouchableOpacity>
-        </View>
+  
+   return (
+  <View className="flex-1 bg-emerald-500">
+    {/* Header Section with background diamond */}
+    <View className="px-6 pt-16 pb-12 relative">
+      {/* Background diamond image with opacity - centered in emerald area */}
+      <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
+        <Image
+          source={require("../../assets/images/diamond.png")}
+          resizeMode="contain"
+          className="w-40 h-40"
+        />
       </View>
-
-      {/* Main Content Area */}
-      <View className="flex-1 px-6 pt-6 bg-gray-100 rounded-t-3xl">
-        
-        {/* Buy Gem Card */}
-        <TouchableOpacity className="flex-row items-center p-6 mb-4 bg-emerald-500 rounded-2xl">
-          <View className="items-center justify-center w-16 h-16 mr-4 bg-blue-400 rounded-full">
-            <Text className="text-2xl text-white">💎</Text>
-          </View>
-          <View className="flex-1">
-            <Text className="text-xl font-semibold text-white">Buy Gem</Text>
-            <Text className="text-sm text-white/80">Bid For Your Gem</Text>
-          </View>
+      
+      <View className="flex-row items-center justify-between mb-6 z-10">
+        <View>
+          <Text className="text-xl font-bold text-gray-800">Welcome GeMora</Text>
+          <Text className="text-sm text-gray-700">Good Morning</Text>
+        </View>
+        <TouchableOpacity className="p-2">
+          {/* Notification Bell Icon Only */}
+          <Text className="text-3xl">🔔</Text>
         </TouchableOpacity>
-
-        {/* Sell Gem Card */}
-        <TouchableOpacity className="flex-row items-center p-6 mb-6 bg-emerald-500 rounded-2xl">
-          <View className="items-center justify-center w-16 h-16 mr-4 bg-blue-400 rounded-full">
-            <Text className="text-2xl text-white">💰</Text>
-          </View>
-          <View className="flex-1">
-            <Text className="text-xl font-semibold text-white">Sell Gem</Text>
-            <Text className="text-sm text-white/80">Sell Your Precious Gems</Text>
-          </View>
-        </TouchableOpacity>
-
       </View>
     </View>
-  );
+
+    {/* Main Content Area */}
+    <View className="flex-1 px-6 pt-8 bg-gray-50 rounded-t-[40px]">
+      
+      {/* Buy Gem Card - Increased Size */}
+      <TouchableOpacity className="flex-row items-center mb-5 overflow-hidden bg-emerald-500 rounded-3xl h-28">
+        {/* Icon Section with vertical divider */}
+        <View className="items-center justify-center w-28 h-28">
+          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">
+            <Text className="text-4xl">💎</Text>
+          </View>
+        </View>
+        
+        {/* Vertical Divider */}
+        <View className="w-px h-20 bg-white/30" />
+        
+        {/* Text Section */}
+        <View className="flex-1 px-6">
+          <Text className="text-xl font-bold text-white mb-1">Buy Gem</Text>
+          <Text className="text-sm text-white/90">Bid For Your Gem</Text>
+        </View>
+      </TouchableOpacity>
+
+      {/* Sell Gem Card - Increased Size */}
+      <TouchableOpacity className="flex-row items-center mb-6 overflow-hidden bg-emerald-500 rounded-3xl h-28">
+        {/* Icon Section with vertical divider */}
+        <View className="items-center justify-center w-28 h-28">
+          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">
+            <Text className="text-4xl">💰</Text>
+          </View>
+        </View>
+        
+        {/* Vertical Divider */}
+        <View className="w-px h-20 bg-white/30" />
+        
+        {/* Text Section */}
+        <View className="flex-1 px-6">
+          <Text className="text-xl font-bold text-white mb-1">Sell Gem</Text>
+          <Text className="text-sm text-white/90">Sell Your Precious Gems</Text>
+        </View>
+      </TouchableOpacity>
+
+    </View>
+  </View>
+);
 }
