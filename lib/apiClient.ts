@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Platform } from 'react-native';
 
 // Development server IP configuration
-export const DEV_SERVER_IP = '192.168.8.100';
+export const DEV_SERVER_IP = '172.20.10.5';
 export const BACKEND_IMAGE_SERVER_IP = '192.168.8.101'; 
 
 export const getAccessibleImageUrl = (imageUrl: string): string => {
@@ -13,7 +13,18 @@ export const getAccessibleImageUrl = (imageUrl: string): string => {
 
 const getBaseUrl = () => {
   if (__DEV__) {
-    const YOUR_IP = DEV_SERVER_IP;
+    // For development - you need to replace this with your actual IP address
+    // To find your IP: 
+    // Windows: ipconfig | findstr IPv4
+    // Mac/Linux: ifconfig | grep inet
+    
+    // Option 1: Use your computer's IP address (recommended for Expo)
+    // Replace 192.168.1.100 with your actual IP address
+
+    const YOUR_IP = '172.20.10.5'; // Your actual IP address
+
+
+  
     
     if (Platform.OS === 'android') {
       return `http://${YOUR_IP}:8080/api`;
