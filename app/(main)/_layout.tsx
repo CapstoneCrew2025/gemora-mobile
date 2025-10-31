@@ -69,7 +69,7 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen 
-        name="profile" 
+        name="(profile)" 
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (

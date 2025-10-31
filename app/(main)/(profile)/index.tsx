@@ -20,8 +20,8 @@ export default function Profile() {
   // Handler to open edit/profile image picker — navigates to edit screen for now
   const handleImagePicker = useCallback(async () => {
     try {
-      // Navigate to edit profile screen (adjust route as needed)
-      router.push('/profile/edit');
+      // Navigate to edit profile screen
+      router.push('./edit');
     } catch (error) {
       console.error('Failed to open image picker or navigate:', error);
       Alert.alert('Error', 'Unable to open image picker.');
