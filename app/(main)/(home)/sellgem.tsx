@@ -1,18 +1,18 @@
 // app/(main)/(home)/sellgem.tsx
+import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-  Image,
+    ActivityIndicator,
+    Alert,
+    Image,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import { router } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
-import { gemService, CreateGemRequest } from '../../../lib/gemService';
+import { CreateGemRequest, gemService } from '../../../lib/gemService';
 
 const LISTING_TYPES = ['SALE', 'AUCTION'] as const;
 

@@ -1,7 +1,7 @@
 // app/(main)/(home)/index.tsx
+import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
 
 import { useAuth } from "../../../store/useAuthStore";
 
