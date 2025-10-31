@@ -37,23 +37,23 @@ export default function ForgotPassword() {
   };
 
   return (
-    <View className="flex-1 bg-emerald-500 justify-center items-center px-6">
+    <View className="items-center justify-center flex-1 px-6 bg-emerald-500">
       <View className="w-full max-w-md">
         {/* Header */}
         <View className="items-center mb-8">
-          <Text className="text-4xl font-bold text-white mb-2">Forgot Password</Text>
-          <Text className="text-white/80 text-center">
+          <Text className="mb-2 text-4xl font-bold text-white">Forgot Password</Text>
+          <Text className="text-center text-white/80">
             Enter your email address and we'll send you instructions to reset your password
           </Text>
         </View>
 
         {/* Form Card */}
-        <View className="bg-white rounded-3xl p-6 shadow-lg">
+        <View className="p-6 bg-white shadow-lg rounded-3xl">
           {/* Email Input */}
           <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Email</Text>
+            <Text className="mb-2 font-semibold text-gray-700">Email</Text>
             <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
+              className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
               placeholder="Enter your email"
               value={email}
               onChangeText={setEmail}
@@ -75,7 +75,7 @@ export default function ForgotPassword() {
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text className="text-white font-bold text-lg">Send Reset Link</Text>
+              <Text className="text-lg font-bold text-white">Send Reset Link</Text>
             )}
           </TouchableOpacity>
 
@@ -85,7 +85,7 @@ export default function ForgotPassword() {
             disabled={loading}
             className="items-center py-2"
           >
-            <Text className="text-emerald-600 font-semibold">
+            <Text className="font-semibold text-emerald-600">
               Back to Login
             </Text>
           </TouchableOpacity>

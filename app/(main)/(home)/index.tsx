@@ -1,8 +1,9 @@
-// app/(main)/home.tsx
+// app/(main)/(home)/index.tsx
 import React, { useEffect } from "react";
 import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 
-import { useAuth } from "../../store/useAuthStore";
+import { useAuth } from "../../../store/useAuthStore";
 
 
 export default function Home() {
@@ -61,7 +62,7 @@ export default function Home() {
       {/* Background diamond image with opacity - centered in emerald area */}
       <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
         <Image
-          source={require("../../assets/images/diamond.png")}
+          source={require("../../../assets/images/diamond.png")}
           resizeMode="contain"
           className="w-40 h-40"
         />
@@ -102,7 +103,10 @@ export default function Home() {
       </TouchableOpacity>
 
       {/* Sell Gem Card - Increased Size */}
-      <TouchableOpacity className="flex-row items-center mb-6 overflow-hidden bg-emerald-500 rounded-3xl h-28">
+      <TouchableOpacity 
+        className="flex-row items-center mb-6 overflow-hidden bg-emerald-500 rounded-3xl h-28"
+        onPress={() => router.push('./sellgem')}
+      >
         {/* Icon Section with vertical divider */}
         <View className="items-center justify-center w-28 h-28">
           <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">

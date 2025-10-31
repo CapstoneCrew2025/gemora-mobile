@@ -33,7 +33,7 @@ export default function MainLayout() {
       }}
     >
       <Tabs.Screen 
-        name="home" 
+        name="(home)" 
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
