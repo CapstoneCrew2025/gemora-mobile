@@ -12,7 +12,7 @@ export default function Index() {
     // Only redirect if we're authenticated and not loading
     if (!isLoading && isAuthenticated && user) {
       // Use replace to avoid creating multiple navigation stacks
-      router.replace('/(main)/home');
+      router.replace('/(main)/(home)');
     }
   }, [isAuthenticated, user, isLoading, router]);
 
