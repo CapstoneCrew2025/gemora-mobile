@@ -20,8 +20,8 @@ export default function Profile() {
   // Handler to open edit/profile image picker — navigates to edit screen for now
   const handleImagePicker = useCallback(async () => {
     try {
-      // Navigate to edit profile screen (adjust route as needed)
-      router.push('/profile/edit');
+      // Navigate to edit profile screen
+      router.push('./edit');
     } catch (error) {
       console.error('Failed to open image picker or navigate:', error);
       Alert.alert('Error', 'Unable to open image picker.');
@@ -128,14 +128,14 @@ export default function Profile() {
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Emerald header */}
-      <View className="bg-emerald-500 px-6 pt-12 pb-40 relative">
+      <View className="relative px-6 pt-12 pb-40 bg-emerald-500">
         {/* Top row: back, centered title, notification (icon only) */}
-        <View className="flex-row items-center justify-between z-20">
+        <View className="z-20 flex-row items-center justify-between">
           <TouchableOpacity
             onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center"
+            className="items-center justify-center w-10 h-10"
           >
-            <Text className="text-white text-2xl font-bold">←</Text>
+            <Text className="text-2xl font-bold text-white">←</Text>
           </TouchableOpacity>
 
           {/* Title sits visually centered */}
@@ -154,7 +154,7 @@ export default function Profile() {
         {/* Profile picture circle positioned at the boundary */}
         <TouchableOpacity
           onPress={handleImagePicker}
-          className="absolute left-0 right-0 items-center z-30"
+          className="absolute left-0 right-0 z-30 items-center"
           style={{ top: -64 }}
         >
           <View
@@ -203,8 +203,8 @@ export default function Profile() {
         </TouchableOpacity>
 
         {/* Name and ID */}
-        <View className="items-center mb-0 mt-0">
-          <Text className="text-xl font-bold text-gray-800 mb-1">
+        <View className="items-center mt-0 mb-0">
+          <Text className="mb-1 text-xl font-bold text-gray-800">
             {profileData?.name ?? displayData.name}
           </Text>
           <Text className="text-sm text-gray-500">
@@ -217,36 +217,36 @@ export default function Profile() {
           <View style={{ gap: 16, paddingBottom: 32 }}>
             <TouchableOpacity
               onPress={handleImagePicker}
-              className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm"
+              className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl"
             >
-              <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+              <View className="items-center justify-center w-12 h-12 mr-4 bg-blue-100 rounded-full">
                 <Ionicons name="person-outline" size={22} color="#1e3a8a" />
               </View>
-              <Text className="text-base font-medium text-gray-800 flex-1">Edit Profile</Text>
+              <Text className="flex-1 text-base font-medium text-gray-800">Edit Profile</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm">
-              <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+            <TouchableOpacity className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl">
+              <View className="items-center justify-center w-12 h-12 mr-4 bg-blue-100 rounded-full">
                 <Ionicons name="shield-checkmark-outline" size={22} color="#1e3a8a" />
               </View>
-              <Text className="text-base font-medium text-gray-800 flex-1">Security</Text>
+              <Text className="flex-1 text-base font-medium text-gray-800">Security</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm">
-              <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+            <TouchableOpacity className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl">
+              <View className="items-center justify-center w-12 h-12 mr-4 bg-blue-100 rounded-full">
                 <Ionicons name="settings-outline" size={22} color="#1e3a8a" />
               </View>
-              <Text className="text-base font-medium text-gray-800 flex-1">Setting</Text>
+              <Text className="flex-1 text-base font-medium text-gray-800">Setting</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleLogout}
-              className="bg-white border border-gray-200 rounded-2xl p-4 flex-row items-center shadow-sm"
+              className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl"
             >
-              <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center mr-4">
+              <View className="items-center justify-center w-12 h-12 mr-4 bg-blue-100 rounded-full">
                 <Ionicons name="log-out-outline" size={22} color="#1e3a8a" />
               </View>
-              <Text className="text-base font-medium text-gray-800 flex-1">Logout</Text>
+              <Text className="flex-1 text-base font-medium text-gray-800">Logout</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
