@@ -3,20 +3,21 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { CreateGemRequest, gemService } from '../../../lib/gemService';
 
 const LISTING_TYPES = ['SALE', 'AUCTION'] as const;
 
 export default function SellGem() {
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -103,8 +104,8 @@ export default function SellGem() {
     );
   };
 
-  // Validate form
-  const validateForm = (): boolean => {
+  // Validate Step 1: Gem Information
+  const validateStep1 = (): boolean => {
     if (!formData.name.trim()) {
       Alert.alert('Validation Error', 'Please enter gem name');
       return false;
@@ -125,10 +126,20 @@ export default function SellGem() {
       Alert.alert('Validation Error', 'Please enter origin');
       return false;
     }
+    return true;
+  };
+
+  // Validate Step 2: Pricing & Listing
+  const validateStep2 = (): boolean => {
     if (!formData.price || parseFloat(formData.price) <= 0) {
       Alert.alert('Validation Error', 'Please enter valid price');
       return false;
     }
+    return true;
+  };
+
+  // Validate Step 3: Images
+  const validateStep3 = (): boolean => {
     if (selectedImages.length < 3) {
       Alert.alert('Validation Error', 'Please select at least 3 images');
       return false;
@@ -136,9 +147,27 @@ export default function SellGem() {
     return true;
   };
 
+  // Handle Next button
+  const handleNext = () => {
+    if (currentStep === 1 && validateStep1()) {
+      setCurrentStep(2);
+    } else if (currentStep === 2 && validateStep2()) {
+      setCurrentStep(3);
+    }
+  };
+
+  // Handle Back button
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    } else {
+      router.back();
+    }
+  };
+
   // Submit form
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    if (!validateStep3()) return;
 
     setLoading(true);
     try {
@@ -176,185 +205,289 @@ export default function SellGem() {
     }
   };
 
+  // Render Step Indicator
+  const renderStepIndicator = () => (
+    <View className="flex-row justify-between px-4 mb-6">
+      {[1, 2, 3].map((step) => (
+        <View key={step} className="items-center flex-1">
+          <View
+            className={`w-10 h-10 rounded-full items-center justify-center ${
+              currentStep >= step ? 'bg-emerald-500' : 'bg-gray-300'
+            }`}
+          >
+            <Text className={`font-bold ${currentStep >= step ? 'text-white' : 'text-gray-600'}`}>
+              {step}
+            </Text>
+          </View>
+          <Text className={`text-xs mt-1 ${currentStep === step ? 'text-emerald-600 font-semibold' : 'text-gray-500'}`}>
+            {step === 1 ? 'Gem Info' : step === 2 ? 'Pricing' : 'Images'}
+          </Text>
+          {step < 3 && (
+            <View
+              className={`absolute top-5 left-[60%] w-full h-0.5 ${
+                currentStep > step ? 'bg-emerald-500' : 'bg-gray-300'
+              }`}
+            />
+          )}
+        </View>
+      ))}
+    </View>
+  );
+
   return (
     <View className="flex-1 bg-emerald-500">
       {/* Header */}
       <View className="px-6 pt-16 pb-6">
-        <View className="flex-row items-center">
-          <TouchableOpacity onPress={() => router.back()} className="mr-4">
+        <View className="flex-row items-center mb-4">
+          <TouchableOpacity onPress={handleBack} className="mr-4">
             <Text className="text-3xl text-white">←</Text>
           </TouchableOpacity>
           <Text className="text-2xl font-bold text-white">Sell Your Gem</Text>
         </View>
+        
+        {/* Step Indicator */}
+        {renderStepIndicator()}
       </View>
 
       {/* Form Container */}
-      <ScrollView className="flex-1 bg-gray-50 rounded-t-[40px] px-6 pt-6">
-        {/* Gem Information Card */}
-        <View className="bg-white rounded-3xl p-6 mb-4 shadow-sm">
-          <Text className="text-lg font-bold text-gray-800 mb-4">Gem Information</Text>
+      <View className="flex-1 bg-gray-50 rounded-t-[40px]">
+        <ScrollView className="flex-1 px-6 pt-6">
+          {/* Step 1: Gem Information */}
+          {currentStep === 1 && (
+            <View className="p-6 mb-4 bg-white shadow-sm rounded-3xl">
+              <Text className="mb-2 text-xl font-bold text-gray-800">Gem Information</Text>
+              <Text className="mb-6 text-sm text-gray-500">Tell us about your precious gem</Text>
 
-          {/* Name */}
-          <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Gem Name *</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-              placeholder="e.g., Blue Sapphire"
-              value={formData.name}
-              onChangeText={(text) => setFormData({ ...formData, name: text })}
-            />
-          </View>
+              {/* Name */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Gem Name *</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="e.g., Blue Sapphire"
+                  value={formData.name}
+                  onChangeText={(text) => setFormData({ ...formData, name: text })}
+                />
+              </View>
 
-          {/* Description */}
-          <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Description *</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-              placeholder="Describe your gem..."
-              value={formData.description}
-              onChangeText={(text) => setFormData({ ...formData, description: text })}
-              multiline
-              numberOfLines={3}
-              textAlignVertical="top"
-            />
-          </View>
+              {/* Description */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Description *</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="Describe your gem..."
+                  value={formData.description}
+                  onChangeText={(text) => setFormData({ ...formData, description: text })}
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                />
+              </View>
 
-          {/* Category */}
-          <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Category *</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-              placeholder="e.g., Sapphire, Ruby, Emerald"
-              value={formData.category}
-              onChangeText={(text) => setFormData({ ...formData, category: text })}
-            />
-          </View>
+              {/* Category */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Category *</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="e.g., Sapphire, Ruby, Emerald"
+                  value={formData.category}
+                  onChangeText={(text) => setFormData({ ...formData, category: text })}
+                />
+              </View>
 
-          {/* Carat and Origin Row */}
-          <View className="flex-row mb-4">
-            <View className="flex-1 mr-2">
-              <Text className="text-gray-700 font-semibold mb-2">Carat *</Text>
-              <TextInput
-                className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-                placeholder="2.5"
-                value={formData.carat}
-                onChangeText={(text) => setFormData({ ...formData, carat: text })}
-                keyboardType="decimal-pad"
-              />
+              {/* Carat and Origin Row */}
+              <View className="flex-row mb-4">
+                <View className="flex-1 mr-2">
+                  <Text className="mb-2 font-semibold text-gray-700">Carat *</Text>
+                  <TextInput
+                    className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                    placeholder="2.5"
+                    value={formData.carat}
+                    onChangeText={(text) => setFormData({ ...formData, carat: text })}
+                    keyboardType="decimal-pad"
+                  />
+                </View>
+                <View className="flex-1 ml-2">
+                  <Text className="mb-2 font-semibold text-gray-700">Origin *</Text>
+                  <TextInput
+                    className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                    placeholder="Sri Lanka"
+                    value={formData.origin}
+                    onChangeText={(text) => setFormData({ ...formData, origin: text })}
+                  />
+                </View>
+              </View>
+
+              {/* Certification Number */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Certification Number</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="CERT-12345 (Optional)"
+                  value={formData.certificationNumber}
+                  onChangeText={(text) => setFormData({ ...formData, certificationNumber: text })}
+                />
+              </View>
             </View>
-            <View className="flex-1 ml-2">
-              <Text className="text-gray-700 font-semibold mb-2">Origin *</Text>
-              <TextInput
-                className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-                placeholder="Sri Lanka"
-                value={formData.origin}
-                onChangeText={(text) => setFormData({ ...formData, origin: text })}
-              />
+          )}
+
+          {/* Step 2: Pricing & Listing */}
+          {currentStep === 2 && (
+            <View className="p-6 mb-4 bg-white shadow-sm rounded-3xl">
+              <Text className="mb-2 text-xl font-bold text-gray-800">Pricing & Listing</Text>
+              <Text className="mb-6 text-sm text-gray-500">Set your price and listing type</Text>
+
+              {/* Price */}
+              <View className="mb-6">
+                <Text className="mb-2 font-semibold text-gray-700">Price (LKR) *</Text>
+                <View className="flex-row items-center px-4 py-3 bg-gray-100 rounded-xl">
+                  <Text className="mr-2 text-lg text-gray-500">Rs.</Text>
+                  <TextInput
+                    className="flex-1 text-lg text-gray-800"
+                    placeholder="1500.00"
+                    value={formData.price}
+                    onChangeText={(text) => setFormData({ ...formData, price: text })}
+                    keyboardType="decimal-pad"
+                  />
+                </View>
+              </View>
+
+              {/* Listing Type */}
+              <View className="mb-4">
+                <Text className="mb-3 font-semibold text-gray-700">Listing Type *</Text>
+                <View className="flex-row gap-3">
+                  {LISTING_TYPES.map((type) => (
+                    <TouchableOpacity
+                      key={type}
+                      className={`flex-1 rounded-xl py-4 items-center border-2 ${
+                        formData.listingType === type
+                          ? 'bg-emerald-500 border-emerald-500'
+                          : 'bg-white border-gray-300'
+                      }`}
+                      onPress={() => setFormData({ ...formData, listingType: type })}
+                    >
+                      <Text className="mb-2 text-2xl">{type === 'SALE' ? '🏷️' : '⚡'}</Text>
+                      <Text
+                        className={`font-semibold ${
+                          formData.listingType === type ? 'text-white' : 'text-gray-700'
+                        }`}
+                      >
+                        {type}
+                      </Text>
+                      <Text
+                        className={`text-xs mt-1 ${
+                          formData.listingType === type ? 'text-white/80' : 'text-gray-500'
+                        }`}
+                      >
+                        {type === 'SALE' ? 'Fixed Price' : 'Bidding'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
             </View>
-          </View>
+          )}
 
-          {/* Certification Number */}
-          <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Certification Number</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-              placeholder="CERT-12345 (Optional)"
-              value={formData.certificationNumber}
-              onChangeText={(text) => setFormData({ ...formData, certificationNumber: text })}
-            />
-          </View>
-        </View>
+          {/* Step 3: Gem Images */}
+          {currentStep === 3 && (
+            <View className="p-6 mb-4 bg-white shadow-sm rounded-3xl">
+              <Text className="mb-2 text-xl font-bold text-gray-800">Gem Images</Text>
+              <Text className="mb-4 text-sm text-gray-500">
+                Add at least 3 high-quality images
+              </Text>
 
-        {/* Pricing Card */}
-        <View className="bg-white rounded-3xl p-6 mb-4 shadow-sm">
-          <Text className="text-lg font-bold text-gray-800 mb-4">Pricing & Listing</Text>
-
-          {/* Price */}
-          <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Price *</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-800"
-              placeholder="1500"
-              value={formData.price}
-              onChangeText={(text) => setFormData({ ...formData, price: text })}
-              keyboardType="decimal-pad"
-            />
-          </View>
-
-          {/* Listing Type */}
-          <View className="mb-4">
-            <Text className="text-gray-700 font-semibold mb-2">Listing Type</Text>
-            <View className="flex-row">
-              {LISTING_TYPES.map((type) => (
-                <TouchableOpacity
-                  key={type}
-                  className={`flex-1 mr-2 rounded-xl py-3 items-center ${
-                    formData.listingType === type ? 'bg-emerald-500' : 'bg-gray-100'
+              {/* Image Counter */}
+              <View className="flex-row items-center justify-between p-3 mb-4 bg-emerald-50 rounded-xl">
+                <View className="flex-row items-center">
+                  <Text className="mr-2 text-2xl">📸</Text>
+                  <Text className="font-medium text-gray-700">
+                    {selectedImages.length} image{selectedImages.length !== 1 ? 's' : ''} selected
+                  </Text>
+                </View>
+                <View
+                  className={`px-3 py-1 rounded-full ${
+                    selectedImages.length >= 3 ? 'bg-emerald-500' : 'bg-gray-300'
                   }`}
-                  onPress={() => setFormData({ ...formData, listingType: type })}
                 >
                   <Text
-                    className={`font-semibold ${
-                      formData.listingType === type ? 'text-white' : 'text-gray-700'
+                    className={`text-xs font-bold ${
+                      selectedImages.length >= 3 ? 'text-white' : 'text-gray-600'
                     }`}
                   >
-                    {type}
+                    {selectedImages.length}/3 min
                   </Text>
-                </TouchableOpacity>
-              ))}
+                </View>
+              </View>
+
+              {/* Selected Images Grid */}
+              {selectedImages.length > 0 && (
+                <View className="flex-row flex-wrap mb-4">
+                  {selectedImages.map((uri, index) => (
+                    <View key={index} className="relative w-24 h-24 mb-2 mr-2">
+                      <Image source={{ uri }} className="w-full h-full rounded-xl" />
+                      <TouchableOpacity
+                        className="absolute items-center justify-center w-6 h-6 bg-red-500 rounded-full shadow-md -top-2 -right-2"
+                        onPress={() => removeImage(index)}
+                      >
+                        <Text className="text-xs font-bold text-white">✕</Text>
+                      </TouchableOpacity>
+                      <View className="absolute bottom-1 left-1 bg-black/50 rounded px-1.5 py-0.5">
+                        <Text className="text-xs font-bold text-white">{index + 1}</Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {/* Add Image Button */}
+              <TouchableOpacity
+                className="items-center py-6 border-2 border-dashed bg-emerald-100 border-emerald-500 rounded-xl"
+                onPress={showImageOptions}
+              >
+                <Text className="mb-2 text-5xl">📷</Text>
+                <Text className="text-base font-bold text-emerald-600">Add More Images</Text>
+                <Text className="mt-1 text-xs text-gray-500">Camera or Gallery</Text>
+              </TouchableOpacity>
             </View>
+          )}
+        </ScrollView>
+
+        {/* Bottom Navigation */}
+        <View className="px-6 py-4 bg-white border-t border-gray-200">
+          <View className="flex-row gap-3">
+            {currentStep > 1 && (
+              <TouchableOpacity
+                className="items-center flex-1 py-4 bg-gray-200 rounded-2xl"
+                onPress={handleBack}
+              >
+                <Text className="text-base font-bold text-gray-700">Previous</Text>
+              </TouchableOpacity>
+            )}
+            
+            {currentStep < 3 ? (
+              <TouchableOpacity
+                className={`${currentStep === 1 ? 'flex-1' : 'flex-1'} bg-emerald-500 rounded-2xl py-4 items-center`}
+                onPress={handleNext}
+              >
+                <Text className="text-base font-bold text-white">Next Step</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                className={`flex-1 rounded-2xl py-4 items-center ${
+                  loading ? 'bg-emerald-300' : 'bg-emerald-500'
+                }`}
+                onPress={handleSubmit}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text className="text-base font-bold text-white">Submit Listing</Text>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         </View>
-
-        {/* Images Card */}
-        <View className="bg-white rounded-3xl p-6 mb-4 shadow-sm">
-          <Text className="text-lg font-bold text-gray-800 mb-2">Gem Images *</Text>
-          <Text className="text-sm text-gray-600 mb-4">
-            Add at least 3 high-quality images ({selectedImages.length}/3 minimum)
-          </Text>
-
-          {/* Selected Images Grid */}
-          {selectedImages.length > 0 && (
-            <View className="flex-row flex-wrap mb-4">
-              {selectedImages.map((uri, index) => (
-                <View key={index} className="w-24 h-24 mr-2 mb-2 relative">
-                  <Image source={{ uri }} className="w-full h-full rounded-xl" />
-                  <TouchableOpacity
-                    className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center"
-                    onPress={() => removeImage(index)}
-                  >
-                    <Text className="text-white text-xs font-bold">✕</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Add Image Button */}
-          <TouchableOpacity
-            className="bg-emerald-100 border-2 border-dashed border-emerald-500 rounded-xl py-4 items-center"
-            onPress={showImageOptions}
-          >
-            <Text className="text-4xl mb-2">📷</Text>
-            <Text className="text-emerald-600 font-semibold">Add Images</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Submit Button */}
-        <TouchableOpacity
-          className={`rounded-3xl py-4 items-center mb-6 ${
-            loading ? 'bg-emerald-300' : 'bg-emerald-500'
-          }`}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text className="text-white font-bold text-lg">Submit Listing</Text>
-          )}
-        </TouchableOpacity>
-      </ScrollView>
+      </View>
     </View>
   );
 }
