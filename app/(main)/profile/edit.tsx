@@ -5,6 +5,7 @@ import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-na
 import { Input } from "../../../components/common/Input";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService, UpdateProfileRequest } from "../../../lib/profileService";
+import { useThemeStore } from "../../../store/useThemeStore";
 import { Ionicons } from '@expo/vector-icons';
 
 export default function EditProfile() {
@@ -12,6 +13,7 @@ export default function EditProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { isDarkTheme, toggleTheme, loadTheme } = useThemeStore();
   const [formData, setFormData] = useState({
     name: '',
     contactNumber: '',
@@ -21,9 +23,10 @@ export default function EditProfile() {
     contactNumber: '',
   });
 
-  // Load profile data
+  // Load profile data and theme
   useEffect(() => {
     loadProfile();
+    loadTheme();
   }, []);
 
   const loadProfile = useCallback(async () => {
@@ -137,7 +140,6 @@ export default function EditProfile() {
 
       const updatedProfile = await profileService.updateProfile(updateData);
       
-      // Update local state with the API response
       setProfileData(updatedProfile);
       setFormData({
         name: updatedProfile.name,
@@ -163,15 +165,15 @@ export default function EditProfile() {
 
   if (isLoading) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
-        <Text className="text-lg text-gray-600">Loading...</Text>
+      <View className={`items-center justify-center flex-1 ${isDarkTheme ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <Text className={`text-lg ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>Loading...</Text>
       </View>
     );
   }
 
   if (!profileData) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
+      <View className={`items-center justify-center flex-1 ${isDarkTheme ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <Text className="mb-4 text-lg font-semibold text-red-600">Failed to load profile</Text>
         <TouchableOpacity onPress={loadProfile} className="px-6 py-3 rounded-2xl bg-emerald-500">
           <Text className="font-semibold text-white">Retry</Text>
@@ -181,12 +183,11 @@ export default function EditProfile() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className={`flex-1 ${isDarkTheme ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Emerald header */}
       <View className="bg-emerald-500 px-6 pt-12 pb-40 relative">
-        {/* Top row: back, centered title, notification (icon only) */}
         <View className="flex-row items-center justify-between z-20">
           <TouchableOpacity
             onPress={() => router.back()}
@@ -195,18 +196,16 @@ export default function EditProfile() {
             <Text className="text-white text-2xl font-bold">←</Text>
           </TouchableOpacity>
 
-          {/* Title sits visually centered */}
           <Text className="text-lg font-semibold text-gray-800">Edit My Profile</Text>
 
           <TouchableOpacity className="p-2">
-            {/* Notification icon only */}
             <Text className="text-2xl">🔔</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* White content area overlapping header */}
-      <View className="flex-1 bg-white rounded-t-[40px] -mt-16 px-6 pt-20 relative">
+      <View className={`flex-1 rounded-t-[40px] -mt-16 px-6 pt-20 relative ${isDarkTheme ? 'bg-gray-800' : 'bg-white'}`}>
         
         {/* Profile picture circle with camera icon positioned at the boundary */}
         <View className="absolute left-0 right-0 items-center z-30" style={{ top: -64 }}>
@@ -244,7 +243,6 @@ export default function EditProfile() {
                   resizeMode="cover"
                 />
               ) : (
-                // Empty circle placeholder
                 <View
                   style={{
                     width: 88,
@@ -261,7 +259,7 @@ export default function EditProfile() {
               )}
             </TouchableOpacity>
 
-            {/* Camera icon overlay - positioned on the photo using flex */}
+            {/* Camera icon overlay */}
             <View
               style={{
                 position: 'absolute',
@@ -289,10 +287,10 @@ export default function EditProfile() {
 
         {/* Name and ID */}
         <View className="items-center mb-6 mt-0">
-          <Text className="text-xl font-bold text-gray-800 mb-1">
+          <Text className={`text-xl font-bold mb-1 ${isDarkTheme ? 'text-gray-100' : 'text-gray-800'}`}>
             {profileData?.name}
           </Text>
-          <Text className="text-sm text-gray-500">
+          <Text className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
             ID: {(profileData?.id).toString().padStart(8, '0')}
           </Text>
         </View>
@@ -301,51 +299,77 @@ export default function EditProfile() {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ gap: 16, paddingBottom: 32 }}>
           
-            {/* User ID Display (Read-only) */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-600 mb-2">User ID</Text>
-              <Text className="text-base font-medium text-gray-700">
+            {/* User ID Display */}
+            <View className={`rounded-2xl p-4 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-50'}`}>
+              <Text className={`text-sm font-medium mb-2 ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>User ID</Text>
+              <Text className={`text-base font-medium ${isDarkTheme ? 'text-gray-200' : 'text-gray-700'}`}>
                 {(profileData?.id).toString().padStart(8, '0')}
               </Text>
             </View>
 
             {/* Full Name Input */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-gray-700 font-medium mb-2">Name</Text>
+            <View className={`rounded-2xl p-4 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-50'}`}>
+              <Text className={`font-medium mb-2 ${isDarkTheme ? 'text-gray-200' : 'text-gray-700'}`}>Name</Text>
               <Input
                 value={formData.name}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, name: text }))}
                 placeholder="Enter your full name"
                 error={errors.name}
-                className="bg-white"
+                className={isDarkTheme ? 'bg-gray-600' : 'bg-white'}
               />
             </View>
 
             {/* Phone Number Input */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-gray-700 font-medium mb-2">Phone</Text>
+            <View className={`rounded-2xl p-4 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-50'}`}>
+              <Text className={`font-medium mb-2 ${isDarkTheme ? 'text-gray-200' : 'text-gray-700'}`}>Phone</Text>
               <Input
                 value={formData.contactNumber}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, contactNumber: text }))}
                 placeholder="Enter your contact number"
                 keyboardType="phone-pad"
                 error={errors.contactNumber}
-                className="bg-white"
+                className={isDarkTheme ? 'bg-gray-600' : 'bg-white'}
               />
             </View>
 
-            {/* Email Display (Read-only) */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-600 mb-2">Email Address</Text>
-              <Text className="text-base font-medium text-gray-700">
+            {/* Email Display */}
+            <View className={`rounded-2xl p-4 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-50'}`}>
+              <Text className={`text-sm font-medium mb-2 ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Email Address</Text>
+              <Text className={`text-base font-medium ${isDarkTheme ? 'text-gray-200' : 'text-gray-700'}`}>
                 {profileData.email}
               </Text>
             </View>
 
+            {/* Push Notifications Toggle */}
+            <View className={`flex-row items-center justify-between rounded-2xl p-4 mb-2 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-50'}`}>
+              <Text className={`font-medium ${isDarkTheme ? 'text-gray-200' : 'text-gray-800'}`}>Push Notifications</Text>
+              <View className="w-12 h-7 bg-emerald-500 rounded-full" />
+            </View>
+
             {/* Dark Theme Toggle */}
-            <View className="flex-row items-center justify-between bg-gray-50 rounded-2xl p-4 mb-6">
-              <Text className="text-gray-800 font-medium">Turn Dark Theme</Text>
-              <View className="w-12 h-7 bg-gray-300 rounded-full" />
+            <View className={`flex-row items-center justify-between rounded-2xl p-4 mb-6 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-50'}`}>
+              <Text className={`font-medium ${isDarkTheme ? 'text-gray-200' : 'text-gray-800'}`}>Turn Dark Theme</Text>
+              <TouchableOpacity
+                onPress={toggleTheme}
+                style={{
+                  width: 48,
+                  height: 28,
+                  borderRadius: 14,
+                  backgroundColor: isDarkTheme ? '#10b981' : '#d1d5db',
+                  justifyContent: 'center',
+                  paddingHorizontal: 2,
+                }}
+              >
+                <View
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 12,
+                    backgroundColor: 'white',
+                    marginLeft: isDarkTheme ? 22 : 0,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
 
             {/* Update Profile Button */}

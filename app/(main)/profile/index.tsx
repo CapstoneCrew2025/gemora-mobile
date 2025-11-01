@@ -5,6 +5,7 @@ import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeStore } from "../../../store/useThemeStore";
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
@@ -16,6 +17,7 @@ export default function Profile() {
   const [profileLoadError, setProfileLoadError] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selfieImageUrl, setSelfieImageUrl] = useState<string | null>(null);
+  const { isDarkTheme } = useThemeStore();
 
   // Handler to open edit/profile image picker — navigates to edit screen for now
   const handleImagePicker = useCallback(async () => {

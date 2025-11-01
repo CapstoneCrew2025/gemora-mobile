@@ -3,11 +3,11 @@ import React, { useEffect } from "react";
 import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
 
 import { useAuth } from "../../store/useAuthStore";
-
+import { useThemeStore } from "../../store/useThemeStore";
 
 export default function Home() {
   const { user, isLoading } = useAuth();
-
+const { isDarkTheme } = useThemeStore();
   // Handle back button to close app instead of navigating back
   useEffect(() => {
     const backAction = () => {
