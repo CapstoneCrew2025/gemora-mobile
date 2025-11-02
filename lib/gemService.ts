@@ -6,10 +6,25 @@ export interface CreateGemRequest {
   category: string;
   carat: number;
   origin: string;
-  certificationNumber?: string;
   price: number;
   listingType?: 'SALE' | 'AUCTION';
   images: string[]; // Array of image URIs
+  // Certificate fields (optional)
+  certificateNumber?: string;
+  issuingAuthority?: string;
+  issueDate?: string; // yyyy-MM-dd format
+  certificateFile?: string; // Certificate file URI
+}
+
+export interface CertificateResponse {
+  id: number;
+  certificateNumber: string;
+  issuingAuthority: string;
+  issueDate: string;
+  fileUrl: string;
+  verified: boolean;
+  uploadedAt: string;
+  verifiedAt: string | null;
 }
 
 export interface GemResponse {
@@ -19,7 +34,7 @@ export interface GemResponse {
   category: string;
   carat: number;
   origin: string;
-  certificationNumber?: string;
+  certificateNumber?: string;
   price: number;
   status: string;
   listingType: string;
@@ -27,7 +42,7 @@ export interface GemResponse {
   updatedAt: string;
   sellerId: number;
   imageUrls: string[];
-  certificates: any[];
+  certificates: CertificateResponse[];
 }
 
 class GemService {
@@ -47,12 +62,33 @@ class GemService {
       formData.append('price', data.price.toString());
       
       // Add optional fields
-      if (data.certificationNumber) {
-        formData.append('certificationNumber', data.certificationNumber);
+      if (data.certificateNumber) {
+        formData.append('certificateNumber', data.certificateNumber);
+      }
+      
+      if (data.issuingAuthority) {
+        formData.append('issuingAuthority', data.issuingAuthority);
+      }
+      
+      if (data.issueDate) {
+        formData.append('issueDate', data.issueDate);
       }
       
       if (data.listingType) {
         formData.append('listingType', data.listingType);
+      }
+      
+      // Add certificate file if provided
+      if (data.certificateFile) {
+        const filename = data.certificateFile.split('/').pop() || 'certificate.pdf';
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `application/${match[1]}` : 'application/pdf';
+        
+        formData.append('certificateFile', {
+          uri: data.certificateFile,
+          name: filename,
+          type: type,
+        } as any);
       }
       
       // Add images
