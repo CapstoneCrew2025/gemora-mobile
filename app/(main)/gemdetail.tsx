@@ -80,23 +80,23 @@ export default function GemDetail() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-50">
+      <View className="items-center justify-center flex-1 bg-gray-50">
         <ActivityIndicator size="large" color="#10b981" />
-        <Text className="text-gray-600 mt-4">Loading gem details...</Text>
+        <Text className="mt-4 text-gray-600">Loading gem details...</Text>
       </View>
     );
   }
 
   if (!gem) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-50">
+      <View className="items-center justify-center flex-1 bg-gray-50">
         <Ionicons name="diamond-outline" size={80} color="#d1d5db" />
-        <Text className="text-gray-500 text-lg mt-4">Gem not found</Text>
+        <Text className="mt-4 text-lg text-gray-500">Gem not found</Text>
         <TouchableOpacity
-          className="mt-4 bg-emerald-500 px-6 py-3 rounded-lg"
+          className="px-6 py-3 mt-4 rounded-lg bg-emerald-500"
           onPress={() => router.back()}
         >
-          <Text className="text-white font-semibold">Go Back</Text>
+          <Text className="font-semibold text-white">Go Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -105,14 +105,14 @@ export default function GemDetail() {
   return (
     <View className="flex-1 bg-white">
       {/* Header */}
-      <View className="absolute top-0 left-0 right-0 z-10 flex-row justify-between items-center px-4 pt-12 pb-4">
+      <View className="absolute top-0 left-0 right-0 z-10 flex-row items-center justify-between px-4 pt-12 pb-4">
         <TouchableOpacity
-          className="bg-white/80 rounded-full p-2"
+          className="p-2 rounded-full bg-white/80"
           onPress={() => router.back()}
         >
           <Ionicons name="arrow-back" size={24} color="#1f2937" />
         </TouchableOpacity>
-        <TouchableOpacity className="bg-white/80 rounded-full p-2">
+        <TouchableOpacity className="p-2 rounded-full bg-white/80">
           <Ionicons name="heart-outline" size={24} color="#1f2937" />
         </TouchableOpacity>
       </View>
@@ -145,7 +145,7 @@ export default function GemDetail() {
                 ))}
               </ScrollView>
               {gem.imageUrls.length > 1 && (
-                <View className="absolute bottom-4 left-0 right-0 flex-row justify-center">
+                <View className="absolute left-0 right-0 flex-row justify-center bottom-4">
                   {gem.imageUrls.map((_, index) => (
                     <View
                       key={index}
@@ -167,9 +167,9 @@ export default function GemDetail() {
         {/* Gem Details */}
         <View className="p-4">
           {/* Title and Price */}
-          <View className="flex-row justify-between items-start mb-2">
+          <View className="flex-row items-start justify-between mb-2">
             <View className="flex-1 mr-4">
-              <Text className="text-2xl font-bold text-gray-800 mb-1">
+              <Text className="mb-1 text-2xl font-bold text-gray-800">
                 {gem.name}
               </Text>
               <View
@@ -197,38 +197,38 @@ export default function GemDetail() {
           </View>
 
           {/* Category Badge */}
-          <View className="bg-gray-100 self-start px-3 py-1 rounded-full mb-4">
+          <View className="self-start px-3 py-1 mb-4 bg-gray-100 rounded-full">
             <Text className="text-sm font-medium text-gray-700">{gem.category}</Text>
           </View>
 
           {/* Description */}
           <View className="mb-4">
-            <Text className="text-lg font-semibold text-gray-800 mb-2">Description</Text>
-            <Text className="text-gray-600 leading-6">{gem.description}</Text>
+            <Text className="mb-2 text-lg font-semibold text-gray-800">Description</Text>
+            <Text className="leading-6 text-gray-600">{gem.description}</Text>
           </View>
 
           {/* Specifications */}
           <View className="mb-4">
-            <Text className="text-lg font-semibold text-gray-800 mb-3">Specifications</Text>
-            <View className="bg-gray-50 rounded-lg p-4">
-              <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="mb-3 text-lg font-semibold text-gray-800">Specifications</Text>
+            <View className="p-4 rounded-lg bg-gray-50">
+              <View className="flex-row items-center justify-between py-2 border-b border-gray-200">
                 <Text className="text-gray-600">Carat Weight</Text>
                 <Text className="font-semibold text-gray-800">{gem.carat} ct</Text>
               </View>
-              <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+              <View className="flex-row items-center justify-between py-2 border-b border-gray-200">
                 <Text className="text-gray-600">Origin</Text>
                 <Text className="font-semibold text-gray-800">{gem.origin}</Text>
               </View>
-              <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+              <View className="flex-row items-center justify-between py-2 border-b border-gray-200">
                 <Text className="text-gray-600">Category</Text>
                 <Text className="font-semibold text-gray-800">{gem.category}</Text>
               </View>
               {gem.certificationNumber && (
-                <View className="flex-row justify-between items-center py-2">
+                <View className="flex-row items-center justify-between py-2">
                   <Text className="text-gray-600">Certification</Text>
                   <View className="flex-row items-center">
                     <Ionicons name="shield-checkmark" size={16} color="#10b981" />
-                    <Text className="font-semibold text-emerald-600 ml-1">
+                    <Text className="ml-1 font-semibold text-emerald-600">
                       {gem.certificationNumber}
                     </Text>
                   </View>
@@ -240,12 +240,12 @@ export default function GemDetail() {
           {/* Certificates */}
           {gem.certificates && gem.certificates.length > 0 && (
             <View className="mb-4">
-              <Text className="text-lg font-semibold text-gray-800 mb-3">Certificates</Text>
+              <Text className="mb-3 text-lg font-semibold text-gray-800">Certificates</Text>
               {gem.certificates.map((cert) => (
-                <View key={cert.id} className="bg-emerald-50 rounded-lg p-4 mb-2">
-                  <View className="flex-row justify-between items-start mb-2">
+                <View key={cert.id} className="p-4 mb-2 rounded-lg bg-emerald-50">
+                  <View className="flex-row items-start justify-between mb-2">
                     <View className="flex-1">
-                      <Text className="font-semibold text-gray-800 mb-1">
+                      <Text className="mb-1 font-semibold text-gray-800">
                         {cert.certificateNumber}
                       </Text>
                       <Text className="text-sm text-gray-600">
@@ -253,8 +253,8 @@ export default function GemDetail() {
                       </Text>
                     </View>
                     {cert.verified && (
-                      <View className="bg-emerald-500 px-2 py-1 rounded-full">
-                        <Text className="text-xs text-white font-semibold">Verified</Text>
+                      <View className="px-2 py-1 rounded-full bg-emerald-500">
+                        <Text className="text-xs font-semibold text-white">Verified</Text>
                       </View>
                     )}
                   </View>
@@ -263,7 +263,7 @@ export default function GemDetail() {
                   </Text>
                   {cert.fileUrl && (
                     <TouchableOpacity className="mt-2">
-                      <Text className="text-emerald-600 font-semibold">
+                      <Text className="font-semibold text-emerald-600">
                         View Certificate →
                       </Text>
                     </TouchableOpacity>
@@ -274,8 +274,8 @@ export default function GemDetail() {
           )}
 
           {/* Listing Info */}
-          <View className="bg-gray-50 rounded-lg p-4 mb-4">
-            <Text className="text-sm text-gray-500 mb-1">Listed on</Text>
+          <View className="p-4 mb-4 rounded-lg bg-gray-50">
+            <Text className="mb-1 text-sm text-gray-500">Listed on</Text>
             <Text className="text-gray-800">
               {new Date(gem.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -288,22 +288,22 @@ export default function GemDetail() {
       </ScrollView>
 
       {/* Bottom Action Bar */}
-      <View className="border-t border-gray-200 p-4 bg-white">
+      <View className="p-4 bg-white border-t border-gray-200">
         <View className="flex-row space-x-2">
           <TouchableOpacity
-            className="flex-1 bg-gray-100 py-3 rounded-lg mr-2"
+            className="flex-1 py-3 mr-2 bg-gray-100 rounded-lg"
             onPress={handleContactSeller}
           >
             <View className="flex-row items-center justify-center">
               <Ionicons name="chatbubble-outline" size={20} color="#1f2937" />
-              <Text className="text-gray-800 font-semibold ml-2">Contact Seller</Text>
+              <Text className="ml-2 font-semibold text-gray-800">Contact Seller</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            className="flex-1 bg-emerald-500 py-3 rounded-lg"
+            className="flex-1 py-3 rounded-lg bg-emerald-500"
             onPress={gem.listingType === 'AUCTION' ? handlePlaceBid : handleBuyNow}
           >
-            <Text className="text-white font-bold text-center">
+            <Text className="font-bold text-center text-white">
               {gem.listingType === 'AUCTION' ? 'Place Bid' : 'Buy Now'}
             </Text>
           </TouchableOpacity>
