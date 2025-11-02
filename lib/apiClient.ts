@@ -8,7 +8,24 @@ export const BACKEND_IMAGE_SERVER_IP = '192.168.8.101';
 
 export const getAccessibleImageUrl = (imageUrl: string): string => {
   if (!imageUrl) return imageUrl;
-  return imageUrl.replace(BACKEND_IMAGE_SERVER_IP, DEV_SERVER_IP);
+  
+  // If it's a relative path (starts with /), prepend the backend server URL
+  if (imageUrl.startsWith('/')) {
+    const fullUrl = `http://${DEV_SERVER_IP}:8080${imageUrl}`;
+    console.log('Converting relative path to full URL:', imageUrl, '->', fullUrl);
+    return fullUrl;
+  }
+  
+  // If it contains the old backend IP, replace it with the new one
+  if (imageUrl.includes(BACKEND_IMAGE_SERVER_IP)) {
+    const convertedUrl = imageUrl.replace(BACKEND_IMAGE_SERVER_IP, DEV_SERVER_IP);
+    console.log('Replacing backend IP:', imageUrl, '->', convertedUrl);
+    return convertedUrl;
+  }
+  
+  // Otherwise return as-is
+  console.log('Using image URL as-is:', imageUrl);
+  return imageUrl;
 };
 
 const getBaseUrl = () => {

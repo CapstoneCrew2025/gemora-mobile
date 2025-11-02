@@ -1,5 +1,6 @@
 // app/(main)/(home)/sellgem.tsx
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -24,12 +25,17 @@ export default function SellGem() {
     category: '',
     carat: '',
     origin: '',
-    certificationNumber: '',
     price: '',
     listingType: 'SALE' as 'SALE' | 'AUCTION',
+    // Certificate fields
+    certificateNumber: '',
+    issuingAuthority: '',
+    issueDate: '',
   });
 
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [certificateFile, setCertificateFile] = useState<string | null>(null);
+  const [certificateFileName, setCertificateFileName] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   // Request permissions
@@ -91,6 +97,29 @@ export default function SellGem() {
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Pick certificate document
+  const pickCertificateFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/*'],
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        setCertificateFile(result.assets[0].uri);
+        setCertificateFileName(result.assets[0].name);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to pick document');
+    }
+  };
+
+  // Remove certificate file
+  const removeCertificateFile = () => {
+    setCertificateFile(null);
+    setCertificateFileName('');
+  };
+
   // Image picker options
   const showImageOptions = () => {
     Alert.alert(
@@ -147,12 +176,20 @@ export default function SellGem() {
     return true;
   };
 
+  // Step 4 validation is optional - user can skip
+  const validateStep4 = (): boolean => {
+    // Certificate is optional, so always return true
+    return true;
+  };
+
   // Handle Next button
   const handleNext = () => {
     if (currentStep === 1 && validateStep1()) {
       setCurrentStep(2);
     } else if (currentStep === 2 && validateStep2()) {
       setCurrentStep(3);
+    } else if (currentStep === 3 && validateStep3()) {
+      setCurrentStep(4);
     }
   };
 
@@ -167,8 +204,6 @@ export default function SellGem() {
 
   // Submit form
   const handleSubmit = async () => {
-    if (!validateStep3()) return;
-
     setLoading(true);
     try {
       const requestData: CreateGemRequest = {
@@ -182,8 +217,21 @@ export default function SellGem() {
         images: selectedImages,
       };
 
-      if (formData.certificationNumber.trim()) {
-        requestData.certificationNumber = formData.certificationNumber.trim();
+      // Add certificate data if provided
+      if (formData.certificateNumber.trim()) {
+        requestData.certificateNumber = formData.certificateNumber.trim();
+      }
+      
+      if (formData.issuingAuthority.trim()) {
+        requestData.issuingAuthority = formData.issuingAuthority.trim();
+      }
+      
+      if (formData.issueDate.trim()) {
+        requestData.issueDate = formData.issueDate.trim();
+      }
+      
+      if (certificateFile) {
+        requestData.certificateFile = certificateFile;
       }
 
       const response = await gemService.createGemListing(requestData);
@@ -207,8 +255,8 @@ export default function SellGem() {
 
   // Render Step Indicator
   const renderStepIndicator = () => (
-    <View className="flex-row justify-between px-4 mb-6">
-      {[1, 2, 3].map((step) => (
+    <View className="flex-row justify-between px-2 mb-6">
+      {[1, 2, 3, 4].map((step) => (
         <View key={step} className="items-center flex-1">
           <View
             className={`w-10 h-10 rounded-full items-center justify-center ${
@@ -219,10 +267,10 @@ export default function SellGem() {
               {step}
             </Text>
           </View>
-          <Text className={`text-xs mt-1 ${currentStep === step ? 'text-emerald-600 font-semibold' : 'text-gray-500'}`}>
-            {step === 1 ? 'Gem Info' : step === 2 ? 'Pricing' : 'Images'}
+          <Text className={`text-xs mt-1 text-center ${currentStep === step ? 'text-emerald-600 font-semibold' : 'text-gray-500'}`}>
+            {step === 1 ? 'Info' : step === 2 ? 'Price' : step === 3 ? 'Images' : 'Cert'}
           </Text>
-          {step < 3 && (
+          {step < 4 && (
             <View
               className={`absolute top-5 left-[60%] w-full h-0.5 ${
                 currentStep > step ? 'bg-emerald-500' : 'bg-gray-300'
@@ -315,17 +363,6 @@ export default function SellGem() {
                     onChangeText={(text) => setFormData({ ...formData, origin: text })}
                   />
                 </View>
-              </View>
-
-              {/* Certification Number */}
-              <View className="mb-4">
-                <Text className="mb-2 font-semibold text-gray-700">Certification Number</Text>
-                <TextInput
-                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
-                  placeholder="CERT-12345 (Optional)"
-                  value={formData.certificationNumber}
-                  onChangeText={(text) => setFormData({ ...formData, certificationNumber: text })}
-                />
               </View>
             </View>
           )}
@@ -449,6 +486,91 @@ export default function SellGem() {
               </TouchableOpacity>
             </View>
           )}
+
+          {/* Step 4: Certificate (Optional) */}
+          {currentStep === 4 && (
+            <View className="p-6 mb-4 bg-white shadow-sm rounded-3xl">
+              <Text className="mb-2 text-xl font-bold text-gray-800">Certificate Details</Text>
+              <Text className="mb-2 text-sm text-gray-500">
+                Add certificate information (Optional)
+              </Text>
+              
+              {/* Optional Badge */}
+              <View className="flex-row items-center px-3 py-2 mb-4 rounded-lg bg-amber-50">
+                <Text className="mr-2 text-lg">ℹ️</Text>
+                <Text className="flex-1 text-xs text-gray-600">
+                  You can skip this step and submit your listing without certificate
+                </Text>
+              </View>
+
+              {/* Certificate Number */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Certificate Number</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="e.g., GIA-2025-7788"
+                  value={formData.certificateNumber}
+                  onChangeText={(text) => setFormData({ ...formData, certificateNumber: text })}
+                />
+              </View>
+
+              {/* Issuing Authority */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Issuing Authority</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="e.g., GIA Lab, IGI"
+                  value={formData.issuingAuthority}
+                  onChangeText={(text) => setFormData({ ...formData, issuingAuthority: text })}
+                />
+              </View>
+
+              {/* Issue Date */}
+              <View className="mb-4">
+                <Text className="mb-2 font-semibold text-gray-700">Issue Date</Text>
+                <TextInput
+                  className="px-4 py-3 text-gray-800 bg-gray-100 rounded-xl"
+                  placeholder="YYYY-MM-DD (e.g., 2025-01-20)"
+                  value={formData.issueDate}
+                  onChangeText={(text) => setFormData({ ...formData, issueDate: text })}
+                />
+              </View>
+
+              {/* Certificate File Upload */}
+              <View className="mb-4">
+                <Text className="mb-3 font-semibold text-gray-700">Certificate File</Text>
+                
+                {certificateFile ? (
+                  <View className="flex-row items-center justify-between p-4 border-2 border-emerald-500 bg-emerald-50 rounded-xl">
+                    <View className="flex-row items-center flex-1">
+                      <Text className="mr-2 text-2xl">📄</Text>
+                      <View className="flex-1">
+                        <Text className="font-medium text-gray-800" numberOfLines={1}>
+                          {certificateFileName}
+                        </Text>
+                        <Text className="text-xs text-gray-500">PDF or Image</Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      className="p-2 bg-red-500 rounded-full"
+                      onPress={removeCertificateFile}
+                    >
+                      <Text className="text-xs font-bold text-white">✕</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    className="items-center py-6 border-2 border-gray-300 border-dashed bg-gray-50 rounded-xl"
+                    onPress={pickCertificateFile}
+                  >
+                    <Text className="mb-2 text-4xl">📎</Text>
+                    <Text className="text-base font-bold text-gray-700">Upload Certificate</Text>
+                    <Text className="mt-1 text-xs text-gray-500">PDF or Image file</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          )}
         </ScrollView>
 
         {/* Bottom Navigation */}
@@ -463,7 +585,7 @@ export default function SellGem() {
               </TouchableOpacity>
             )}
             
-            {currentStep < 3 ? (
+            {currentStep < 4 ? (
               <TouchableOpacity
                 className={`${currentStep === 1 ? 'flex-1' : 'flex-1'} bg-emerald-500 rounded-2xl py-4 items-center`}
                 onPress={handleNext}
@@ -471,19 +593,28 @@ export default function SellGem() {
                 <Text className="text-base font-bold text-white">Next Step</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity
-                className={`flex-1 rounded-2xl py-4 items-center ${
-                  loading ? 'bg-emerald-300' : 'bg-emerald-500'
-                }`}
-                onPress={handleSubmit}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator color="white" />
-                ) : (
-                  <Text className="text-base font-bold text-white">Submit Listing</Text>
-                )}
-              </TouchableOpacity>
+              <>
+                <TouchableOpacity
+                  className="items-center flex-1 py-4 border-2 bg-gray-50 border-emerald-500 rounded-2xl"
+                  onPress={handleSubmit}
+                  disabled={loading}
+                >
+                  <Text className="text-base font-bold text-emerald-600">Skip & Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`flex-1 rounded-2xl py-4 items-center ${
+                    loading ? 'bg-emerald-300' : 'bg-emerald-500'
+                  }`}
+                  onPress={handleSubmit}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text className="text-base font-bold text-white">Submit Listing</Text>
+                  )}
+                </TouchableOpacity>
+              </>
             )}
           </View>
         </View>

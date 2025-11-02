@@ -42,7 +42,7 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen 
-        name="marketplace" 
+        name="(market)" 
         options={{
           title: 'Market',
           tabBarIcon: ({ color }) => (
