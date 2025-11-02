@@ -6,10 +6,11 @@ import {
     Alert,
     Dimensions,
     Image,
+    Linking,
     ScrollView,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../lib/apiClient';
 import { ApprovedGem, gemMarketService } from '../../lib/gemMarketService';
@@ -21,6 +22,7 @@ export default function GemDetail() {
   const [gem, setGem] = useState<ApprovedGem | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [expandedCertId, setExpandedCertId] = useState<number | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -76,6 +78,11 @@ export default function GemDetail() {
         { text: 'Confirm Purchase', onPress: () => console.log('Purchase confirmed') },
       ]
     );
+  };
+
+  const handleViewCertificate = (certId: number) => {
+    // Toggle expanded state
+    setExpandedCertId(expandedCertId === certId ? null : certId);
   };
 
   if (loading) {
@@ -241,35 +248,106 @@ export default function GemDetail() {
           {gem.certificates && gem.certificates.length > 0 && (
             <View className="mb-4">
               <Text className="mb-3 text-lg font-semibold text-gray-800">Certificates</Text>
-              {gem.certificates.map((cert) => (
-                <View key={cert.id} className="p-4 mb-2 rounded-lg bg-emerald-50">
-                  <View className="flex-row items-start justify-between mb-2">
-                    <View className="flex-1">
-                      <Text className="mb-1 font-semibold text-gray-800">
-                        {cert.certificateNumber}
-                      </Text>
-                      <Text className="text-sm text-gray-600">
-                        {cert.issuingAuthority}
-                      </Text>
-                    </View>
-                    {cert.verified && (
-                      <View className="px-2 py-1 rounded-full bg-emerald-500">
-                        <Text className="text-xs font-semibold text-white">Verified</Text>
+              {gem.certificates.map((cert) => {
+                const isExpanded = expandedCertId === cert.id;
+                const certificateUrl = cert.fileUrl ? getAccessibleImageUrl(cert.fileUrl) : null;
+                const isImage = certificateUrl?.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+                
+                return (
+                  <View key={cert.id} className="p-4 mb-3 rounded-lg bg-emerald-50">
+                    <View className="flex-row items-start justify-between mb-2">
+                      <View className="flex-1">
+                        <Text className="mb-1 font-semibold text-gray-800">
+                          {cert.certificateNumber}
+                        </Text>
+                        <Text className="text-sm text-gray-600">
+                          {cert.issuingAuthority}
+                        </Text>
                       </View>
+                      {cert.verified && (
+                        <View className="px-2 py-1 rounded-full bg-emerald-500">
+                          <Text className="text-xs font-semibold text-white">Verified</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text className="mb-2 text-xs text-gray-500">
+                      Issued: {new Date(cert.issueDate).toLocaleDateString()}
+                    </Text>
+                    
+                    {/* Certificate File Preview */}
+                    {certificateUrl && (
+                      <>
+                        <TouchableOpacity 
+                          className="flex-row items-center justify-between p-3 mt-2 bg-white rounded-lg"
+                          onPress={() => handleViewCertificate(cert.id)}
+                        >
+                          <View className="flex-row items-center flex-1">
+                            <Ionicons 
+                              name={isImage ? "image-outline" : "document-outline"} 
+                              size={20} 
+                              color="#10b981" 
+                            />
+                            <Text className="flex-1 ml-2 font-semibold text-emerald-600">
+                              {isExpanded ? 'Hide Certificate' : 'View Certificate'}
+                            </Text>
+                          </View>
+                          <Ionicons 
+                            name={isExpanded ? "chevron-up" : "chevron-down"} 
+                            size={20} 
+                            color="#10b981" 
+                          />
+                        </TouchableOpacity>
+
+                        {/* Expanded Certificate View */}
+                        {isExpanded && (
+                          <View className="mt-3 overflow-hidden bg-white rounded-lg">
+                            {isImage ? (
+                              <Image
+                                source={{ uri: certificateUrl }}
+                                style={{ width: '100%', height: 400 }}
+                                resizeMode="contain"
+                                onError={(e) => {
+                                  console.log('Certificate image load error:', e.nativeEvent.error);
+                                  Alert.alert('Error', 'Failed to load certificate image');
+                                }}
+                              />
+                            ) : (
+                              <View className="items-center justify-center p-8 bg-gray-100">
+                                <Ionicons name="document-text-outline" size={80} color="#10b981" />
+                                <Text className="mt-4 text-sm text-center text-gray-600">
+                                  PDF Certificate
+                                </Text>
+                                <Text className="mt-2 text-xs text-center text-gray-500">
+                                  {cert.certificateNumber}
+                                </Text>
+                                <TouchableOpacity
+                                  className="px-4 py-2 mt-4 rounded-lg bg-emerald-500"
+                                  onPress={async () => {
+                                    try {
+                                      const supported = await Linking.canOpenURL(certificateUrl);
+                                      if (supported) {
+                                        await Linking.openURL(certificateUrl);
+                                      } else {
+                                        Alert.alert('Error', 'Cannot open PDF file');
+                                      }
+                                    } catch (error) {
+                                      Alert.alert('Error', 'Failed to open PDF');
+                                    }
+                                  }}
+                                >
+                                  <Text className="font-semibold text-white">
+                                    Open PDF in Browser
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </View>
+                        )}
+                      </>
                     )}
                   </View>
-                  <Text className="text-xs text-gray-500">
-                    Issued: {new Date(cert.issueDate).toLocaleDateString()}
-                  </Text>
-                  {cert.fileUrl && (
-                    <TouchableOpacity className="mt-2">
-                      <Text className="font-semibold text-emerald-600">
-                        View Certificate →
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              ))}
+                );
+              })}
             </View>
           )}
 
