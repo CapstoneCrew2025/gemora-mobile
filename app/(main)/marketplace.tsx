@@ -90,7 +90,7 @@ export default function Marketplace() {
     return (
       <TouchableOpacity
         key={gem.id}
-        className="bg-white rounded-lg shadow-md mb-4 overflow-hidden"
+        className="mb-4 overflow-hidden bg-white rounded-lg shadow-md"
         onPress={() => handleGemPress(gem.id)}
       >
         {/* Gem Image */}
@@ -103,7 +103,7 @@ export default function Marketplace() {
               onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
             />
           ) : (
-            <View className="flex-1 items-center justify-center">
+            <View className="items-center justify-center flex-1">
               <Ionicons name="diamond-outline" size={60} color="#d1d5db" />
             </View>
           )}
@@ -111,8 +111,8 @@ export default function Marketplace() {
 
         {/* Gem Info */}
         <View className="p-4">
-          <View className="flex-row justify-between items-start mb-2">
-            <Text className="text-lg font-bold text-gray-800 flex-1" numberOfLines={1}>
+          <View className="flex-row items-start justify-between mb-2">
+            <Text className="flex-1 text-lg font-bold text-gray-800" numberOfLines={1}>
               {gem.name}
             </Text>
             <View
@@ -130,35 +130,35 @@ export default function Marketplace() {
             </View>
           </View>
 
-          <Text className="text-sm text-gray-600 mb-2" numberOfLines={2}>
+          <Text className="mb-2 text-sm text-gray-600" numberOfLines={2}>
             {gem.description}
           </Text>
 
           <View className="flex-row items-center mb-2">
             <Ionicons name="location-outline" size={16} color="#6b7280" />
-            <Text className="text-sm text-gray-600 ml-1">{gem.origin}</Text>
-            <Text className="text-sm text-gray-400 mx-2">•</Text>
+            <Text className="ml-1 text-sm text-gray-600">{gem.origin}</Text>
+            <Text className="mx-2 text-sm text-gray-400">•</Text>
             <Text className="text-sm text-gray-600">{gem.carat} ct</Text>
           </View>
 
           {gem.certificationNumber && (
             <View className="flex-row items-center mb-2">
               <Ionicons name="shield-checkmark-outline" size={16} color="#10b981" />
-              <Text className="text-xs text-emerald-600 ml-1">Certified</Text>
+              <Text className="ml-1 text-xs text-emerald-600">Certified</Text>
             </View>
           )}
 
-          <View className="flex-row justify-between items-center mt-2 pt-2 border-t border-gray-100">
+          <View className="flex-row items-center justify-between pt-2 mt-2 border-t border-gray-100">
             <View className="flex-row items-center">
               <Text className="text-xl font-bold text-emerald-600">
                 ${gem.price.toLocaleString()}
               </Text>
             </View>
             <TouchableOpacity
-              className="bg-emerald-500 px-4 py-2 rounded-lg"
+              className="px-4 py-2 rounded-lg bg-emerald-500"
               onPress={() => handleGemPress(gem.id)}
             >
-              <Text className="text-white font-semibold">View Details</Text>
+              <Text className="font-semibold text-white">View Details</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -168,9 +168,9 @@ export default function Marketplace() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-50">
+      <View className="items-center justify-center flex-1 bg-gray-50">
         <ActivityIndicator size="large" color="#10b981" />
-        <Text className="text-gray-600 mt-4">Loading marketplace...</Text>
+        <Text className="mt-4 text-gray-600">Loading marketplace...</Text>
       </View>
     );
   }
@@ -178,11 +178,11 @@ export default function Marketplace() {
   return (
     <View className="flex-1 bg-gray-50">
       {/* Header */}
-      <View className="bg-white px-4 pt-12 pb-4 shadow-sm">
-        <Text className="text-2xl font-bold text-gray-800 mb-4">Marketplace</Text>
+      <View className="px-4 pt-12 pb-4 bg-white shadow-sm">
+        <Text className="mb-4 text-2xl font-bold text-gray-800">Marketplace</Text>
 
         {/* Search Bar */}
-        <View className="flex-row items-center bg-gray-100 rounded-lg px-3 py-2 mb-3">
+        <View className="flex-row items-center px-3 py-2 mb-3 bg-gray-100 rounded-lg">
           <Ionicons name="search-outline" size={20} color="#6b7280" />
           <TextInput
             className="flex-1 ml-2 text-gray-800"
@@ -254,14 +254,14 @@ export default function Marketplace() {
         }
       >
         {filteredGems.length === 0 ? (
-          <View className="flex-1 items-center justify-center py-20">
+          <View className="items-center justify-center flex-1 py-20">
             <Ionicons name="diamond-outline" size={80} color="#d1d5db" />
-            <Text className="text-gray-500 text-lg mt-4">No gems found</Text>
-            <Text className="text-gray-400 text-sm mt-2">Try adjusting your filters</Text>
+            <Text className="mt-4 text-lg text-gray-500">No gems found</Text>
+            <Text className="mt-2 text-sm text-gray-400">Try adjusting your filters</Text>
           </View>
         ) : (
           <>
-            <Text className="text-sm text-gray-600 mb-4">
+            <Text className="mb-4 text-sm text-gray-600">
               {filteredGems.length} {filteredGems.length === 1 ? 'gem' : 'gems'} available
             </Text>
             {filteredGems.map(renderGemCard)}
