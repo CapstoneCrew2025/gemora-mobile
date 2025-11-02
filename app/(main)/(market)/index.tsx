@@ -2,18 +2,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    RefreshControl,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import { getAccessibleImageUrl } from '../../lib/apiClient';
-import { ApprovedGem, gemMarketService } from '../../lib/gemMarketService';
+import { getAccessibleImageUrl } from '../../../lib/apiClient';
+import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
 
 export default function Marketplace() {
   const [gems, setGems] = useState<ApprovedGem[]>([]);
@@ -81,7 +81,7 @@ export default function Marketplace() {
   };
 
   const handleGemPress = (gemId: number) => {
-    router.push(`/(main)/gemdetail?id=${gemId}`);
+    router.push(`./gemdetail?id=${gemId}`);
   };
 
   const renderGemCard = (gem: ApprovedGem) => {

@@ -12,8 +12,8 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { getAccessibleImageUrl } from '../../lib/apiClient';
-import { ApprovedGem, gemMarketService } from '../../lib/gemMarketService';
+import { getAccessibleImageUrl } from '../../../lib/apiClient';
+import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
 
 const { width } = Dimensions.get('window');
 
