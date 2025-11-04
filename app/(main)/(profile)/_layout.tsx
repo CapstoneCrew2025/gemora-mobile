@@ -5,6 +5,13 @@ export default function ProfileLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="edit" />
+      <Stack.Screen 
+        name="myads" 
+        options={{
+          title: 'My Ads',
+          presentation: 'card',
+        }}
+      />
     </Stack>
   );
 }
