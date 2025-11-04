@@ -1,10 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
-import { Ionicons } from '@expo/vector-icons';
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
@@ -223,6 +223,19 @@ export default function Profile() {
                 <Ionicons name="person-outline" size={22} color="#1e3a8a" />
               </View>
               <Text className="flex-1 text-base font-medium text-gray-800">Edit Profile</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              onPress={() => router.push('./myads')}
+              className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl"
+            >
+              <View className="items-center justify-center w-12 h-12 mr-4 rounded-full bg-emerald-100">
+                <Ionicons name="pricetags-outline" size={22} color="#047857" />
+              </View>
+              <Text className="flex-1 text-base font-medium text-gray-800">My Ads</Text>
+              <View className="items-center justify-center px-2 py-1 bg-emerald-100 rounded-full">
+                <Text className="text-xs font-semibold text-emerald-700">View</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl">
