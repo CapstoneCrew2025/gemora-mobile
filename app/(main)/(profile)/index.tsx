@@ -1,10 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
-import { Ionicons } from '@expo/vector-icons';
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
