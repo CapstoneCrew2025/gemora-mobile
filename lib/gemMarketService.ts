@@ -57,6 +57,20 @@ class GemMarketService {
       throw new Error(error.response?.data?.message || 'Failed to fetch gem details');
     }
   }
+
+  /**
+   * Get user's own gem listings
+   */
+  async getMyGems(): Promise<ApprovedGem[]> {
+    try {
+      const response = await apiClient.get<ApprovedGem[]>('/gems/mine');
+      console.log('My gems fetched successfully:', response);
+      return response;
+    } catch (error: any) {
+      console.error('Error fetching my gems:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'Failed to fetch my gems');
+    }
+  }
 }
 
 export const gemMarketService = new GemMarketService();
