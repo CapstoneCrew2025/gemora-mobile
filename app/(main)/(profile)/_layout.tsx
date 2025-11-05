@@ -12,6 +12,14 @@ export default function ProfileLayout() {
           presentation: 'card',
         }}
       />
+      <Stack.Screen 
+        name="editgem" 
+        options={{
+          title: 'Edit Gem',
+          presentation: 'card',
+          headerShown: true,
+        }}
+      />
     </Stack>
   );
 }
