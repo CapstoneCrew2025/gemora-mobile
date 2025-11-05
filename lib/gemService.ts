@@ -16,6 +16,23 @@ export interface CreateGemRequest {
   certificateFile?: string; // Certificate file URI
 }
 
+export interface UpdateGemRequest {
+  name: string;
+  description: string;
+  weight: number; // carat weight
+  color?: string;
+  clarity?: string;
+  origin: string;
+  price: number;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  images?: string[]; // Array of new image URIs (optional)
+  certificates?: {
+    issuer: string;
+    certificateNo: string;
+    issuedDate: string; // yyyy-MM-dd format
+  }[];
+}
+
 export interface CertificateResponse {
   id: number;
   certificateNumber: string;
@@ -115,6 +132,68 @@ class GemService {
     } catch (error: any) {
       console.error('Error creating gem listing:', error.response?.data || error.message);
       throw new Error(error.response?.data?.message || 'Failed to create gem listing');
+    }
+  }
+
+  /**
+   * Update an existing gem listing
+   */
+  async updateGemListing(gemId: number, data: UpdateGemRequest): Promise<GemResponse> {
+    try {
+      const formData = new FormData();
+      
+      // Add text fields
+      formData.append('name', data.name);
+      formData.append('description', data.description);
+      formData.append('weight', data.weight.toString());
+      formData.append('origin', data.origin);
+      formData.append('price', data.price.toString());
+      formData.append('status', data.status);
+      
+      // Add optional fields
+      if (data.color) {
+        formData.append('color', data.color);
+      }
+      
+      if (data.clarity) {
+        formData.append('clarity', data.clarity);
+      }
+      
+      // Add certificates if provided
+      if (data.certificates && data.certificates.length > 0) {
+        data.certificates.forEach((cert, index) => {
+          formData.append(`certificates[${index}].issuer`, cert.issuer);
+          formData.append(`certificates[${index}].certificateNo`, cert.certificateNo);
+          formData.append(`certificates[${index}].issuedDate`, cert.issuedDate);
+        });
+      }
+      
+      // Add images if provided
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((imageUri, index) => {
+          const filename = imageUri.split('/').pop() || `image_${index}.jpg`;
+          const match = /\.(\w+)$/.exec(filename);
+          const type = match ? `image/${match[1]}` : 'image/jpeg';
+          
+          formData.append('images', {
+            uri: imageUri,
+            name: filename,
+            type: type,
+          } as any);
+        });
+      }
+
+      const response = await apiClient.put<GemResponse>(`/gems/${gemId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Gem listing updated successfully:', response);
+      return response;
+    } catch (error: any) {
+      console.error('Error updating gem listing:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'Failed to update gem listing');
     }
   }
 }

@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    RefreshControl,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
@@ -48,6 +48,14 @@ export default function MyAds() {
     router.push(`/(main)/(market)/gemdetail?id=${gemId}`);
   };
 
+  const handleEditGem = (gem: ApprovedGem) => {
+    // Navigate to edit screen with gem data
+    router.push({
+      pathname: './editgem',
+      params: { gemId: gem.id.toString() }
+    });
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
       case 'APPROVED':
@@ -78,99 +86,116 @@ export default function MyAds() {
     const imageUrl = gem.imageUrls && gem.imageUrls.length > 0 ? getAccessibleImageUrl(gem.imageUrls[0]) : null;
     const statusColor = getStatusColor(gem.status);
     const statusIcon = getStatusIcon(gem.status);
+    const canEdit = gem.status === 'PENDING' || gem.status === 'REJECTED';
 
     return (
-      <TouchableOpacity
+      <View
         key={gem.id}
         className="mb-4 overflow-hidden bg-white rounded-lg shadow-md"
-        onPress={() => handleGemPress(gem.id)}
       >
-        {/* Gem Image */}
-        <View className="relative h-48 bg-gray-200">
-          {imageUrl ? (
-            <Image
-              source={{ uri: imageUrl }}
-              className="w-full h-full"
-              resizeMode="cover"
-              onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
-            />
-          ) : (
-            <View className="items-center justify-center flex-1">
-              <Ionicons name="diamond-outline" size={60} color="#d1d5db" />
-            </View>
-          )}
-          
-          {/* Status Badge */}
-          <View className="absolute top-2 right-2">
-            <View className={`flex-row items-center px-3 py-1 rounded-full ${statusColor.split(' ')[0]}`}>
-              <Ionicons name={statusIcon as any} size={14} color={statusColor.includes('green') ? '#15803d' : statusColor.includes('yellow') ? '#a16207' : '#b91c1c'} />
-              <Text className={`ml-1 text-xs font-semibold ${statusColor.split(' ')[1]}`}>
-                {gem.status}
-              </Text>
+        <TouchableOpacity onPress={() => handleGemPress(gem.id)}>
+          {/* Gem Image */}
+          <View className="relative h-48 bg-gray-200">
+            {imageUrl ? (
+              <Image
+                source={{ uri: imageUrl }}
+                className="w-full h-full"
+                resizeMode="cover"
+                onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
+              />
+            ) : (
+              <View className="items-center justify-center flex-1">
+                <Ionicons name="diamond-outline" size={60} color="#d1d5db" />
+              </View>
+            )}
+            
+            {/* Status Badge */}
+            <View className="absolute top-2 right-2">
+              <View className={`flex-row items-center px-3 py-1 rounded-full ${statusColor.split(' ')[0]}`}>
+                <Ionicons name={statusIcon as any} size={14} color={statusColor.includes('green') ? '#15803d' : statusColor.includes('yellow') ? '#a16207' : '#b91c1c'} />
+                <Text className={`ml-1 text-xs font-semibold ${statusColor.split(' ')[1]}`}>
+                  {gem.status}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Gem Info */}
-        <View className="p-4">
-          <View className="flex-row items-start justify-between mb-2">
-            <Text className="flex-1 text-lg font-bold text-gray-800" numberOfLines={1}>
-              {gem.name}
-            </Text>
-            <View
-              className={`px-2 py-1 rounded-full ${
-                gem.listingType === 'AUCTION' ? 'bg-purple-100' : 'bg-emerald-100'
-              }`}
-            >
-              <Text
-                className={`text-xs font-semibold ${
-                  gem.listingType === 'AUCTION' ? 'text-purple-600' : 'text-emerald-600'
+          {/* Gem Info */}
+          <View className="p-4">
+            <View className="flex-row items-start justify-between mb-2">
+              <Text className="flex-1 text-lg font-bold text-gray-800" numberOfLines={1}>
+                {gem.name}
+              </Text>
+              <View
+                className={`px-2 py-1 rounded-full ${
+                  gem.listingType === 'AUCTION' ? 'bg-purple-100' : 'bg-emerald-100'
                 }`}
               >
-                {gem.listingType}
-              </Text>
+                <Text
+                  className={`text-xs font-semibold ${
+                    gem.listingType === 'AUCTION' ? 'text-purple-600' : 'text-emerald-600'
+                  }`}
+                >
+                  {gem.listingType}
+                </Text>
+              </View>
             </View>
-          </View>
 
-          <Text className="mb-2 text-sm text-gray-600" numberOfLines={2}>
-            {gem.description}
-          </Text>
+            <Text className="mb-2 text-sm text-gray-600" numberOfLines={2}>
+              {gem.description}
+            </Text>
 
-          <View className="flex-row items-center mb-2">
-            <Ionicons name="location-outline" size={16} color="#6b7280" />
-            <Text className="ml-1 text-sm text-gray-600">{gem.origin}</Text>
-            <Text className="mx-2 text-sm text-gray-400">•</Text>
-            <Text className="text-sm text-gray-600">{gem.carat} ct</Text>
-          </View>
-
-          {gem.certificates && gem.certificates.length > 0 && (
             <View className="flex-row items-center mb-2">
-              <Ionicons 
-                name={gem.certificates[0].verified ? "shield-checkmark" : "shield-outline"} 
-                size={16} 
-                color={gem.certificates[0].verified ? "#10b981" : "#6b7280"} 
-              />
-              <Text className={`ml-1 text-xs ${gem.certificates[0].verified ? 'text-emerald-600' : 'text-gray-600'}`}>
-                {gem.certificates[0].verified ? 'Verified Certificate' : 'Certificate Pending Verification'}
-              </Text>
+              <Ionicons name="location-outline" size={16} color="#6b7280" />
+              <Text className="ml-1 text-sm text-gray-600">{gem.origin}</Text>
+              <Text className="mx-2 text-sm text-gray-400">•</Text>
+              <Text className="text-sm text-gray-600">{gem.carat} ct</Text>
             </View>
-          )}
 
-          <View className="flex-row items-center justify-between pt-2 mt-2 border-t border-gray-100">
-            <View className="flex-row items-center">
-              <Text className="text-xl font-bold text-emerald-600">
-                ${gem.price.toLocaleString()}
-              </Text>
-            </View>
-            <View className="flex-row items-center">
-              <Text className="mr-2 text-xs text-gray-500">
-                {new Date(gem.createdAt).toLocaleDateString()}
-              </Text>
-              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            {gem.certificates && gem.certificates.length > 0 && (
+              <View className="flex-row items-center mb-2">
+                <Ionicons 
+                  name={gem.certificates[0].verified ? "shield-checkmark" : "shield-outline"} 
+                  size={16} 
+                  color={gem.certificates[0].verified ? "#10b981" : "#6b7280"} 
+                />
+                <Text className={`ml-1 text-xs ${gem.certificates[0].verified ? 'text-emerald-600' : 'text-gray-600'}`}>
+                  {gem.certificates[0].verified ? 'Verified Certificate' : 'Certificate Pending Verification'}
+                </Text>
+              </View>
+            )}
+
+            <View className="flex-row items-center justify-between pt-2 mt-2 border-t border-gray-100">
+              <View className="flex-row items-center">
+                <Text className="text-xl font-bold text-emerald-600">
+                  ${gem.price.toLocaleString()}
+                </Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text className="mr-2 text-xs text-gray-500">
+                  {new Date(gem.createdAt).toLocaleDateString()}
+                </Text>
+                <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+
+        {/* Edit Button for Pending/Rejected gems */}
+        {canEdit && (
+          <View className="px-4 pb-4">
+            <TouchableOpacity
+              onPress={() => handleEditGem(gem)}
+              className="flex-row items-center justify-center py-3 border-2 border-emerald-500 rounded-lg bg-emerald-50"
+            >
+              <Ionicons name="create-outline" size={20} color="#059669" />
+              <Text className="ml-2 font-semibold text-emerald-600">
+                Edit & Resubmit
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     );
   };
 
