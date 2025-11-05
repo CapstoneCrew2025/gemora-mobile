@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Dimensions,
-    Image,
-    Linking,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
@@ -85,6 +85,14 @@ export default function GemDetail() {
     setExpandedCertId(expandedCertId === certId ? null : certId);
   };
 
+  const handleGoBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.push('/(main)/(market)');
+    }
+  };
+
   if (loading) {
     return (
       <View className="items-center justify-center flex-1 bg-gray-50">
@@ -101,7 +109,7 @@ export default function GemDetail() {
         <Text className="mt-4 text-lg text-gray-500">Gem not found</Text>
         <TouchableOpacity
           className="px-6 py-3 mt-4 rounded-lg bg-emerald-500"
-          onPress={() => router.back()}
+          onPress={handleGoBack}
         >
           <Text className="font-semibold text-white">Go Back</Text>
         </TouchableOpacity>
@@ -112,14 +120,15 @@ export default function GemDetail() {
   return (
     <View className="flex-1 bg-white">
       {/* Header */}
-      <View className="absolute top-0 left-0 right-0 z-10 flex-row items-center justify-between px-4 pt-12 pb-4">
+      <View className="absolute top-0 left-0 right-0 z-10 flex-row items-center justify-between px-4 pt-12 pb-4 bg-gradient-to-b from-black/30 to-transparent">
         <TouchableOpacity
-          className="p-2 rounded-full bg-white/80"
-          onPress={() => router.back()}
+          className="p-2 bg-white rounded-full shadow-lg"
+          onPress={handleGoBack}
+          activeOpacity={0.7}
         >
           <Ionicons name="arrow-back" size={24} color="#1f2937" />
         </TouchableOpacity>
-        <TouchableOpacity className="p-2 rounded-full bg-white/80">
+        <TouchableOpacity className="p-2 bg-white rounded-full shadow-lg" activeOpacity={0.7}>
           <Ionicons name="heart-outline" size={24} color="#1f2937" />
         </TouchableOpacity>
       </View>
