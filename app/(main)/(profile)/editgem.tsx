@@ -185,7 +185,7 @@ export default function EditGemScreen() {
           certificateNo: cert.certificateNo.trim(),
           issuedDate: cert.issuedDate.trim(),
         })),
-        images: newImages.length > 0 ? newImages : undefined,
+        images: newImages.length > 0 ? newImages.map(img => img.uri) : undefined,
       };
 
       await gemService.updateGemListing(Number(gemId), updateData);
