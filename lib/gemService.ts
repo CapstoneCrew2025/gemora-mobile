@@ -171,12 +171,20 @@ class GemService {
       // Add images if provided
       if (data.images && data.images.length > 0) {
         data.images.forEach((imageUri, index) => {
-          const filename = imageUri.split('/').pop() || `image_${index}.jpg`;
+          // Handle both string URIs and image objects
+          const uri = typeof imageUri === 'string' ? imageUri : (imageUri as any)?.uri;
+          
+          if (!uri) {
+            console.warn(`Skipping invalid image at index ${index}`);
+            return;
+          }
+          
+          const filename = uri.split('/').pop() || `image_${index}.jpg`;
           const match = /\.(\w+)$/.exec(filename);
           const type = match ? `image/${match[1]}` : 'image/jpeg';
           
-          formData.append('images', {
-            uri: imageUri,
+          formData.append('newImages', {
+            uri: uri,
             name: filename,
             type: type,
           } as any);
