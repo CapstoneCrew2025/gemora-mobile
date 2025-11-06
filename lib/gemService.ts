@@ -183,7 +183,7 @@ class GemService {
           const match = /\.(\w+)$/.exec(filename);
           const type = match ? `image/${match[1]}` : 'image/jpeg';
           
-          formData.append('images', {
+          formData.append('newImages', {
             uri: uri,
             name: filename,
             type: type,
