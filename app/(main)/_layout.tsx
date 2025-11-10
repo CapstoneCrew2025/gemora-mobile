@@ -21,14 +21,18 @@ export default function MainLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#10b981', 
-        tabBarInactiveTintColor: '#9ca3af', 
+        tabBarInactiveTintColor: '#6b7280', 
         tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e5e7eb', 
+          backgroundColor: '#DFF7E2',
+          borderTopWidth: 0,
           paddingBottom: 8,
           paddingTop: 8,
           height: 60,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
         },
       }}
     >
