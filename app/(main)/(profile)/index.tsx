@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
@@ -11,6 +11,7 @@ export default function Profile() {
   const { logout } = useAuthActions();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isRefreshingProfile, setIsRefreshingProfile] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [imageRefreshKey, setImageRefreshKey] = useState(Date.now());
   const [profileLoadError, setProfileLoadError] = useState(false);
@@ -40,15 +41,22 @@ export default function Profile() {
       setImageRefreshKey(Date.now()); // Force image refresh
     }, [])
   );
-
   const loadProfile = useCallback(async () => {
+    // If we already have profileData, perform a background refresh instead of full-screen loading
+    const hadProfile = !!profileData;
     try {
-      setIsLoadingProfile(true);
+      if (hadProfile) {
+        setIsRefreshingProfile(true);
+      } else {
+        setIsLoadingProfile(true);
+      }
+
       setImageError(false);
       setProfileLoadError(false);
+
       const profile = await profileService.getProfile();
       setProfileData(profile);
-      
+
       // Set selfie image URL from profile data
       if (profile && profile.selfieImageUrl) {
         setSelfieImageUrl(getAccessibleImageUrl(profile.selfieImageUrl));
@@ -58,9 +66,13 @@ export default function Profile() {
       setProfileData(null);
       setProfileLoadError(true);
     } finally {
-      setIsLoadingProfile(false);
+      if (hadProfile) {
+        setIsRefreshingProfile(false);
+      } else {
+        setIsLoadingProfile(false);
+      }
     }
-  }, []);
+  }, [profileData]);
 
   const handleLogout = useCallback(async () => {
     Alert.alert(
@@ -88,8 +100,8 @@ export default function Profile() {
     );
   }, [logout]);
 
-  // Show loading while performing operations
-  if (isLoading || isLoadingProfile) {
+  // Show loading only when auth or initial profile load (no cached profileData)
+  if (isLoading || (isLoadingProfile && !profileData)) {
     return (
       <View className="items-center justify-center flex-1 bg-gray-50">
         <Text className="text-lg text-gray-600">Loading...</Text>
@@ -203,14 +215,19 @@ export default function Profile() {
         </TouchableOpacity>
 
         {/* Name and ID */}
-        <View className="items-center mt-0 mb-0">
-          <Text className="mb-1 text-xl font-bold text-gray-800">
-            {profileData?.name ?? displayData.name}
-          </Text>
-          <Text className="text-sm text-gray-500">
-            ID: {(profileData?.id ?? displayData.id).toString().padStart(8, '0')}
-          </Text>
-        </View>
+              <View className="items-center mt-0 mb-0">
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text className="mb-1 text-xl font-bold text-gray-800">
+                    {profileData?.name ?? displayData.name}
+                  </Text>
+                  {isRefreshingProfile && (
+                    <ActivityIndicator style={{ marginLeft: 8 }} size="small" color="#059669" />
+                  )}
+                </View>
+                <Text className="text-sm text-gray-500">
+                  ID: {(profileData?.id ?? displayData.id).toString().padStart(8, '0')}
+                </Text>
+              </View>
 
         {/* Menu items */}
         <ScrollView showsVerticalScrollIndicator={false}>
