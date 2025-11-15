@@ -7,12 +7,15 @@ import {
   Dimensions,
   Image,
   Linking,
+  Modal,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
+import bidService, { BidResponse } from '../../../lib/bidService';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
 
 const { width } = Dimensions.get('window');
@@ -23,12 +26,23 @@ export default function GemDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [expandedCertId, setExpandedCertId] = useState<number | null>(null);
+  const [bidHistory, setBidHistory] = useState<BidResponse[]>([]);
+  const [loadingBids, setLoadingBids] = useState(false);
+  const [showBidModal, setShowBidModal] = useState(false);
+  const [bidAmount, setBidAmount] = useState('');
+  const [placingBid, setPlacingBid] = useState(false);
 
   useEffect(() => {
     if (id) {
       fetchGemDetails();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (gem && gem.listingType === 'AUCTION') {
+      fetchBidHistory();
+    }
+  }, [gem]);
 
   const fetchGemDetails = async () => {
     try {
@@ -41,6 +55,19 @@ export default function GemDetail() {
       router.back();
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBidHistory = async () => {
+    try {
+      setLoadingBids(true);
+      const bids = await bidService.getBidHistory(Number(id));
+      setBidHistory(bids);
+    } catch (error) {
+      console.error('Error fetching bid history:', error);
+      // Don't show error alert, just log it
+    } finally {
+      setLoadingBids(false);
     }
   };
 
@@ -58,14 +85,47 @@ export default function GemDetail() {
 
   const handlePlaceBid = () => {
     if (!gem) return;
-    Alert.alert(
-      'Place Bid',
-      `Place a bid on ${gem.name}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Place Bid', onPress: () => console.log('Bid placed') },
-      ]
-    );
+    const highestBid = bidHistory.length > 0 ? bidHistory[0].amount : gem.price;
+    setBidAmount((highestBid + 100).toString());
+    setShowBidModal(true);
+  };
+
+  const submitBid = async () => {
+    if (!gem) return;
+    
+    const amount = parseFloat(bidAmount);
+    if (isNaN(amount) || amount <= 0) {
+      Alert.alert('Invalid Amount', 'Please enter a valid bid amount');
+      return;
+    }
+
+    const highestBid = bidHistory.length > 0 ? bidHistory[0].amount : gem.price;
+    if (amount <= highestBid) {
+      Alert.alert(
+        'Bid Too Low',
+        `Your bid must be higher than the current ${bidHistory.length > 0 ? 'highest bid' : 'starting price'} of $${highestBid.toLocaleString()}`
+      );
+      return;
+    }
+
+    try {
+      setPlacingBid(true);
+      await bidService.placeBid({
+        gemId: gem.id,
+        amount: amount,
+      });
+      
+      Alert.alert('Success', 'Your bid has been placed successfully!');
+      setShowBidModal(false);
+      setBidAmount('');
+      
+      // Refresh bid history
+      await fetchBidHistory();
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to place bid');
+    } finally {
+      setPlacingBid(false);
+    }
   };
 
   const handleBuyNow = () => {
@@ -360,6 +420,62 @@ export default function GemDetail() {
             </View>
           )}
 
+          {/* Bid History for Auction Items */}
+          {gem.listingType === 'AUCTION' && (
+            <View className="mb-4">
+              <View className="flex-row items-center justify-between mb-3">
+                <Text className="text-lg font-semibold text-gray-800">Bid History</Text>
+                {loadingBids && <ActivityIndicator size="small" color="#10b981" />}
+              </View>
+              
+              {bidHistory.length > 0 ? (
+                <View className="overflow-hidden rounded-lg bg-gray-50">
+                  {bidHistory.map((bid, index) => (
+                    <View
+                      key={bid.bidId}
+                      className={`p-4 border-b border-gray-200 ${
+                        index === 0 ? 'bg-emerald-50' : ''
+                      }`}
+                    >
+                      <View className="flex-row items-center justify-between">
+                        <View className="flex-1">
+                          <View className="flex-row items-center">
+                            <Text className={`text-lg font-bold ${
+                              index === 0 ? 'text-emerald-600' : 'text-gray-800'
+                            }`}>
+                              ${bid.amount.toLocaleString()}
+                            </Text>
+                            {index === 0 && (
+                              <View className="px-2 py-1 ml-2 rounded-full bg-emerald-500">
+                                <Text className="text-xs font-semibold text-white">Highest Bid</Text>
+                              </View>
+                            )}
+                          </View>
+                          <Text className="mt-1 text-xs text-gray-500">
+                            Bidder ID: {bid.bidderId.toString().padStart(4, '0')}
+                          </Text>
+                        </View>
+                        <Text className="text-xs text-gray-500">
+                          {new Date(bid.placedAt).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <View className="items-center justify-center p-8 rounded-lg bg-gray-50">
+                  <Ionicons name="pricetag-outline" size={48} color="#d1d5db" />
+                  <Text className="mt-2 text-sm text-gray-500">No bids yet. Be the first to bid!</Text>
+                </View>
+              )}
+            </View>
+          )}
+
           {/* Listing Info */}
           <View className="p-4 mb-4 rounded-lg bg-gray-50">
             <Text className="mb-1 text-sm text-gray-500">Listed on</Text>
@@ -396,6 +512,72 @@ export default function GemDetail() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Bid Modal */}
+      <Modal
+        visible={showBidModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowBidModal(false)}
+      >
+        <View className="justify-end flex-1 bg-black/50">
+          <View className="bg-white rounded-t-3xl">
+            <View className="p-6">
+              <View className="flex-row items-center justify-between mb-4">
+                <Text className="text-xl font-bold text-gray-800">Place Your Bid</Text>
+                <TouchableOpacity onPress={() => setShowBidModal(false)}>
+                  <Ionicons name="close-circle" size={28} color="#9ca3af" />
+                </TouchableOpacity>
+              </View>
+
+              <View className="p-4 mb-4 rounded-lg bg-emerald-50">
+                <Text className="mb-1 text-sm text-gray-600">Current {bidHistory.length > 0 ? 'Highest Bid' : 'Starting Price'}</Text>
+                <Text className="text-2xl font-bold text-emerald-600">
+                  ${(bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0).toLocaleString()}
+                </Text>
+              </View>
+
+              <View className="mb-4">
+                <Text className="mb-2 text-sm font-medium text-gray-700">Your Bid Amount</Text>
+                <View className="flex-row items-center px-4 py-3 border-2 rounded-lg border-emerald-500">
+                  <Text className="mr-2 text-xl font-bold text-gray-800">$</Text>
+                  <TextInput
+                    value={bidAmount}
+                    onChangeText={setBidAmount}
+                    placeholder="Enter amount"
+                    keyboardType="decimal-pad"
+                    className="flex-1 text-xl font-semibold text-gray-800"
+                  />
+                </View>
+                <Text className="mt-2 text-xs text-gray-500">
+                  Minimum bid: ${((bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0) + 1).toLocaleString()}
+                </Text>
+              </View>
+
+              <View className="flex-row gap-2">
+                <TouchableOpacity
+                  className="flex-1 py-3 bg-gray-100 rounded-lg"
+                  onPress={() => setShowBidModal(false)}
+                  disabled={placingBid}
+                >
+                  <Text className="font-semibold text-center text-gray-800">Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="flex-1 py-3 rounded-lg bg-emerald-500"
+                  onPress={submitBid}
+                  disabled={placingBid}
+                >
+                  {placingBid ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text className="font-bold text-center text-white">Confirm Bid</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
