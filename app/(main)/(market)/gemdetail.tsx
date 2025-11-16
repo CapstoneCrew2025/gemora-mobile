@@ -17,7 +17,7 @@ import {
   View
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
-import bidService, { BidResponse, AuctionTimeResponse } from '../../../lib/bidService';
+import bidService, { AuctionTimeResponse, BidResponse } from '../../../lib/bidService';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
 
 const { width } = Dimensions.get('window');
