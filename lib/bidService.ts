@@ -11,6 +11,7 @@ export interface BidResponse {
   bidderId: number;
   amount: number;
   placedAt: string;
+  daysAgo: number;
 }
 
 class BidService {

@@ -457,14 +457,17 @@ export default function GemDetail() {
                             Bidder ID: {bid.bidderId.toString().padStart(4, '0')}
                           </Text>
                         </View>
-                        <Text className="text-xs text-gray-500">
-                          {new Date(bid.placedAt).toLocaleString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </Text>
+                        <View className="items-end">
+                          <Text className="text-xs font-medium text-gray-600">
+                            {bid.daysAgo === 0 ? 'Today' : `${bid.daysAgo} day${bid.daysAgo > 1 ? 's' : ''} ago`}
+                          </Text>
+                          <Text className="mt-1 text-xs text-gray-400">
+                            {new Date(bid.placedAt).toLocaleString('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   ))}
