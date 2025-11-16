@@ -6,12 +6,14 @@ import {
   Alert,
   Dimensions,
   Image,
+  Keyboard,
   Linking,
   Modal,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
@@ -520,63 +522,67 @@ export default function GemDetail() {
         animationType="slide"
         onRequestClose={() => setShowBidModal(false)}
       >
-        <View className="justify-end flex-1 bg-black/50">
-          <View className="bg-white rounded-t-3xl">
-            <View className="p-6">
-              <View className="flex-row items-center justify-between mb-4">
-                <Text className="text-xl font-bold text-gray-800">Place Your Bid</Text>
-                <TouchableOpacity onPress={() => setShowBidModal(false)}>
-                  <Ionicons name="close-circle" size={28} color="#9ca3af" />
-                </TouchableOpacity>
-              </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View className="justify-end flex-1 bg-black/50">
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View className="bg-white rounded-t-3xl">
+                <View className="p-6">
+                  <View className="flex-row items-center justify-between mb-4">
+                    <Text className="text-xl font-bold text-gray-800">Place Your Bid</Text>
+                    <TouchableOpacity onPress={() => setShowBidModal(false)}>
+                      <Ionicons name="close-circle" size={28} color="#9ca3af" />
+                    </TouchableOpacity>
+                  </View>
 
-              <View className="p-4 mb-4 rounded-lg bg-emerald-50">
-                <Text className="mb-1 text-sm text-gray-600">Current {bidHistory.length > 0 ? 'Highest Bid' : 'Starting Price'}</Text>
-                <Text className="text-2xl font-bold text-emerald-600">
-                  ${(bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0).toLocaleString()}
-                </Text>
-              </View>
+                  <View className="p-4 mb-4 rounded-lg bg-emerald-50">
+                    <Text className="mb-1 text-sm text-gray-600">Current {bidHistory.length > 0 ? 'Highest Bid' : 'Starting Price'}</Text>
+                    <Text className="text-2xl font-bold text-emerald-600">
+                      ${(bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0).toLocaleString()}
+                    </Text>
+                  </View>
 
-              <View className="mb-4">
-                <Text className="mb-2 text-sm font-medium text-gray-700">Your Bid Amount</Text>
-                <View className="flex-row items-center px-4 py-3 border-2 rounded-lg border-emerald-500">
-                  <Text className="mr-2 text-xl font-bold text-gray-800">$</Text>
-                  <TextInput
-                    value={bidAmount}
-                    onChangeText={setBidAmount}
-                    placeholder="Enter amount"
-                    keyboardType="decimal-pad"
-                    className="flex-1 text-xl font-semibold text-gray-800"
-                  />
+                  <View className="mb-4">
+                    <Text className="mb-2 text-sm font-medium text-gray-700">Your Bid Amount</Text>
+                    <View className="flex-row items-center px-4 py-3 border-2 rounded-lg border-emerald-500">
+                      <Text className="mr-2 text-xl font-bold text-gray-800">$</Text>
+                      <TextInput
+                        value={bidAmount}
+                        onChangeText={setBidAmount}
+                        placeholder="Enter amount"
+                        keyboardType="decimal-pad"
+                        className="flex-1 text-xl font-semibold text-gray-800"
+                      />
+                    </View>
+                    <Text className="mt-2 text-xs text-gray-500">
+                      Minimum bid: ${((bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0) + 1).toLocaleString()}
+                    </Text>
+                  </View>
+
+                  <View className="flex-row gap-2">
+                    <TouchableOpacity
+                      className="flex-1 py-3 bg-gray-100 rounded-lg"
+                      onPress={() => setShowBidModal(false)}
+                      disabled={placingBid}
+                    >
+                      <Text className="font-semibold text-center text-gray-800">Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      className="flex-1 py-3 rounded-lg bg-emerald-500"
+                      onPress={submitBid}
+                      disabled={placingBid}
+                    >
+                      {placingBid ? (
+                        <ActivityIndicator color="white" />
+                      ) : (
+                        <Text className="font-bold text-center text-white">Confirm Bid</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <Text className="mt-2 text-xs text-gray-500">
-                  Minimum bid: ${((bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0) + 1).toLocaleString()}
-                </Text>
               </View>
-
-              <View className="flex-row gap-2">
-                <TouchableOpacity
-                  className="flex-1 py-3 bg-gray-100 rounded-lg"
-                  onPress={() => setShowBidModal(false)}
-                  disabled={placingBid}
-                >
-                  <Text className="font-semibold text-center text-gray-800">Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  className="flex-1 py-3 rounded-lg bg-emerald-500"
-                  onPress={submitBid}
-                  disabled={placingBid}
-                >
-                  {placingBid ? (
-                    <ActivityIndicator color="white" />
-                  ) : (
-                    <Text className="font-bold text-center text-white">Confirm Bid</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
