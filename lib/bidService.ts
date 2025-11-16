@@ -14,6 +14,14 @@ export interface BidResponse {
   daysAgo: number;
 }
 
+export interface AuctionTimeResponse {
+  gemId: number;
+  remainingDays: number;
+  remainingHours: number;
+  remainingMinutes: number;
+  expired: boolean;
+}
+
 class BidService {
   /**
    * Place a bid on an auction gem
@@ -40,6 +48,20 @@ class BidService {
     } catch (error: any) {
       console.error('Error fetching bid history:', error.response?.data || error.message);
       throw new Error(error.response?.data?.message || 'Failed to fetch bid history');
+    }
+  }
+
+  /**
+   * Get remaining time for auction
+   */
+  async getRemainingTime(gemId: number): Promise<AuctionTimeResponse> {
+    try {
+      const response = await apiClient.get<AuctionTimeResponse>(`/bids/remaining-time/${gemId}`);
+      console.log('Auction time fetched successfully:', response);
+      return response;
+    } catch (error: any) {
+      console.error('Error fetching auction time:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'Failed to fetch auction time');
     }
   }
 }

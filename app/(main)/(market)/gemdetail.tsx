@@ -17,7 +17,7 @@ import {
   View
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
-import bidService, { BidResponse } from '../../../lib/bidService';
+import bidService, { BidResponse, AuctionTimeResponse } from '../../../lib/bidService';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
 
 const { width } = Dimensions.get('window');
@@ -33,6 +33,9 @@ export default function GemDetail() {
   const [showBidModal, setShowBidModal] = useState(false);
   const [bidAmount, setBidAmount] = useState('');
   const [placingBid, setPlacingBid] = useState(false);
+  const [auctionTime, setAuctionTime] = useState<AuctionTimeResponse | null>(null);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -43,8 +46,37 @@ export default function GemDetail() {
   useEffect(() => {
     if (gem && gem.listingType === 'AUCTION') {
       fetchBidHistory();
+      fetchAuctionTime();
     }
   }, [gem]);
+
+  useEffect(() => {
+    if (!auctionTime || isExpired) return;
+
+    // Initialize countdown from API data
+    let totalSeconds = 
+      (auctionTime.remainingDays * 24 * 60 * 60) +
+      (auctionTime.remainingHours * 60 * 60) +
+      (auctionTime.remainingMinutes * 60);
+
+    const interval = setInterval(() => {
+      if (totalSeconds <= 0) {
+        setIsExpired(true);
+        clearInterval(interval);
+        return;
+      }
+
+      totalSeconds--;
+      const days = Math.floor(totalSeconds / (24 * 60 * 60));
+      const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+      const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+      const seconds = totalSeconds % 60;
+
+      setCountdown({ days, hours, minutes, seconds });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [auctionTime, isExpired]);
 
   const fetchGemDetails = async () => {
     try {
@@ -70,6 +102,16 @@ export default function GemDetail() {
       // Don't show error alert, just log it
     } finally {
       setLoadingBids(false);
+    }
+  };
+
+  const fetchAuctionTime = async () => {
+    try {
+      const time = await bidService.getRemainingTime(Number(id));
+      setAuctionTime(time);
+      setIsExpired(time.expired);
+    } catch (error) {
+      console.error('Error fetching auction time:', error);
     }
   };
 
@@ -419,6 +461,54 @@ export default function GemDetail() {
                   </View>
                 );
               })}
+            </View>
+          )}
+
+          {/* Auction Countdown Timer */}
+          {gem.listingType === 'AUCTION' && auctionTime && (
+            <View className="mb-4">
+              <Text className="mb-3 text-lg font-semibold text-gray-800">Auction Ends In</Text>
+              {isExpired ? (
+                <View className="p-6 rounded-lg bg-red-50">
+                  <View className="items-center">
+                    <Ionicons name="time-outline" size={48} color="#dc2626" />
+                    <Text className="mt-2 text-xl font-bold text-red-600">Auction Expired</Text>
+                    <Text className="mt-1 text-sm text-red-500">This auction has ended</Text>
+                  </View>
+                </View>
+              ) : (
+                <View className="p-4 rounded-lg bg-gradient-to-r from-purple-50 to-emerald-50" style={{ backgroundColor: '#f0fdf4' }}>
+                  <View className="flex-row items-center justify-around">
+                    <View className="items-center">
+                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
+                        <Text className="text-3xl font-bold text-purple-600">{countdown.days}</Text>
+                      </View>
+                      <Text className="mt-2 text-xs font-medium text-gray-600">Days</Text>
+                    </View>
+                    <Text className="text-2xl font-bold text-gray-400">:</Text>
+                    <View className="items-center">
+                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
+                        <Text className="text-3xl font-bold text-purple-600">{countdown.hours.toString().padStart(2, '0')}</Text>
+                      </View>
+                      <Text className="mt-2 text-xs font-medium text-gray-600">Hours</Text>
+                    </View>
+                    <Text className="text-2xl font-bold text-gray-400">:</Text>
+                    <View className="items-center">
+                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
+                        <Text className="text-3xl font-bold text-purple-600">{countdown.minutes.toString().padStart(2, '0')}</Text>
+                      </View>
+                      <Text className="mt-2 text-xs font-medium text-gray-600">Minutes</Text>
+                    </View>
+                    <Text className="text-2xl font-bold text-gray-400">:</Text>
+                    <View className="items-center">
+                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
+                        <Text className="text-3xl font-bold text-emerald-600">{countdown.seconds.toString().padStart(2, '0')}</Text>
+                      </View>
+                      <Text className="mt-2 text-xs font-medium text-gray-600">Seconds</Text>
+                    </View>
+                  </View>
+                </View>
+              )}
             </View>
           )}
 
