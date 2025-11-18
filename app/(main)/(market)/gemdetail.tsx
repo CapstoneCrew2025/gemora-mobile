@@ -117,14 +117,8 @@ export default function GemDetail() {
 
   const handleContactSeller = () => {
     if (!gem) return;
-    Alert.alert(
-      'Contact Seller',
-      `Contact seller #${gem.sellerId} about ${gem.name}`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Send Message', onPress: () => console.log('Message sent') },
-      ]
-    );
+    const chatPath = `/(main)/(market)/ChatScreen?sellerId=${gem.sellerId}&sellerName=Seller #${gem.sellerId}&gemName=${encodeURIComponent(gem.name)}` as any;
+    router.push(chatPath);
   };
 
   const handlePlaceBid = () => {
