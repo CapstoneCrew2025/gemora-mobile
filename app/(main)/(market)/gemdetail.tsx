@@ -117,7 +117,7 @@ export default function GemDetail() {
 
   const handleContactSeller = () => {
     if (!gem) return;
-    const chatPath = `/(main)/(market)/ChatScreen?sellerId=${gem.sellerId}&sellerName=Seller #${gem.sellerId}&gemName=${encodeURIComponent(gem.name)}` as any;
+    const chatPath = `/(main)/(market)/ChatScreen?sellerId=${gem.sellerId}&sellerName=${encodeURIComponent('Seller #' + gem.sellerId)}&gemName=${encodeURIComponent(gem.name)}&gemId=${gem.id}` as any;
     router.push(chatPath);
   };
 
