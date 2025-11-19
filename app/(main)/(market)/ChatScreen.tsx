@@ -16,22 +16,12 @@ import chatService, { ChatMessage } from '../../../lib/chatService';
 import { profileService } from '../../../lib/profileService';
 
 export default function ChatScreen() {
-  const params = useLocalSearchParams();
-  console.log('🔍 Raw params received:', params);
-  console.log('🔍 All params keys:', Object.keys(params));
-  
   const { sellerId, sellerName, gemName, gemId } = useLocalSearchParams<{
     sellerId: string;
     sellerName?: string;
     gemName?: string;
     gemId: string;
   }>();
-  
-  console.log('🔍 Destructured params:', { sellerId, sellerName, gemName, gemId });
-  console.log('🔍 Types:', {
-    sellerIdType: typeof sellerId,
-    gemIdType: typeof gemId,
-  });
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -45,94 +35,45 @@ export default function ChatScreen() {
   }, []);
 
   const initializeChat = async () => {
-    console.log('=== INITIALIZING CHAT ===');
-    console.log('Params received:', { sellerId, sellerName, gemName, gemId });
-    
     try {
       setLoading(true);
       
       // Get current user's profile to get their ID
-      console.log('Fetching user profile...');
       const profile = await profileService.getProfile();
-      console.log('User profile:', profile);
       setCurrentUserId(profile.id);
       
       // Fetch chat history
       if (sellerId && gemId) {
-        console.log('Fetching chat history for seller:', sellerId, 'gem:', gemId);
         const history = await chatService.getChatHistory(Number(sellerId), Number(gemId));
-        console.log('Chat history received:', history);
         setMessages(history.reverse()); // Reverse to show oldest first
         
         // Scroll to bottom after messages load
         setTimeout(() => {
           flatListRef.current?.scrollToEnd({ animated: false });
         }, 100);
-      } else {
-        console.log('⚠️ Missing params - sellerId:', sellerId, 'gemId:', gemId);
       }
     } catch (error: any) {
-      console.error('❌ Error initializing chat:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-      });
+      console.error('Error initializing chat:', error);
       Alert.alert('Error', error.message || 'Failed to load chat history');
     } finally {
       setLoading(false);
-      console.log('=== CHAT INITIALIZATION COMPLETE ===');
     }
   };
 
   const handleSendMessage = async () => {
-    console.log('=== SEND MESSAGE CLICKED ===');
-    console.log('Input message:', inputMessage);
-    console.log('Seller ID:', sellerId);
-    console.log('Gem ID:', gemId);
-    console.log('Sending:', sending);
-    console.log('Trimmed message:', inputMessage.trim());
-    
-    if (!inputMessage.trim()) {
-      console.log('❌ Message is empty');
-      return;
-    }
-    
-    if (!sellerId) {
-      console.log('❌ Seller ID is missing');
-      Alert.alert('Error', 'Seller ID is missing');
-      return;
-    }
-    
-    if (!gemId) {
-      console.log('❌ Gem ID is missing');
-      Alert.alert('Error', 'Gem ID is missing. Please try reopening the chat.');
-      return;
-    }
-    
-    if (sending) {
-      console.log('❌ Already sending a message');
-      return;
-    }
+    if (!inputMessage.trim() || !sellerId || !gemId || sending) return;
 
     const messageContent = inputMessage.trim();
     setInputMessage(''); // Clear input immediately for better UX
 
     try {
       setSending(true);
-      console.log('📤 Sending message to API...');
-      console.log('Request data:', {
-        receiverId: Number(sellerId),
-        gemId: Number(gemId),
-        content: messageContent,
-      });
       
       const newMessage = await chatService.sendMessage({
         receiverId: Number(sellerId),
         gemId: Number(gemId),
         content: messageContent,
       });
-
-      console.log('✅ Message sent successfully:', newMessage);
 
       // Add the new message to the list
       setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -142,18 +83,12 @@ export default function ChatScreen() {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     } catch (error: any) {
-      console.error('❌ Error sending message:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
+      console.error('Error sending message:', error);
       Alert.alert('Error', error.message || 'Failed to send message');
       // Restore the message in input if failed
       setInputMessage(messageContent);
     } finally {
       setSending(false);
-      console.log('=== SEND MESSAGE FINISHED ===');
     }
   };
 

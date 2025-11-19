@@ -118,7 +118,6 @@ export default function GemDetail() {
   const handleContactSeller = () => {
     if (!gem) return;
     const chatPath = `/(main)/(market)/ChatScreen?sellerId=${gem.sellerId}&sellerName=${encodeURIComponent('Seller #' + gem.sellerId)}&gemName=${encodeURIComponent(gem.name)}&gemId=${gem.id}` as any;
-    console.log('Navigating to chat with path:', chatPath);
     router.push(chatPath);
   };
 
