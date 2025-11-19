@@ -9,7 +9,8 @@ export default function RootLayout() {
   useEffect(() => {
     // Initialize auth state when app starts
     initializeAuth();
-  }, [initializeAuth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <Stack screenOptions={{ headerShown: false }} />;
 }

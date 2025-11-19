@@ -1,19 +1,38 @@
-import { Redirect, Tabs } from "expo-router";
-import React from "react";
+import { Tabs, useRouter } from "expo-router";
+import React, { useEffect, useRef } from "react";
 import { Text } from "react-native";
 import { useAuth } from "../../store/useAuthStore";
 
 export default function MainLayout() {
   const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const hasRedirectedRef = useRef(false);
+
+  // Handle redirect when not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
+      // Use setTimeout to avoid state update during render
+      setTimeout(() => {
+        router.replace('/');
+      }, 0);
+    }
+    
+    // Reset the flag when authenticated again
+    if (isAuthenticated) {
+      hasRedirectedRef.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, isLoading]);
 
   // Show loading while checking auth
   if (isLoading) {
-    return null; // This prevents any flash during auth check
+    return null;
   }
 
-  // Redirect to index if not authenticated
+  // Don't render tabs if not authenticated
   if (!isAuthenticated) {
-    return <Redirect href="/" />;
+    return null;
   }
 
   return (

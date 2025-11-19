@@ -14,7 +14,8 @@ export default function Index() {
       // Use replace to avoid creating multiple navigation stacks
       router.replace('/(main)/(home)');
     }
-  }, [isAuthenticated, user, isLoading, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, user, isLoading]);
 
   // Show loading while checking auth
   if (isLoading) {
