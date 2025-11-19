@@ -89,6 +89,7 @@ export default function Profile() {
           onPress: async () => {
             try {
               await logout();
+              // Navigation will be handled by MainLayout's useEffect
             } catch (error) {
               console.error('Logout failed:', error);
               Alert.alert('Error', 'Failed to logout. Please try again.');
