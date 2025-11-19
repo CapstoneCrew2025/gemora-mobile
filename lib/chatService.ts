@@ -20,7 +20,7 @@ export interface ChatMessage {
 }
 
 export interface GetChatHistoryRequest {
-  sellerId: number;
+  otherUserId: number;
   gemId: number;
 }
 
@@ -40,12 +40,12 @@ class ChatService {
   }
 
   /**
-   * Get chat history with a specific seller for a specific gem
+   * Get chat history with another user for a specific gem
    */
-  async getChatHistory(sellerId: number, gemId: number): Promise<ChatMessage[]> {
+  async getChatHistory(otherUserId: number, gemId: number): Promise<ChatMessage[]> {
     try {
       const response = await apiClient.post<ChatMessage[]>('/chat/history', {
-        sellerId,
+        otherUserId,
         gemId,
       });
       console.log('Chat history fetched successfully:', response);
