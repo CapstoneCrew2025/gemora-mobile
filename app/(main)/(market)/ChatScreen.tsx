@@ -16,10 +16,11 @@ import chatService, { ChatMessage } from '../../../lib/chatService';
 import { profileService } from '../../../lib/profileService';
 
 export default function ChatScreen() {
-  const { sellerId, sellerName, gemName } = useLocalSearchParams<{
+  const { sellerId, sellerName, gemName, gemId } = useLocalSearchParams<{
     sellerId: string;
     sellerName?: string;
     gemName?: string;
+    gemId: string;
   }>();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -42,8 +43,8 @@ export default function ChatScreen() {
       setCurrentUserId(profile.id);
       
       // Fetch chat history
-      if (sellerId) {
-        const history = await chatService.getChatHistory(Number(sellerId));
+      if (sellerId && gemId) {
+        const history = await chatService.getChatHistory(Number(sellerId), Number(gemId));
         setMessages(history.reverse()); // Reverse to show oldest first
         
         // Scroll to bottom after messages load
@@ -60,7 +61,7 @@ export default function ChatScreen() {
   };
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || !sellerId || sending) return;
+    if (!inputMessage.trim() || !sellerId || !gemId || sending) return;
 
     const messageContent = inputMessage.trim();
     setInputMessage(''); // Clear input immediately for better UX
@@ -70,6 +71,7 @@ export default function ChatScreen() {
       
       const newMessage = await chatService.sendMessage({
         receiverId: Number(sellerId),
+        gemId: Number(gemId),
         content: messageContent,
       });
 
