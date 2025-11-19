@@ -2,6 +2,7 @@ import apiClient from './apiClient';
 
 export interface SendMessageRequest {
   receiverId: number;
+  gemId: number;
   content: string;
 }
 
@@ -11,6 +12,7 @@ export interface ChatMessage {
   receiverId: number;
   senderName: string;
   receiverName: string;
+  gemId: number;
   content: string;
   sentAt: string;
   status: 'SENT' | 'DELIVERED' | 'READ';
@@ -19,6 +21,7 @@ export interface ChatMessage {
 
 export interface GetChatHistoryRequest {
   sellerId: number;
+  gemId: number;
 }
 
 class ChatService {
@@ -37,12 +40,13 @@ class ChatService {
   }
 
   /**
-   * Get chat history with a specific seller
+   * Get chat history with a specific seller for a specific gem
    */
-  async getChatHistory(sellerId: number): Promise<ChatMessage[]> {
+  async getChatHistory(sellerId: number, gemId: number): Promise<ChatMessage[]> {
     try {
       const response = await apiClient.post<ChatMessage[]>('/chat/history', {
         sellerId,
+        gemId,
       });
       console.log('Chat history fetched successfully:', response);
       return response;

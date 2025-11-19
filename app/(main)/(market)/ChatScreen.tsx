@@ -16,10 +16,11 @@ import chatService, { ChatMessage } from '../../../lib/chatService';
 import { profileService } from '../../../lib/profileService';
 
 export default function ChatScreen() {
-  const { sellerId, sellerName, gemName } = useLocalSearchParams<{
+  const { sellerId, sellerName, gemName, gemId } = useLocalSearchParams<{
     sellerId: string;
     sellerName?: string;
     gemName?: string;
+    gemId: string;
   }>();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -42,8 +43,8 @@ export default function ChatScreen() {
       setCurrentUserId(profile.id);
       
       // Fetch chat history
-      if (sellerId) {
-        const history = await chatService.getChatHistory(Number(sellerId));
+      if (sellerId && gemId) {
+        const history = await chatService.getChatHistory(Number(sellerId), Number(gemId));
         setMessages(history.reverse()); // Reverse to show oldest first
         
         // Scroll to bottom after messages load
@@ -60,18 +61,54 @@ export default function ChatScreen() {
   };
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || !sellerId || sending) return;
+    console.log('=== SEND MESSAGE CLICKED ===');
+    console.log('Input message:', inputMessage);
+    console.log('Seller ID:', sellerId);
+    console.log('Gem ID:', gemId);
+    console.log('Sending:', sending);
+    console.log('Trimmed message:', inputMessage.trim());
+    
+    if (!inputMessage.trim()) {
+      console.log('❌ Message is empty');
+      return;
+    }
+    
+    if (!sellerId) {
+      console.log('❌ Seller ID is missing');
+      Alert.alert('Error', 'Seller ID is missing');
+      return;
+    }
+    
+    if (!gemId) {
+      console.log('❌ Gem ID is missing');
+      Alert.alert('Error', 'Gem ID is missing. Please try reopening the chat.');
+      return;
+    }
+    
+    if (sending) {
+      console.log('❌ Already sending a message');
+      return;
+    }
 
     const messageContent = inputMessage.trim();
     setInputMessage(''); // Clear input immediately for better UX
 
     try {
       setSending(true);
+      console.log('📤 Sending message to API...');
+      console.log('Request data:', {
+        receiverId: Number(sellerId),
+        gemId: Number(gemId),
+        content: messageContent,
+      });
       
       const newMessage = await chatService.sendMessage({
         receiverId: Number(sellerId),
+        gemId: Number(gemId),
         content: messageContent,
       });
+
+      console.log('✅ Message sent successfully:', newMessage);
 
       // Add the new message to the list
       setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -81,12 +118,18 @@ export default function ChatScreen() {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     } catch (error: any) {
-      console.error('Error sending message:', error);
+      console.error('❌ Error sending message:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
       Alert.alert('Error', error.message || 'Failed to send message');
       // Restore the message in input if failed
       setInputMessage(messageContent);
     } finally {
       setSending(false);
+      console.log('=== SEND MESSAGE FINISHED ===');
     }
   };
 
