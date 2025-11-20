@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function History() {
+export default function Inbox() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Transaction History</Text>
+      <Text style={styles.title}>Inbox</Text>
       <Text style={styles.subtitle}>Coming Soon</Text>
     </View>
   );

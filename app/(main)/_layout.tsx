@@ -74,6 +74,15 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen 
+        name="(inbox)" 
+        options={{
+          title: 'Inbox',
+          tabBarIcon: ({ color }) => (
+            <Text style={{ color, fontSize: 24 }}>💬</Text>
+          ),
+        }}
+      />
+      <Tabs.Screen 
         name="search" 
         options={{
           title: 'Search',
@@ -89,6 +98,12 @@ export default function MainLayout() {
           tabBarIcon: ({ color }) => (
             <Text style={{ color, fontSize: 24 }}>📜</Text>
           ),
+        }}
+      />
+      <Tabs.Screen 
+        name="inbox" 
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen 
