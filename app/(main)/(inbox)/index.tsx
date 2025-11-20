@@ -32,7 +32,7 @@ export default function Inbox() {
 
   const handleConversationPress = (item: InboxItem) => {
     router.push({
-      pathname: '/(main)/(market)/ChatScreen',
+      pathname: '/(main)/(inbox)/ChatScreen' as any,
       params: {
         sellerId: item.otherUserId.toString(),
         gemId: item.gemId.toString(),
