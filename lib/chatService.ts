@@ -24,6 +24,16 @@ export interface GetChatHistoryRequest {
   gemId: number;
 }
 
+export interface InboxItem {
+  roomId: string;
+  otherUserId: number;
+  otherUserName: string;
+  gemId: number;
+  lastMessage: string;
+  lastSentAt: string;
+  unreadCount: number;
+}
+
 class ChatService {
   /**
    * Send a message to another user
@@ -53,6 +63,20 @@ class ChatService {
     } catch (error: any) {
       console.error('Error fetching chat history:', error.response?.data || error.message);
       throw new Error(error.response?.data?.message || 'Failed to fetch chat history');
+    }
+  }
+
+  /**
+   * Get inbox with all conversations
+   */
+  async getInbox(): Promise<InboxItem[]> {
+    try {
+      const response = await apiClient.get<InboxItem[]>('/chat/inbox');
+      console.log('Inbox fetched successfully:', response);
+      return response;
+    } catch (error: any) {
+      console.error('Error fetching inbox:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'Failed to fetch inbox');
     }
   }
 }
