@@ -44,7 +44,7 @@ export default function ChatScreen() {
       // Fetch chat history using the POST API
       if (sellerId && gemId) {
         const history = await chatService.getChatHistory(Number(sellerId), Number(gemId));
-        setMessages(history.reverse()); // Reverse to show oldest first
+        setMessages(history); // Keep original order - newest at bottom
         
         // Scroll to bottom after messages load
         setTimeout(() => {

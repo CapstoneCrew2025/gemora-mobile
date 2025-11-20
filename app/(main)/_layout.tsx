@@ -14,7 +14,7 @@ export default function MainLayout() {
       hasRedirectedRef.current = true;
       // Use setTimeout to avoid state update during render
       setTimeout(() => {
-        router.replace('/');
+        router.replace('/(auth)/login');
       }, 0);
     }
     

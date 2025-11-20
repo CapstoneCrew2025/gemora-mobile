@@ -1,7 +1,7 @@
 import { chatService, InboxItem } from '@/lib/chatService';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Inbox() {
   const [conversations, setConversations] = useState<InboxItem[]>([]);
@@ -104,41 +104,105 @@ export default function Inbox() {
 
   if (loading) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
-        <ActivityIndicator size="large" color="#10b981" />
-        <Text className="mt-4 text-gray-600">Loading conversations...</Text>
+      <View className="flex-1 bg-emerald-500">
+        {/* Header Section */}
+        <View className="relative px-6 pt-16 pb-12">
+          <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
+            <Image
+              source={require("../../../assets/images/diamond.png")}
+              resizeMode="contain"
+              className="w-40 h-40"
+            />
+          </View>
+          <View className="z-10 flex-row items-center justify-between mb-6">
+            <View>
+              <Text className="text-xl font-bold text-gray-800">Messages</Text>
+              <Text className="text-sm text-gray-700">Stay connected</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Loading Content */}
+        <View className="flex-1 bg-gray-50 rounded-t-[40px] items-center justify-center">
+          <ActivityIndicator size="large" color="#10b981" />
+          <Text className="mt-4 text-gray-600">Loading conversations...</Text>
+        </View>
       </View>
     );
   }
 
   if (conversations.length === 0) {
     return (
-      <View className="items-center justify-center flex-1 px-6 bg-gray-50">
-        <Text className="mb-4 text-6xl">💬</Text>
-        <Text className="mb-2 text-xl font-bold text-gray-800">No messages yet</Text>
-        <Text className="text-center text-gray-600">
-          Start a conversation by contacting a seller from the marketplace
-        </Text>
+      <View className="flex-1 bg-emerald-500">
+        {/* Header Section */}
+        <View className="relative px-6 pt-16 pb-12">
+          <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
+            <Image
+              source={require("../../../assets/images/diamond.png")}
+              resizeMode="contain"
+              className="w-40 h-40"
+            />
+          </View>
+          <View className="z-10 flex-row items-center justify-between mb-6">
+            <View>
+              <Text className="text-xl font-bold text-gray-800">Messages</Text>
+              <Text className="text-sm text-gray-700">Stay connected</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Empty State Content */}
+        <View className="flex-1 bg-gray-50 rounded-t-[40px] items-center justify-center px-6">
+          <Text className="mb-4 text-6xl">💬</Text>
+          <Text className="mb-2 text-xl font-bold text-gray-800">No messages yet</Text>
+          <Text className="text-center text-gray-600">
+            Start a conversation by contacting a seller from the marketplace
+          </Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <FlatList
-        data={conversations}
-        renderItem={renderConversationItem}
-        keyExtractor={(item) => item.roomId}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#10b981']}
-            tintColor="#10b981"
+    <View className="flex-1 bg-emerald-500">
+      {/* Header Section */}
+      <View className="relative px-6 pt-16 pb-12">
+        <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
+          <Image
+            source={require("../../../assets/images/diamond.png")}
+            resizeMode="contain"
+            className="w-40 h-40"
           />
-        }
-        ItemSeparatorComponent={() => <View className="h-px bg-gray-200" />}
-      />
+        </View>
+        <View className="z-10 flex-row items-center justify-between mb-6">
+          <View>
+            <Text className="text-xl font-bold text-gray-800">Messages</Text>
+            <Text className="text-sm text-gray-700">Stay connected</Text>
+          </View>
+          <TouchableOpacity className="p-2">
+            <Text className="text-3xl">💬</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Conversations List */}
+      <View className="flex-1 bg-gray-50 rounded-t-[40px]">
+        <FlatList
+          data={conversations}
+          renderItem={renderConversationItem}
+          keyExtractor={(item) => item.roomId}
+          contentContainerStyle={{ paddingTop: 16 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#10b981']}
+              tintColor="#10b981"
+            />
+          }
+          ItemSeparatorComponent={() => <View className="h-px bg-gray-200" />}
+        />
+      </View>
     </View>
   );
 }
