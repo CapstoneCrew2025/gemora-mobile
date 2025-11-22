@@ -36,7 +36,8 @@ export default function Inbox() {
       params: {
         sellerId: item.otherUserId.toString(),
         gemId: item.gemId.toString(),
-        sellerName: encodeURIComponent(item.otherUserName),
+        gemName: encodeURIComponent(item.gemName),
+        gemDescription: encodeURIComponent(item.gemDescription),
       },
     });
   };
@@ -63,10 +64,10 @@ export default function Inbox() {
       onPress={() => handleConversationPress(item)}
       activeOpacity={0.7}
     >
-      {/* Avatar */}
+      {/* Gem Icon */}
       <View className="items-center justify-center w-12 h-12 mr-3 rounded-full bg-emerald-100">
-        <Text className="text-lg font-bold text-emerald-600">
-          {item.otherUserName.charAt(0).toUpperCase()}
+        <Text className="text-2xl">
+          💎
         </Text>
       </View>
 
@@ -74,7 +75,7 @@ export default function Inbox() {
       <View className="flex-1">
         <View className="flex-row items-center justify-between mb-1">
           <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
-            {item.otherUserName}
+            {item.gemName}
           </Text>
           <Text className="text-xs text-gray-500">
             {formatTimestamp(item.lastSentAt)}
