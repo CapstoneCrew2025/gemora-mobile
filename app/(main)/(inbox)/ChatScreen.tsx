@@ -2,23 +2,24 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    KeyboardAvoidingView,
+    Platform,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import chatService, { ChatMessage } from '../../../lib/chatService';
 import { profileService } from '../../../lib/profileService';
 
 export default function ChatScreen() {
-  const { sellerId, sellerName, gemId } = useLocalSearchParams<{
+  const { sellerId, gemName, gemDescription, gemId } = useLocalSearchParams<{
     sellerId: string;
-    sellerName?: string;
+    gemName?: string;
+    gemDescription?: string;
     gemId: string;
   }>();
 
@@ -197,9 +198,14 @@ export default function ChatScreen() {
               <Ionicons name="arrow-back" size={24} color="#1f2937" />
             </TouchableOpacity>
             <View className="flex-1">
-              <Text className="text-lg font-bold text-gray-800">
-                {sellerName ? decodeURIComponent(sellerName) : `User #${sellerId}`}
+              <Text className="text-lg font-bold text-gray-800" numberOfLines={1}>
+                {gemName ? decodeURIComponent(gemName) : 'Gem Chat'}
               </Text>
+              {gemDescription && (
+                <Text className="text-sm text-gray-500" numberOfLines={1}>
+                  {decodeURIComponent(gemDescription)}
+                </Text>
+              )}
             </View>
           </View>
           <TouchableOpacity className="p-2" activeOpacity={0.7}>

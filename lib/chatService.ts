@@ -27,7 +27,8 @@ export interface GetChatHistoryRequest {
 export interface InboxItem {
   roomId: string;
   otherUserId: number;
-  otherUserName: string;
+  gemName: string;
+  gemDescription: string;
   gemId: number;
   lastMessage: string;
   lastSentAt: string;
