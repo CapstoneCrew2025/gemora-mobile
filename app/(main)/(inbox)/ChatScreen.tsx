@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    KeyboardAvoidingView,
+    Platform,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import chatService, { ChatMessage } from '../../../lib/chatService';
 import { profileService } from '../../../lib/profileService';
