@@ -9,6 +9,7 @@ export default function HomeLayout() {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="sellgem" />
+      <Stack.Screen name="(market)/index" />
     </Stack>
   );
 }
