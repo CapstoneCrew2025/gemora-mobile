@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -16,6 +16,7 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native';
+import { useTheme } from '../../../context/ThemeContext';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
 import bidService, { AuctionTimeResponse, BidResponse } from '../../../lib/bidService';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
@@ -36,6 +37,18 @@ export default function GemDetail() {
   const [auctionTime, setAuctionTime] = useState<AuctionTimeResponse | null>(null);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isExpired, setIsExpired] = useState(false);
+  const { theme } = useTheme();
+
+  const styles = useMemo(() => ({
+    background: { backgroundColor: theme.colors.background },
+    card: { backgroundColor: theme.colors.card },
+    text: { color: theme.colors.text },
+    subtext: { color: theme.colors.subtext },
+    border: { borderColor: theme.colors.border },
+    primaryBg: { backgroundColor: theme.colors.primary },
+    primaryText: { color: theme.colors.primary },
+    mutedBg: { backgroundColor: `${theme.colors.primary}22` },
+  }), [theme]);
 
   useEffect(() => {
     if (id) {
@@ -193,20 +206,21 @@ export default function GemDetail() {
 
   if (loading) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
-        <ActivityIndicator size="large" color="#10b981" />
-        <Text className="mt-4 text-gray-600">Loading gem details...</Text>
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text className="mt-4" style={styles.subtext}>Loading gem details...</Text>
       </View>
     );
   }
 
   if (!gem) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
-        <Ionicons name="diamond-outline" size={80} color="#d1d5db" />
-        <Text className="mt-4 text-lg text-gray-500">Gem not found</Text>
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <Ionicons name="diamond-outline" size={80} color={theme.colors.subtext} />
+        <Text className="mt-4 text-lg" style={styles.subtext}>Gem not found</Text>
         <TouchableOpacity
-          className="px-6 py-3 mt-4 rounded-lg bg-emerald-500"
+          className="px-6 py-3 mt-4 rounded-lg"
+          style={styles.primaryBg}
           onPress={handleGoBack}
         >
           <Text className="font-semibold text-white">Go Back</Text>
@@ -216,24 +230,25 @@ export default function GemDetail() {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1" style={styles.background}>
       {/* Header */}
-      <View className="absolute top-0 left-0 right-0 z-10 flex-row items-center justify-between px-4 pt-12 pb-4 bg-gradient-to-b from-black/30 to-transparent">
+      <View className="absolute top-0 left-0 right-0 z-10 flex-row items-center justify-between px-4 pt-12 pb-4">
         <TouchableOpacity
-          className="p-2 bg-white rounded-full shadow-lg"
+          className="p-2 rounded-full shadow-lg"
+          style={styles.card}
           onPress={handleGoBack}
           activeOpacity={0.7}
         >
-          <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
         </TouchableOpacity>
-        <TouchableOpacity className="p-2 bg-white rounded-full shadow-lg" activeOpacity={0.7}>
-          <Ionicons name="heart-outline" size={24} color="#1f2937" />
+        <TouchableOpacity className="p-2 rounded-full shadow-lg" style={styles.card} activeOpacity={0.7}>
+          <Ionicons name="heart-outline" size={24} color={theme.colors.text} />
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="flex-1">
+      <ScrollView className="flex-1" style={styles.background}>
         {/* Image Gallery */}
-        <View className="bg-gray-100">
+        <View style={[styles.card, styles.border, { borderBottomWidth: 1 }]}>
           {gem.imageUrls && gem.imageUrls.length > 0 ? (
             <>
               <ScrollView
@@ -272,77 +287,72 @@ export default function GemDetail() {
               )}
             </>
           ) : (
-            <View className="items-center justify-center" style={{ width, height: 400 }}>
-              <Ionicons name="diamond-outline" size={100} color="#d1d5db" />
+            <View className="items-center justify-center" style={[{ width, height: 400 }, styles.card]}>
+              <Ionicons name="diamond-outline" size={100} color={theme.colors.subtext} />
             </View>
           )}
         </View>
 
         {/* Gem Details */}
-        <View className="p-4">
+        <View className="p-4" style={styles.background}>
           {/* Title and Price */}
           <View className="flex-row items-start justify-between mb-2">
             <View className="flex-1 mr-4">
-              <Text className="mb-1 text-2xl font-bold text-gray-800">
+              <Text className="mb-1 text-2xl font-bold" style={styles.text}>
                 {gem.name}
               </Text>
               <View
-                className={`self-start px-3 py-1 rounded-full ${
-                  gem.listingType === 'AUCTION' ? 'bg-purple-100' : 'bg-emerald-100'
-                }`}
+                className="self-start px-3 py-1 rounded-full"
+                style={gem.listingType === 'AUCTION' ? styles.mutedBg : styles.mutedBg}
               >
-                <Text
-                  className={`text-sm font-semibold ${
-                    gem.listingType === 'AUCTION' ? 'text-purple-600' : 'text-emerald-600'
-                  }`}
-                >
+                <Text className="text-sm font-semibold" style={styles.primaryText}>
                   {gem.listingType === 'AUCTION' ? 'Auction' : 'For Sale'}
                 </Text>
               </View>
             </View>
             <View className="items-end">
-              <Text className="text-sm text-gray-500">
+              <Text className="text-sm" style={styles.subtext}>
                 {gem.listingType === 'AUCTION' ? 'Current Bid' : 'Price'}
               </Text>
-              <Text className="text-3xl font-bold text-emerald-600">
+              <Text className="text-3xl font-bold" style={styles.primaryText}>
                 ${gem.price.toLocaleString()}
               </Text>
             </View>
           </View>
 
           {/* Category Badge */}
-          <View className="self-start px-3 py-1 mb-4 bg-gray-100 rounded-full">
-            <Text className="text-sm font-medium text-gray-700">{gem.category}</Text>
+          <View className="self-start px-3 py-1 mb-4 rounded-full" style={[styles.card, styles.border, { borderWidth: 1 }]}> 
+            <Text className="text-sm font-medium" style={styles.text}>{gem.category}</Text>
           </View>
 
           {/* Description */}
           <View className="mb-4">
-            <Text className="mb-2 text-lg font-semibold text-gray-800">Description</Text>
-            <Text className="leading-6 text-gray-600">{gem.description}</Text>
+            <Text className="mb-2 text-lg font-semibold" style={styles.text}>Description</Text>
+            <Text className="leading-6" style={styles.subtext}>{gem.description}</Text>
           </View>
 
           {/* Specifications */}
           <View className="mb-4">
-            <Text className="mb-3 text-lg font-semibold text-gray-800">Specifications</Text>
-            <View className="p-4 rounded-lg bg-gray-50">
-              <View className="flex-row items-center justify-between py-2 border-b border-gray-200">
-                <Text className="text-gray-600">Carat Weight</Text>
-                <Text className="font-semibold text-gray-800">{gem.carat} ct</Text>
+            <Text className="mb-3 text-lg font-semibold" style={styles.text}>Specifications</Text>
+            <View className="p-4 rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}>
+              <View className="flex-row items-center justify-between py-2 border-b" style={styles.border}>
+                <Text style={styles.subtext}>Carat Weight</Text>
+                <Text className="font-semibold" style={styles.text}>{gem.carat} ct</Text>
               </View>
-              <View className="flex-row items-center justify-between py-2 border-b border-gray-200">
-                <Text className="text-gray-600">Origin</Text>
-                <Text className="font-semibold text-gray-800">{gem.origin}</Text>
+              <View className="flex-row items-center justify-between py-2 border-b" style={styles.border}>
+                <Text style={styles.subtext}>Origin</Text>
+                <Text className="font-semibold" style={styles.text}>{gem.origin}</Text>
               </View>
-              <View className="flex-row items-center justify-between py-2 border-b border-gray-200">
-                <Text className="text-gray-600">Category</Text>
-                <Text className="font-semibold text-gray-800">{gem.category}</Text>
+              <View className="flex-row items-center justify-between py-2 border-b" style={styles.border}>
+                <Text style={styles.subtext}>Category</Text>
+                <Text className="font-semibold" style={styles.text}>{gem.category}</Text>
               </View>
               {gem.certificationNumber && (
                 <View className="flex-row items-center justify-between py-2">
-                  <Text className="text-gray-600">Certification</Text>
+                  <Text style={styles.subtext}>Certification</Text>
                   <View className="flex-row items-center">
-                    <Ionicons name="shield-checkmark" size={16} color="#10b981" />
-                    <Text className="ml-1 font-semibold text-emerald-600">
+                    <Ionicons name="shield-checkmark" size={16} color={theme.colors.primary} />
+                    <Text className="ml-1 font-semibold" style={styles.primaryText}>
                       {gem.certificationNumber}
                     </Text>
                   </View>
@@ -354,30 +364,30 @@ export default function GemDetail() {
           {/* Certificates */}
           {gem.certificates && gem.certificates.length > 0 && (
             <View className="mb-4">
-              <Text className="mb-3 text-lg font-semibold text-gray-800">Certificates</Text>
+              <Text className="mb-3 text-lg font-semibold" style={styles.text}>Certificates</Text>
               {gem.certificates.map((cert) => {
                 const isExpanded = expandedCertId === cert.id;
                 const certificateUrl = cert.fileUrl ? getAccessibleImageUrl(cert.fileUrl) : null;
                 const isImage = certificateUrl?.match(/\.(jpg|jpeg|png|gif|webp)$/i);
                 
                 return (
-                  <View key={cert.id} className="p-4 mb-3 rounded-lg bg-emerald-50">
+                  <View key={cert.id} className="p-4 mb-3 rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}> 
                     <View className="flex-row items-start justify-between mb-2">
                       <View className="flex-1">
-                        <Text className="mb-1 font-semibold text-gray-800">
+                        <Text className="mb-1 font-semibold" style={styles.text}>
                           {cert.certificateNumber}
                         </Text>
-                        <Text className="text-sm text-gray-600">
+                        <Text className="text-sm" style={styles.subtext}>
                           {cert.issuingAuthority}
                         </Text>
                       </View>
                       {cert.verified && (
-                        <View className="px-2 py-1 rounded-full bg-emerald-500">
+                        <View className="px-2 py-1 rounded-full" style={styles.primaryBg}>
                           <Text className="text-xs font-semibold text-white">Verified</Text>
                         </View>
                       )}
                     </View>
-                    <Text className="mb-2 text-xs text-gray-500">
+                    <Text className="mb-2 text-xs" style={styles.subtext}>
                       Issued: {new Date(cert.issueDate).toLocaleDateString()}
                     </Text>
                     
@@ -385,16 +395,17 @@ export default function GemDetail() {
                     {certificateUrl && (
                       <>
                         <TouchableOpacity 
-                          className="flex-row items-center justify-between p-3 mt-2 bg-white rounded-lg"
+                          className="flex-row items-center justify-between p-3 mt-2 rounded-lg"
+                          style={styles.card}
                           onPress={() => handleViewCertificate(cert.id)}
                         >
                           <View className="flex-row items-center flex-1">
                             <Ionicons 
                               name={isImage ? "image-outline" : "document-outline"} 
                               size={20} 
-                              color="#10b981" 
+                              color={theme.colors.primary} 
                             />
-                            <Text className="flex-1 ml-2 font-semibold text-emerald-600">
+                            <Text className="flex-1 ml-2 font-semibold" style={styles.primaryText}>
                               {isExpanded ? 'Hide Certificate' : 'View Certificate'}
                             </Text>
                           </View>
@@ -407,7 +418,7 @@ export default function GemDetail() {
 
                         {/* Expanded Certificate View */}
                         {isExpanded && (
-                          <View className="mt-3 overflow-hidden bg-white rounded-lg">
+                          <View className="mt-3 overflow-hidden rounded-lg" style={styles.card}>
                             {isImage ? (
                               <Image
                                 source={{ uri: certificateUrl }}
@@ -419,16 +430,17 @@ export default function GemDetail() {
                                 }}
                               />
                             ) : (
-                              <View className="items-center justify-center p-8 bg-gray-100">
-                                <Ionicons name="document-text-outline" size={80} color="#10b981" />
-                                <Text className="mt-4 text-sm text-center text-gray-600">
+                              <View className="items-center justify-center p-8" style={styles.background}>
+                                <Ionicons name="document-text-outline" size={80} color={theme.colors.primary} />
+                                <Text className="mt-4 text-sm text-center" style={styles.subtext}>
                                   PDF Certificate
                                 </Text>
-                                <Text className="mt-2 text-xs text-center text-gray-500">
+                                <Text className="mt-2 text-xs text-center" style={styles.subtext}>
                                   {cert.certificateNumber}
                                 </Text>
                                 <TouchableOpacity
-                                  className="px-4 py-2 mt-4 rounded-lg bg-emerald-500"
+                                  className="px-4 py-2 mt-4 rounded-lg"
+                                  style={styles.primaryBg}
                                   onPress={async () => {
                                     try {
                                       const supported = await Linking.canOpenURL(certificateUrl);
@@ -461,44 +473,44 @@ export default function GemDetail() {
           {/* Auction Countdown Timer */}
           {gem.listingType === 'AUCTION' && auctionTime && (
             <View className="mb-4">
-              <Text className="mb-3 text-lg font-semibold text-gray-800">Auction Ends In</Text>
+              <Text className="mb-3 text-lg font-semibold" style={styles.text}>Auction Ends In</Text>
               {isExpired ? (
-                <View className="p-6 rounded-lg bg-red-50">
+                <View className="p-6 rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}> 
                   <View className="items-center">
-                    <Ionicons name="time-outline" size={48} color="#dc2626" />
-                    <Text className="mt-2 text-xl font-bold text-red-600">Auction Expired</Text>
-                    <Text className="mt-1 text-sm text-red-500">This auction has ended</Text>
+                    <Ionicons name="time-outline" size={48} color={theme.colors.primary} />
+                    <Text className="mt-2 text-xl font-bold" style={styles.primaryText}>Auction Expired</Text>
+                    <Text className="mt-1 text-sm" style={styles.subtext}>This auction has ended</Text>
                   </View>
                 </View>
               ) : (
-                <View className="p-4 rounded-lg bg-gradient-to-r from-purple-50 to-emerald-50" style={{ backgroundColor: '#f0fdf4' }}>
+                <View className="p-4 rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}> 
                   <View className="flex-row items-center justify-around">
                     <View className="items-center">
-                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
-                        <Text className="text-3xl font-bold text-purple-600">{countdown.days}</Text>
+                      <View className="px-4 py-3 rounded-lg shadow-sm" style={styles.card}>
+                        <Text className="text-3xl font-bold" style={styles.text}>{countdown.days}</Text>
                       </View>
-                      <Text className="mt-2 text-xs font-medium text-gray-600">Days</Text>
+                      <Text className="mt-2 text-xs font-medium" style={styles.subtext}>Days</Text>
                     </View>
-                    <Text className="text-2xl font-bold text-gray-400">:</Text>
+                    <Text className="text-2xl font-bold" style={styles.subtext}>:</Text>
                     <View className="items-center">
-                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
-                        <Text className="text-3xl font-bold text-purple-600">{countdown.hours.toString().padStart(2, '0')}</Text>
+                      <View className="px-4 py-3 rounded-lg shadow-sm" style={styles.card}>
+                        <Text className="text-3xl font-bold" style={styles.text}>{countdown.hours.toString().padStart(2, '0')}</Text>
                       </View>
-                      <Text className="mt-2 text-xs font-medium text-gray-600">Hours</Text>
+                      <Text className="mt-2 text-xs font-medium" style={styles.subtext}>Hours</Text>
                     </View>
-                    <Text className="text-2xl font-bold text-gray-400">:</Text>
+                    <Text className="text-2xl font-bold" style={styles.subtext}>:</Text>
                     <View className="items-center">
-                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
-                        <Text className="text-3xl font-bold text-purple-600">{countdown.minutes.toString().padStart(2, '0')}</Text>
+                      <View className="px-4 py-3 rounded-lg shadow-sm" style={styles.card}>
+                        <Text className="text-3xl font-bold" style={styles.text}>{countdown.minutes.toString().padStart(2, '0')}</Text>
                       </View>
-                      <Text className="mt-2 text-xs font-medium text-gray-600">Minutes</Text>
+                      <Text className="mt-2 text-xs font-medium" style={styles.subtext}>Minutes</Text>
                     </View>
-                    <Text className="text-2xl font-bold text-gray-400">:</Text>
+                    <Text className="text-2xl font-bold" style={styles.subtext}>:</Text>
                     <View className="items-center">
-                      <View className="px-4 py-3 bg-white rounded-lg shadow-sm">
-                        <Text className="text-3xl font-bold text-emerald-600">{countdown.seconds.toString().padStart(2, '0')}</Text>
+                      <View className="px-4 py-3 rounded-lg shadow-sm" style={styles.card}>
+                        <Text className="text-3xl font-bold" style={styles.primaryText}>{countdown.seconds.toString().padStart(2, '0')}</Text>
                       </View>
-                      <Text className="mt-2 text-xs font-medium text-gray-600">Seconds</Text>
+                      <Text className="mt-2 text-xs font-medium" style={styles.subtext}>Seconds</Text>
                     </View>
                   </View>
                 </View>
@@ -510,42 +522,39 @@ export default function GemDetail() {
           {gem.listingType === 'AUCTION' && (
             <View className="mb-4">
               <View className="flex-row items-center justify-between mb-3">
-                <Text className="text-lg font-semibold text-gray-800">Bid History</Text>
-                {loadingBids && <ActivityIndicator size="small" color="#10b981" />}
+                <Text className="text-lg font-semibold" style={styles.text}>Bid History</Text>
+                {loadingBids && <ActivityIndicator size="small" color={theme.colors.primary} />}
               </View>
               
               {bidHistory.length > 0 ? (
-                <View className="overflow-hidden rounded-lg bg-gray-50">
+                <View className="overflow-hidden rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}>
                   {bidHistory.map((bid, index) => (
                     <View
                       key={bid.bidId}
-                      className={`p-4 border-b border-gray-200 ${
-                        index === 0 ? 'bg-emerald-50' : ''
-                      }`}
+                      className="p-4 border-b"
+                      style={[styles.border, index === 0 ? styles.mutedBg : null]}
                     >
                       <View className="flex-row items-center justify-between">
                         <View className="flex-1">
                           <View className="flex-row items-center">
-                            <Text className={`text-lg font-bold ${
-                              index === 0 ? 'text-emerald-600' : 'text-gray-800'
-                            }`}>
+                            <Text className="text-lg font-bold" style={index === 0 ? styles.primaryText : styles.text}>
                               ${bid.amount.toLocaleString()}
                             </Text>
                             {index === 0 && (
-                              <View className="px-2 py-1 ml-2 rounded-full bg-emerald-500">
+                              <View className="px-2 py-1 ml-2 rounded-full" style={styles.primaryBg}>
                                 <Text className="text-xs font-semibold text-white">Highest Bid</Text>
                               </View>
                             )}
                           </View>
-                          <Text className="mt-1 text-xs text-gray-500">
+                          <Text className="mt-1 text-xs" style={styles.subtext}>
                             Bidder ID: {bid.bidderId.toString().padStart(4, '0')}
                           </Text>
                         </View>
                         <View className="items-end">
-                          <Text className="text-xs font-medium text-gray-600">
+                          <Text className="text-xs font-medium" style={styles.subtext}>
                             {bid.daysAgo === 0 ? 'Today' : `${bid.daysAgo} day${bid.daysAgo > 1 ? 's' : ''} ago`}
                           </Text>
-                          <Text className="mt-1 text-xs text-gray-400">
+                          <Text className="mt-1 text-xs" style={styles.subtext}>
                             {new Date(bid.placedAt).toLocaleString('en-US', {
                               hour: '2-digit',
                               minute: '2-digit',
@@ -557,18 +566,18 @@ export default function GemDetail() {
                   ))}
                 </View>
               ) : (
-                <View className="items-center justify-center p-8 rounded-lg bg-gray-50">
-                  <Ionicons name="pricetag-outline" size={48} color="#d1d5db" />
-                  <Text className="mt-2 text-sm text-gray-500">No bids yet. Be the first to bid!</Text>
+                <View className="items-center justify-center p-8 rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}>
+                  <Ionicons name="pricetag-outline" size={48} color={theme.colors.subtext} />
+                  <Text className="mt-2 text-sm" style={styles.subtext}>No bids yet. Be the first to bid!</Text>
                 </View>
               )}
             </View>
           )}
 
           {/* Listing Info */}
-          <View className="p-4 mb-4 rounded-lg bg-gray-50">
-            <Text className="mb-1 text-sm text-gray-500">Listed on</Text>
-            <Text className="text-gray-800">
+          <View className="p-4 mb-4 rounded-lg" style={[styles.card, styles.border, { borderWidth: 1 }]}>
+            <Text className="mb-1 text-sm" style={styles.subtext}>Listed on</Text>
+            <Text style={styles.text}>
               {new Date(gem.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -580,19 +589,21 @@ export default function GemDetail() {
       </ScrollView>
 
       {/* Bottom Action Bar */}
-      <View className="p-4 bg-white border-t border-gray-200">
+      <View className="p-4 border-t" style={[styles.card, styles.border]}>
         <View className="flex-row space-x-2">
           <TouchableOpacity
-            className="flex-1 py-3 mr-2 bg-gray-100 rounded-lg"
+            className="flex-1 py-3 mr-2 rounded-lg"
+            style={[styles.card, styles.border, { borderWidth: 1 }]}
             onPress={handleContactSeller}
           >
             <View className="flex-row items-center justify-center">
-              <Ionicons name="chatbubble-outline" size={20} color="#1f2937" />
-              <Text className="ml-2 font-semibold text-gray-800">Contact Seller</Text>
+              <Ionicons name="chatbubble-outline" size={20} color={theme.colors.text} />
+              <Text className="ml-2 font-semibold" style={styles.text}>Contact Seller</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            className="flex-1 py-3 rounded-lg bg-emerald-500"
+            className="flex-1 py-3 rounded-lg"
+            style={styles.primaryBg}
             onPress={gem.listingType === 'AUCTION' ? handlePlaceBid : handleBuyNow}
           >
             <Text className="font-bold text-center text-white">
@@ -612,49 +623,52 @@ export default function GemDetail() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View className="justify-end flex-1 bg-black/50">
             <TouchableWithoutFeedback onPress={() => {}}>
-              <View className="bg-white rounded-t-3xl">
+              <View className="rounded-t-3xl" style={styles.card}>
                 <View className="p-6">
                   <View className="flex-row items-center justify-between mb-4">
-                    <Text className="text-xl font-bold text-gray-800">Place Your Bid</Text>
+                    <Text className="text-xl font-bold" style={styles.text}>Place Your Bid</Text>
                     <TouchableOpacity onPress={() => setShowBidModal(false)}>
-                      <Ionicons name="close-circle" size={28} color="#9ca3af" />
+                      <Ionicons name="close-circle" size={28} color={theme.colors.subtext} />
                     </TouchableOpacity>
                   </View>
 
-                  <View className="p-4 mb-4 rounded-lg bg-emerald-50">
-                    <Text className="mb-1 text-sm text-gray-600">Current {bidHistory.length > 0 ? 'Highest Bid' : 'Starting Price'}</Text>
-                    <Text className="text-2xl font-bold text-emerald-600">
+                  <View className="p-4 mb-4 rounded-lg" style={[styles.mutedBg, styles.border, { borderWidth: 1 }]}>
+                    <Text className="mb-1 text-sm" style={styles.subtext}>Current {bidHistory.length > 0 ? 'Highest Bid' : 'Starting Price'}</Text>
+                    <Text className="text-2xl font-bold" style={styles.primaryText}>
                       ${(bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0).toLocaleString()}
                     </Text>
                   </View>
 
                   <View className="mb-4">
-                    <Text className="mb-2 text-sm font-medium text-gray-700">Your Bid Amount</Text>
-                    <View className="flex-row items-center px-4 py-3 border-2 rounded-lg border-emerald-500">
-                      <Text className="mr-2 text-xl font-bold text-gray-800">$</Text>
+                    <Text className="mb-2 text-sm font-medium" style={styles.text}>Your Bid Amount</Text>
+                    <View className="flex-row items-center px-4 py-3 border-2 rounded-lg" style={[styles.border, styles.card]}> 
+                      <Text className="mr-2 text-xl font-bold" style={styles.text}>$</Text>
                       <TextInput
                         value={bidAmount}
                         onChangeText={setBidAmount}
                         placeholder="Enter amount"
                         keyboardType="decimal-pad"
-                        className="flex-1 text-xl font-semibold text-gray-800"
+                        className="flex-1 text-xl font-semibold"
+                        style={styles.text}
                       />
                     </View>
-                    <Text className="mt-2 text-xs text-gray-500">
+                    <Text className="mt-2 text-xs" style={styles.subtext}>
                       Minimum bid: ${((bidHistory.length > 0 ? bidHistory[0].amount : gem?.price || 0) + 1).toLocaleString()}
                     </Text>
                   </View>
 
                   <View className="flex-row gap-2">
                     <TouchableOpacity
-                      className="flex-1 py-3 bg-gray-100 rounded-lg"
+                      className="flex-1 py-3 rounded-lg"
+                      style={[styles.card, styles.border, { borderWidth: 1 }]}
                       onPress={() => setShowBidModal(false)}
                       disabled={placingBid}
                     >
-                      <Text className="font-semibold text-center text-gray-800">Cancel</Text>
+                      <Text className="font-semibold text-center" style={styles.text}>Cancel</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      className="flex-1 py-3 rounded-lg bg-emerald-500"
+                      className="flex-1 py-3 rounded-lg"
+                      style={styles.primaryBg}
                       onPress={submitBid}
                       disabled={placingBid}
                     >
