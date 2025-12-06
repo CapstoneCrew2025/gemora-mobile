@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
@@ -12,6 +12,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import { useTheme } from '../../../context/ThemeContext';
 import chatService, { ChatMessage } from '../../../lib/chatService';
 import { profileService } from '../../../lib/profileService';
 
@@ -29,6 +30,18 @@ export default function ChatScreen() {
   const [sending, setSending] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const flatListRef = useRef<FlatList>(null);
+  const { theme } = useTheme();
+
+  const styles = useMemo(() => ({
+    background: { backgroundColor: theme.colors.background },
+    card: { backgroundColor: theme.colors.card },
+    text: { color: theme.colors.text },
+    subtext: { color: theme.colors.subtext },
+    border: { borderColor: theme.colors.border },
+    primaryBg: { backgroundColor: theme.colors.primary },
+    input: { backgroundColor: theme.colors.card },
+    disabledSend: { backgroundColor: theme.colors.border },
+  }), [theme]);
 
   useEffect(() => {
     initializeChat();
@@ -108,28 +121,23 @@ export default function ChatScreen() {
         className={`mb-3 px-4 ${isMyMessage ? 'items-end' : 'items-start'}`}
       >
         <View
-          className={`max-w-[75%] rounded-2xl px-4 py-3 ${
-            isMyMessage
-              ? 'bg-emerald-500 rounded-tr-sm'
-              : 'bg-gray-200 rounded-tl-sm'
-          }`}
+          className={`max-w-[75%] rounded-2xl px-4 py-3 ${isMyMessage ? 'rounded-tr-sm' : 'rounded-tl-sm'}`}
+          style={isMyMessage ? styles.primaryBg : styles.card}
         >
           {!isMyMessage && (
-            <Text className="mb-1 text-xs font-semibold text-gray-600">
+            <Text className="mb-1 text-xs font-semibold" style={styles.subtext}>
               {item.senderName}
             </Text>
           )}
           <Text
-            className={`text-base leading-5 ${
-              isMyMessage ? 'text-white' : 'text-gray-800'
-            }`}
+            className="text-base leading-5"
+            style={isMyMessage ? { color: '#fff' } : styles.text}
           >
             {item.content}
           </Text>
           <Text
-            className={`mt-1 text-xs ${
-              isMyMessage ? 'text-emerald-100' : 'text-gray-500'
-            }`}
+            className="mt-1 text-xs"
+            style={isMyMessage ? { color: '#e0f2f1' } : styles.subtext}
           >
             {formatTime(item.sentAt)}
           </Text>
@@ -160,12 +168,12 @@ export default function ChatScreen() {
   };
 
   const renderEmptyState = () => (
-    <View className="items-center justify-center flex-1 px-8">
-      <Ionicons name="chatbubbles-outline" size={80} color="#d1d5db" />
-      <Text className="mt-4 text-lg font-semibold text-gray-600">
+    <View className="items-center justify-center flex-1 px-8" style={styles.background}>
+      <Ionicons name="chatbubbles-outline" size={80} color={theme.colors.subtext} />
+      <Text className="mt-4 text-lg font-semibold" style={styles.text}>
         No messages yet
       </Text>
-      <Text className="mt-2 text-center text-gray-500">
+      <Text className="mt-2 text-center" style={styles.subtext}>
         Start the conversation by sending a message
         {gemName && ` about ${gemName}`}
       </Text>
@@ -174,21 +182,22 @@ export default function ChatScreen() {
 
   if (loading) {
     return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color="#10b981" />
-        <Text className="mt-4 text-gray-600">Loading messages...</Text>
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text className="mt-4" style={styles.subtext}>Loading messages...</Text>
       </View>
     );
   }
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1"
+      style={styles.background}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       {/* Header */}
-      <View className="pt-12 pb-4 bg-white border-b border-gray-200">
+      <View className="pt-12 pb-4 border-b" style={[styles.card, styles.border]}>
         <View className="flex-row items-center justify-between px-4">
           <View className="flex-row items-center flex-1">
             <TouchableOpacity
@@ -196,21 +205,21 @@ export default function ChatScreen() {
               onPress={handleGoBack}
               activeOpacity={0.7}
             >
-              <Ionicons name="arrow-back" size={24} color="#1f2937" />
+              <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
             </TouchableOpacity>
             <View className="flex-1">
-              <Text className="text-lg font-bold text-gray-800">
+              <Text className="text-lg font-bold" style={styles.text}>
                 {sellerName || `Seller #${sellerId}`}
               </Text>
               {gemName && (
-                <Text className="text-sm text-gray-500" numberOfLines={1}>
+                <Text className="text-sm" style={styles.subtext} numberOfLines={1}>
                   About: {gemName}
                 </Text>
               )}
             </View>
           </View>
           <TouchableOpacity className="p-2" activeOpacity={0.7}>
-            <Ionicons name="information-circle-outline" size={24} color="#1f2937" />
+            <Ionicons name="information-circle-outline" size={24} color={theme.colors.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -235,15 +244,16 @@ export default function ChatScreen() {
       />
 
       {/* Input Area */}
-      <View className="px-4 py-3 bg-white border-t border-gray-200">
+      <View className="px-4 py-3 border-t" style={[styles.card, styles.border]}>
         <View className="flex-row items-center">
-          <View className="flex-row items-center flex-1 px-4 py-2 mr-2 bg-gray-100 rounded-full">
+          <View className="flex-row items-center flex-1 px-4 py-2 mr-2 rounded-full" style={styles.input}>
             <TextInput
               value={inputMessage}
               onChangeText={setInputMessage}
               placeholder="Type a message..."
-              placeholderTextColor="#9ca3af"
-              className="flex-1 text-base text-gray-800"
+              placeholderTextColor={theme.colors.subtext}
+              className="flex-1 text-base"
+              style={styles.text}
               multiline
               maxLength={500}
               editable={!sending}
@@ -251,17 +261,14 @@ export default function ChatScreen() {
               blurOnSubmit={false}
             />
             {inputMessage.length > 0 && (
-              <Text className="ml-2 text-xs text-gray-400">
+              <Text className="ml-2 text-xs" style={styles.subtext}>
                 {inputMessage.length}/500
               </Text>
             )}
           </View>
           <TouchableOpacity
-            className={`p-3 rounded-full ${
-              inputMessage.trim() && !sending
-                ? 'bg-emerald-500'
-                : 'bg-gray-300'
-            }`}
+            className="p-3 rounded-full"
+            style={inputMessage.trim() && !sending ? styles.primaryBg : [styles.disabledSend, styles.border, { borderWidth: 1 }]}
             onPress={handleSendMessage}
             disabled={!inputMessage.trim() || sending}
             activeOpacity={0.7}
@@ -272,7 +279,7 @@ export default function ChatScreen() {
               <Ionicons
                 name="send"
                 size={20}
-                color={inputMessage.trim() ? 'white' : '#9ca3af'}
+                color={inputMessage.trim() ? 'white' : theme.colors.subtext}
               />
             )}
           </TouchableOpacity>
