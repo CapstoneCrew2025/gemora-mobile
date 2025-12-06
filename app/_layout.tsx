@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { ThemeProvider } from "../context/ThemeContext";
+import { ThemeProvider, useTheme } from "../context/ThemeContext";
 import "../global.css";
 import { useAuthActions } from "../store/useAuthStore";
 
@@ -15,7 +16,19 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <RootStack />
     </ThemeProvider>
+  );
+}
+
+function RootStack() {
+  const { theme } = useTheme();
+  const barStyle = theme.mode === 'dark' ? 'light' : 'dark';
+
+  return (
+    <>
+      <StatusBar style={barStyle} backgroundColor={theme.colors.header} />
+      <Stack screenOptions={{ headerShown: false }} />
+    </>
   );
 }
