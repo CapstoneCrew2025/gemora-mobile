@@ -1,11 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router, Stack } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Input } from "../../../components/common/Input";
+import { useTheme } from "../../../context/ThemeContext";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService, UpdateProfileRequest } from "../../../lib/profileService";
-import { Ionicons } from '@expo/vector-icons';
 
 export default function EditProfile() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
@@ -20,6 +21,25 @@ export default function EditProfile() {
     name: '',
     contactNumber: '',
   });
+
+  const { theme, isDark, toggleTheme } = useTheme();
+
+  const styles = useMemo(() => ({
+    background: { backgroundColor: theme.colors.background },
+    card: { backgroundColor: theme.colors.card, borderColor: theme.colors.border },
+    text: { color: theme.colors.text },
+    subtext: { color: theme.colors.subtext },
+    headerTitle: { color: theme.colors.text },
+    input: { backgroundColor: theme.colors.input },
+  }), [theme]);
+
+  const inputClassName = useMemo(
+    () =>
+      isDark
+        ? 'bg-[#1f2937] text-white border-gray-600 placeholder:text-gray-400'
+        : 'bg-white text-gray-900 border-gray-300 placeholder:text-gray-500',
+    [isDark]
+  );
 
   // Load profile data
   useEffect(() => {
@@ -163,17 +183,17 @@ export default function EditProfile() {
 
   if (isLoading) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
-        <Text className="text-lg text-gray-600">Loading...</Text>
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <Text className="text-lg" style={styles.subtext}>Loading...</Text>
       </View>
     );
   }
 
   if (!profileData) {
     return (
-      <View className="items-center justify-center flex-1 bg-gray-50">
-        <Text className="mb-4 text-lg font-semibold text-red-600">Failed to load profile</Text>
-        <TouchableOpacity onPress={loadProfile} className="px-6 py-3 rounded-2xl bg-emerald-500">
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <Text className="mb-4 text-lg font-semibold text-red-500">Failed to load profile</Text>
+        <TouchableOpacity onPress={loadProfile} className="px-6 py-3 rounded-2xl" style={{ backgroundColor: theme.colors.primary }}>
           <Text className="font-semibold text-white">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -181,11 +201,11 @@ export default function EditProfile() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1" style={styles.background}>
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Emerald header */}
-      <View className="bg-emerald-500 px-6 pt-12 pb-40 relative">
+      <View className="px-6 pt-12 pb-40 relative" style={{ backgroundColor: theme.colors.primary }}>
         {/* Top row: back, centered title, notification (icon only) */}
         <View className="flex-row items-center justify-between z-20">
           <TouchableOpacity
@@ -196,7 +216,7 @@ export default function EditProfile() {
           </TouchableOpacity>
 
           {/* Title sits visually centered */}
-          <Text className="text-lg font-semibold text-gray-800">Edit My Profile</Text>
+          <Text className="text-lg font-semibold" style={styles.headerTitle}>Edit My Profile</Text>
 
           <TouchableOpacity className="p-2">
             {/* Notification icon only */}
@@ -206,7 +226,7 @@ export default function EditProfile() {
       </View>
 
       {/* White content area overlapping header */}
-      <View className="flex-1 bg-white rounded-t-[40px] -mt-16 px-6 pt-20 relative">
+      <View className="flex-1 rounded-t-[40px] -mt-16 px-6 pt-20 relative" style={styles.card}>
         
         {/* Profile picture circle with camera icon positioned at the boundary */}
         <View className="absolute left-0 right-0 items-center z-30" style={{ top: -64 }}>
@@ -289,10 +309,10 @@ export default function EditProfile() {
 
         {/* Name and ID */}
         <View className="items-center mb-6 mt-0">
-          <Text className="text-xl font-bold text-gray-800 mb-1">
+          <Text className="text-xl font-bold mb-1" style={styles.text}>
             {profileData?.name}
           </Text>
-          <Text className="text-sm text-gray-500">
+          <Text className="text-sm" style={styles.subtext}>
             ID: {(profileData?.id).toString().padStart(8, '0')}
           </Text>
         </View>
@@ -302,59 +322,86 @@ export default function EditProfile() {
           <View style={{ gap: 16, paddingBottom: 32 }}>
           
             {/* User ID Display (Read-only) */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-600 mb-2">User ID</Text>
-              <Text className="text-base font-medium text-gray-700">
+            <View className="rounded-2xl p-4" style={styles.card}>
+              <Text className="text-sm font-medium mb-2" style={styles.subtext}>User ID</Text>
+              <Text className="text-base font-medium" style={styles.text}>
                 {(profileData?.id).toString().padStart(8, '0')}
               </Text>
             </View>
 
             {/* Full Name Input */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-gray-700 font-medium mb-2">Name</Text>
+            <View className="rounded-2xl p-4" style={styles.card}>
+              <Text className="font-medium mb-2" style={styles.text}>Name</Text>
               <Input
                 value={formData.name}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, name: text }))}
                 placeholder="Enter your full name"
                 error={errors.name}
-                className="bg-white"
+                inputClassName={inputClassName}
               />
             </View>
 
             {/* Phone Number Input */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-gray-700 font-medium mb-2">Phone</Text>
+            <View className="rounded-2xl p-4" style={styles.card}>
+              <Text className="font-medium mb-2" style={styles.text}>Phone</Text>
               <Input
                 value={formData.contactNumber}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, contactNumber: text }))}
                 placeholder="Enter your contact number"
                 keyboardType="phone-pad"
                 error={errors.contactNumber}
-                className="bg-white"
+                inputClassName={inputClassName}
               />
             </View>
 
             {/* Email Display (Read-only) */}
-            <View className="bg-gray-50 rounded-2xl p-4">
-              <Text className="text-sm font-medium text-gray-600 mb-2">Email Address</Text>
-              <Text className="text-base font-medium text-gray-700">
+            <View className="rounded-2xl p-4" style={styles.card}>
+              <Text className="text-sm font-medium mb-2" style={styles.subtext}>Email Address</Text>
+              <Text className="text-base font-medium" style={styles.text}>
                 {profileData.email}
               </Text>
             </View>
 
             {/* Dark Theme Toggle */}
-            <View className="flex-row items-center justify-between bg-gray-50 rounded-2xl p-4 mb-6">
-              <Text className="text-gray-800 font-medium">Turn Dark Theme</Text>
-              <View className="w-12 h-7 bg-gray-300 rounded-full" />
+            <View className="flex-row items-center justify-between rounded-2xl p-4 mb-6" style={styles.card}>
+              <Text className="font-medium" style={styles.text}>Turn Dark Theme</Text>
+              <TouchableOpacity
+                accessibilityRole="switch"
+                accessibilityState={{ checked: isDark }}
+                onPress={toggleTheme}
+                activeOpacity={0.8}
+                style={{
+                  width: 52,
+                  height: 30,
+                  borderRadius: 15,
+                  padding: 3,
+                  backgroundColor: isDark ? theme.colors.primary : theme.colors.muted,
+                  justifyContent: 'center',
+                  alignItems: isDark ? 'flex-end' : 'flex-start',
+                }}
+              >
+                <View
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 12,
+                    backgroundColor: '#fff',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 2,
+                    elevation: 3,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
 
             {/* Update Profile Button */}
             <TouchableOpacity
               onPress={handleSave}
               disabled={isUpdating}
-              className={`py-4 rounded-full items-center ${
-                isUpdating ? 'bg-gray-400' : 'bg-emerald-500'
-              }`}
+              className="py-4 rounded-full items-center"
+              style={{ backgroundColor: isUpdating ? theme.colors.muted : theme.colors.primary }}
             >
               <Text className="text-white font-bold text-base">
                 {isUpdating ? 'Updating Profile...' : 'Update Profile'}

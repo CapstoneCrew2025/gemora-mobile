@@ -1,6 +1,6 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Alert,
     Image,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Input } from '../../components/common/Input';
+import { useTheme } from '../../context/ThemeContext';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
 
 // Custom Google Icon Component with official colors
@@ -49,6 +50,17 @@ export default function LoginScreen() {
 
   const { isLoading, error, isAuthenticated } = useAuth();
   const { login, clearError } = useAuthActions();
+  const { theme } = useTheme();
+
+  const styles = useMemo(() => ({
+    bg: { backgroundColor: theme.colors.background },
+    header: { backgroundColor: theme.colors.primary },
+    card: { backgroundColor: theme.colors.card },
+    text: { color: theme.colors.text },
+    subtext: { color: theme.colors.subtext },
+    primary: { color: theme.colors.primary },
+    border: { borderColor: theme.colors.border },
+  }), [theme]);
 
   // Clear errors when component mounts
   useEffect(() => {
@@ -128,7 +140,8 @@ export default function LoginScreen() {
  return (
   <KeyboardAvoidingView
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    className="flex-1 bg-emerald-500"
+    className="flex-1"
+    style={styles.bg}
   >
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -136,7 +149,7 @@ export default function LoginScreen() {
       className="flex-1"
     >
       {/* Top emerald section with background diamond and welcome text - Increased height */}
-      <View className="bg-emerald-500 pt-16 pb-12 items-center relative">
+      <View className="pt-16 pb-12 items-center relative" style={styles.header}>
         {/* Background diamond image with opacity */}
         <View className="absolute inset-0 items-center justify-center opacity-15">
           <Image
@@ -147,16 +160,16 @@ export default function LoginScreen() {
         </View>
         
         {/* Welcome text on top of diamond */}
-        <Text className="text-3xl font-bold text-gray-800 z-10 mt-4">Welcome</Text>
+        <Text className="text-3xl font-bold z-10 mt-4" style={styles.text}>Welcome</Text>
       </View>
 
       {/* White rounded card container with larger border radius */}
-      <View className="flex-1 bg-white rounded-t-[40px] px-8 pt-10">
+      <View className="flex-1 rounded-t-[40px] px-8 pt-10" style={styles.card}>
         {/* Login Form */}
         <View className="space-y-4">
           {/* Email Input */}
           <View className="mb-4">
-            <Text className="text-gray-700 font-medium mb-2">Username Or Email</Text>
+            <Text className="font-medium mb-2" style={styles.text}>Username Or Email</Text>
             <Input
               value={email}
               onChangeText={setEmail}
@@ -165,13 +178,13 @@ export default function LoginScreen() {
               autoCapitalize="none"
               autoComplete="email"
               error={emailError}
-              className="bg-gray-50"
+              className=""
             />
           </View>
 
           {/* Password Input */}
           <View className="mb-8">
-            <Text className="text-gray-700 font-medium mb-2">Password</Text>
+            <Text className="font-medium mb-2" style={styles.text}>Password</Text>
             <Input
               value={password}
               onChangeText={setPassword}
@@ -179,14 +192,14 @@ export default function LoginScreen() {
               secureTextEntry
               autoComplete="password"
               error={passwordError}
-              className="bg-gray-50"
+              className=""
             />
           </View>
 
           {/* Error Message */}
           {error && (
-            <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-              <Text className="text-red-700 text-sm text-center">
+            <View className="rounded-lg p-3 mb-4" style={{ backgroundColor: '#fef2f2', borderColor: '#fecaca', borderWidth: 1 }}>
+              <Text className="text-sm text-center" style={{ color: '#b91c1c' }}>
                 {error}
               </Text>
             </View>
@@ -196,7 +209,8 @@ export default function LoginScreen() {
           <TouchableOpacity
             onPress={handleLogin}
             disabled={isLoading}
-            className="w-full bg-emerald-500 py-4 rounded-full items-center mb-4"
+            className="w-full py-4 rounded-full items-center mb-4"
+            style={{ backgroundColor: theme.colors.primary, opacity: isLoading ? 0.8 : 1 }}
             activeOpacity={0.85}
           >
             <Text className="text-white font-bold text-base">
@@ -207,22 +221,23 @@ export default function LoginScreen() {
           {/* Forgot Password Link */}
           <Link href="/(auth)/forgot" asChild>
             <TouchableOpacity className="items-center mb-6">
-              <Text className="text-gray-600 text-sm">Forgot Password?</Text>
+              <Text className="text-sm" style={styles.subtext}>Forgot Password?</Text>
             </TouchableOpacity>
           </Link>
 
           {/* Divider with "or sign up with" */}
           <View className="flex-row items-center mb-6">
-            <View className="flex-1 h-px bg-gray-300" />
-            <Text className="mx-4 text-gray-500 text-sm">or sign up with</Text>
-            <View className="flex-1 h-px bg-gray-300" />
+            <View className="flex-1 h-px" style={{ backgroundColor: theme.colors.border }} />
+            <Text className="mx-4 text-sm" style={styles.subtext}>or sign up with</Text>
+            <View className="flex-1 h-px" style={{ backgroundColor: theme.colors.border }} />
           </View>
 
           {/* Social Login Buttons */}
           <View className="flex-row justify-center items-center mb-6">
             {/* Google */}
             <TouchableOpacity 
-              className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white mr-4"
+              className="w-12 h-12 rounded-full items-center justify-center mr-4"
+              style={{ borderWidth: 2, borderColor: theme.colors.border, backgroundColor: theme.colors.card }}
               activeOpacity={0.7}
               onPress={handleGoogleLogin}
             >
@@ -231,7 +246,8 @@ export default function LoginScreen() {
 
             {/* Facebook */}
             <TouchableOpacity 
-              className="w-12 h-12 rounded-full border-2 border-gray-300 items-center justify-center bg-white"
+              className="w-12 h-12 rounded-full items-center justify-center"
+              style={{ borderWidth: 2, borderColor: theme.colors.border, backgroundColor: theme.colors.card }}
               activeOpacity={0.7}
               onPress={handleFacebookLogin}
             >
@@ -241,10 +257,10 @@ export default function LoginScreen() {
 
           {/* Don't have account */}
           <View className="flex-row justify-center items-center">
-            <Text className="text-gray-600 text-sm">Don't have an account? </Text>
+            <Text className="text-sm" style={styles.subtext}>Don't have an account? </Text>
             <Link href="/(auth)/register" asChild>
               <TouchableOpacity>
-                <Text className="text-emerald-500 font-semibold text-sm">Sign Up</Text>
+                <Text className="font-semibold text-sm" style={{ color: theme.colors.primary }}>Sign Up</Text>
               </TouchableOpacity>
             </Link>
           </View>
@@ -254,8 +270,9 @@ export default function LoginScreen() {
       {/* Back button (top-left) */}
       <TouchableOpacity
         onPress={() => router.back()}
-        className="absolute left-4 top-12 w-10 h-10 rounded-full bg-white/20 items-center justify-center"
+        className="absolute left-4 top-12 w-10 h-10 rounded-full items-center justify-center"
         activeOpacity={0.85}
+        style={{ backgroundColor: '#ffffff33' }}
       >
         <Text className="text-white text-xl">‹</Text>
       </TouchableOpacity>

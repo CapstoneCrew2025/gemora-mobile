@@ -1,13 +1,23 @@
 // app/(main)/(home)/index.tsx
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
 
+import { useTheme } from "../../../context/ThemeContext";
 import { useAuth } from "../../../store/useAuthStore";
 
 
 export default function Home() {
   const { user, isLoading } = useAuth();
+  const { theme } = useTheme();
+
+  const styles = useMemo(() => ({
+    background: { backgroundColor: theme.colors.background },
+    header: { backgroundColor: theme.colors.primary },
+    cardContainer: { backgroundColor: theme.colors.card },
+    text: { color: theme.colors.text },
+    subtext: { color: theme.colors.subtext },
+  }), [theme]);
 
   // Handle back button to close app instead of navigating back
   useEffect(() => {
@@ -39,8 +49,8 @@ export default function Home() {
   // Show loading while performing operations
   if (isLoading) {
     return (
-      <View className="items-center justify-center flex-1 bg-green-50">
-        <Text className="text-lg text-gray-600">Loading...</Text>
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <Text className="text-lg" style={styles.subtext}>Loading...</Text>
       </View>
     );
   }
@@ -48,15 +58,15 @@ export default function Home() {
   // Note: Auth check is handled by the MainLayout, so we can assume user is authenticated here
   if (!user) {
     return (
-      <View className="items-center justify-center flex-1 bg-green-50">
-        <Text className="text-lg text-gray-600">Loading user data...</Text>
+      <View className="items-center justify-center flex-1" style={styles.background}>
+        <Text className="text-lg" style={styles.subtext}>Loading user data...</Text>
       </View>
     );
   }
 
   
    return (
-  <View className="flex-1 bg-emerald-500">
+  <View className="flex-1" style={styles.header}>
     {/* Header Section with background diamond */}
     <View className="relative px-6 pt-16 pb-12">
       {/* Background diamond image with opacity - centered in emerald area */}
@@ -70,8 +80,8 @@ export default function Home() {
       
       <View className="z-10 flex-row items-center justify-between mb-6">
         <View>
-          <Text className="text-xl font-bold text-gray-800">Welcome GeMora</Text>
-          <Text className="text-sm text-gray-600">Discover Precious Gems</Text>
+          <Text className="text-xl font-bold" style={styles.text}>Welcome GeMora</Text>
+          <Text className="text-sm" style={styles.subtext}>Discover Precious Gems</Text>
         </View>
         <TouchableOpacity className="p-2">
           {/* Notification Bell Icon Only */}
@@ -81,14 +91,15 @@ export default function Home() {
     </View>
 
     {/* Main Content Area */}
-    <View className="flex-1 px-6 pt-8 bg-gray-50 rounded-t-[40px]">
+    <View className="flex-1 px-6 pt-8 rounded-t-[40px]" style={styles.cardContainer}>
       
       {/* Buy Gem Card - Increased Size */}
-      <TouchableOpacity className="flex-row items-center mb-5 overflow-hidden bg-emerald-500 rounded-3xl h-28"
+      <TouchableOpacity className="flex-row items-center mb-5 overflow-hidden rounded-3xl h-28"
+       style={{ backgroundColor: theme.colors.primary }}
        onPress={() => router.push('/(main)/(market)')}>
         {/* Icon Section with vertical divider */}
         <View className="items-center justify-center w-28 h-28">
-          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">
+          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
             <Text className="text-4xl">💎</Text>
           </View>
         </View>
@@ -105,12 +116,13 @@ export default function Home() {
 
       {/* Sell Gem Card - Increased Size */}
       <TouchableOpacity 
-        className="flex-row items-center mb-6 overflow-hidden bg-emerald-500 rounded-3xl h-28"
+        className="flex-row items-center mb-6 overflow-hidden rounded-3xl h-28"
+        style={{ backgroundColor: theme.colors.primary }}
         onPress={() => router.push('./sellgem')}
       >
         {/* Icon Section with vertical divider */}
         <View className="items-center justify-center w-28 h-28">
-          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full bg-emerald-400">
+          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
             <Text className="text-4xl">💰</Text>
           </View>
         </View>
