@@ -83,11 +83,11 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen 
-        name="search" 
+        name="(predict)" 
         options={{
-          title: 'Search',
+          title: 'Predict',
           tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 24 }}>🔍</Text>
+            <Text style={{ color, fontSize: 24 }}>🔮</Text>
           ),
         }}
       />
