@@ -107,10 +107,10 @@ export default function Predict() {
   };
 
   return (
-    <View className="flex-1" style={styles.background}>
+    <View className="flex-1 " style={styles.background}>
       {/* Header */}
       <View className="px-4 pt-12 pb-4" style={styles.card}>
-        <Text className="mb-1 text-2xl font-bold" style={styles.text}>
+        <Text className="mt-4 mb-1 text-2xl font-bold " style={styles.text}>
           Gem Predictor
         </Text>
         <Text className="text-sm" style={styles.subtext}>
