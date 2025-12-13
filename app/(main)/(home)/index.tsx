@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
 
+import { ChatbotButton } from "../../../components/chatbot";
 import { useTheme } from "../../../context/ThemeContext";
 import { useAuth } from "../../../store/useAuthStore";
 
@@ -138,6 +139,9 @@ export default function Home() {
       </TouchableOpacity>
 
     </View>
+
+    {/* Chatbot Button */}
+    <ChatbotButton />
   </View>
 );
 }
