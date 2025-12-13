@@ -2,19 +2,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  Image,
-  Keyboard,
-  Linking,
-  Modal,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    Image,
+    Keyboard,
+    Linking,
+    Modal,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
