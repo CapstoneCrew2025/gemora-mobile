@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    RefreshControl,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
@@ -34,6 +34,7 @@ export default function Marketplace() {
     border: { borderColor: theme.colors.border },
     primary: { backgroundColor: theme.colors.primary },
     input: { backgroundColor: theme.colors.card },
+    header: { backgroundColor: theme.colors.primary },
   }), [theme]);
 
   const categories = ['All', 'Ruby', 'Sapphire', 'Emerald', 'Diamond', 'Other'];
@@ -186,71 +187,75 @@ export default function Marketplace() {
   }
 
   return (
-    <View className="flex-1" style={styles.background}>
+    <View className="flex-1" style={styles.header}>
       {/* Header */}
-      <View className="px-4 pt-12 pb-4 shadow-sm" style={styles.card}>
-        <Text className="mb-4 text-2xl font-bold" style={styles.text}>Marketplace</Text>
-
-        {/* Search Bar */}
-        <View className="flex-row items-center px-3 py-2 mb-3 rounded-lg" style={[styles.input, styles.border, { borderWidth: 1 }]}> 
-          <Ionicons name="search-outline" size={20} color={theme.colors.subtext} />
-          <TextInput
-            className="flex-1 ml-2"
-            style={styles.text}
-            placeholder="Search gems..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor={theme.colors.subtext}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={20} color={theme.colors.subtext} />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Category Filter */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-2">
-          {categories.map((category) => (
-            <TouchableOpacity
-              key={category}
-              className="mr-2 px-4 py-2 rounded-full"
-              style={selectedCategory === category
-                ? [styles.primary]
-                : [styles.card, styles.border, { borderWidth: 1 }]}
-              onPress={() => setSelectedCategory(category)}
-            >
-              <Text className="font-semibold" style={selectedCategory === category ? { color: '#fff' } : styles.text}>
-                {category}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        {/* Listing Type Filter */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {listingTypes.map((type) => (
-            <TouchableOpacity
-              key={type}
-              className="mr-2 px-4 py-2 rounded-full"
-              style={selectedListingType === type
-                ? [styles.primary]
-                : [styles.card, styles.border, { borderWidth: 1 }]}
-              onPress={() => setSelectedListingType(type)}
-            >
-              <Text className="font-semibold" style={selectedListingType === type ? { color: '#fff' } : styles.text}>
-                {type}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+      <View className="px-6 pt-16 pb-6">
+        <Text className="text-2xl font-bold text-white">Marketplace</Text>
+        <Text className="text-sm text-white/90">Discover and Trade Gems</Text>
       </View>
 
-      {/* Gems List */}
-      <ScrollView
-        className="flex-1 px-4 pt-4"
-        style={styles.background}
-        refreshControl={
+      {/* Main Content Area */}
+      <View className="flex-1 rounded-t-[40px]" style={styles.background}>
+        <View className="px-4 pt-6">
+          {/* Search Bar */}
+          <View className="flex-row items-center px-3 py-2 mb-3 rounded-lg" style={[styles.input, styles.border, { borderWidth: 1 }]}> 
+            <Ionicons name="search-outline" size={20} color={theme.colors.subtext} />
+            <TextInput
+              className="flex-1 ml-2"
+              style={styles.text}
+              placeholder="Search gems..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholderTextColor={theme.colors.subtext}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <Ionicons name="close-circle" size={20} color={theme.colors.subtext} />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Category Filter */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-2">
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category}
+                className="px-4 py-2 mr-2 rounded-full"
+                style={selectedCategory === category
+                  ? [styles.primary]
+                  : [styles.card, styles.border, { borderWidth: 1 }]}
+                onPress={() => setSelectedCategory(category)}
+              >
+                <Text className="font-semibold" style={selectedCategory === category ? { color: '#fff' } : styles.text}>
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Listing Type Filter */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-3">
+            {listingTypes.map((type) => (
+              <TouchableOpacity
+                key={type}
+                className="px-4 py-2 mr-2 rounded-full"
+                style={selectedListingType === type
+                  ? [styles.primary]
+                  : [styles.card, styles.border, { borderWidth: 1 }]}
+                onPress={() => setSelectedListingType(type)}
+              >
+                <Text className="font-semibold" style={selectedListingType === type ? { color: '#fff' } : styles.text}>
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Gems List */}
+        <ScrollView
+          className="flex-1 px-4"
+          refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
@@ -274,6 +279,7 @@ export default function Marketplace() {
           </>
         )}
       </ScrollView>
+      </View>
     </View>
   );
 }
