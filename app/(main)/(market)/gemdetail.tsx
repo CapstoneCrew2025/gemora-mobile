@@ -2,19 +2,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  Image,
-  Keyboard,
-  Linking,
-  Modal,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    Image,
+    Keyboard,
+    Linking,
+    Modal,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
@@ -177,18 +177,6 @@ export default function GemDetail() {
     } finally {
       setPlacingBid(false);
     }
-  };
-
-  const handleBuyNow = () => {
-    if (!gem) return;
-    Alert.alert(
-      'Buy Now',
-      `Purchase ${gem.name} for $${gem.price.toLocaleString()}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Confirm Purchase', onPress: () => console.log('Purchase confirmed') },
-      ]
-    );
   };
 
   const handleViewCertificate = (certId: number) => {
@@ -590,27 +578,38 @@ export default function GemDetail() {
 
       {/* Bottom Action Bar */}
       <View className="p-4 border-t" style={[styles.card, styles.border]}>
-        <View className="flex-row space-x-2">
+        {gem.listingType === 'AUCTION' ? (
+          <View className="flex-row space-x-2">
+            <TouchableOpacity
+              className="flex-1 py-3 mr-2 rounded-lg"
+              style={[styles.card, styles.border, { borderWidth: 1 }]}
+              onPress={handleContactSeller}
+            >
+              <View className="flex-row items-center justify-center">
+                <Ionicons name="chatbubble-outline" size={20} color={theme.colors.text} />
+                <Text className="ml-2 font-semibold" style={styles.text}>Contact Seller</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="flex-1 py-3 rounded-lg"
+              style={styles.primaryBg}
+              onPress={handlePlaceBid}
+            >
+              <Text className="font-bold text-center text-white">Place Bid</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
           <TouchableOpacity
-            className="flex-1 py-3 mr-2 rounded-lg"
-            style={[styles.card, styles.border, { borderWidth: 1 }]}
+            className="py-3 rounded-lg"
+            style={styles.primaryBg}
             onPress={handleContactSeller}
           >
             <View className="flex-row items-center justify-center">
-              <Ionicons name="chatbubble-outline" size={20} color={theme.colors.text} />
-              <Text className="ml-2 font-semibold" style={styles.text}>Contact Seller</Text>
+              <Ionicons name="chatbubble-outline" size={20} color="#fff" />
+              <Text className="ml-2 text-lg font-semibold text-white">Contact Seller</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-1 py-3 rounded-lg"
-            style={styles.primaryBg}
-            onPress={gem.listingType === 'AUCTION' ? handlePlaceBid : handleBuyNow}
-          >
-            <Text className="font-bold text-center text-white">
-              {gem.listingType === 'AUCTION' ? 'Place Bid' : 'Buy Now'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        )}
       </View>
 
       {/* Bid Modal */}

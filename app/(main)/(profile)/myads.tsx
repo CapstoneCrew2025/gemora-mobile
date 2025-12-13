@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
+import { profileService } from '../../../lib/profileService';
 
 export default function MyAds() {
   const [gems, setGems] = useState<ApprovedGem[]>([]);
@@ -56,6 +57,33 @@ export default function MyAds() {
     });
   };
 
+  const handleMarkAsSold = async (gem: ApprovedGem) => {
+    Alert.alert(
+      'Mark as Sold',
+      `Are you sure you want to mark "${gem.name}" as sold?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Mark as Sold',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await profileService.markAsSold(gem.id);
+              Alert.alert('Success', 'Gem marked as SOLD successfully.');
+              // Refresh the list
+              await fetchMyGems();
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'Failed to mark gem as sold.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
       case 'APPROVED':
@@ -87,6 +115,7 @@ export default function MyAds() {
     const statusColor = getStatusColor(gem.status);
     const statusIcon = getStatusIcon(gem.status);
     const canEdit = gem.status === 'PENDING' || gem.status === 'REJECTED';
+    const isApproved = gem.status === 'APPROVED';
 
     return (
       <View
@@ -181,7 +210,7 @@ export default function MyAds() {
           </View>
         </TouchableOpacity>
 
-        {/* Edit Button for Pending/Rejected gems */}
+        {/* Action Buttons */}
         {canEdit && (
           <View className="px-4 pb-4">
             <TouchableOpacity
@@ -191,6 +220,21 @@ export default function MyAds() {
               <Ionicons name="create-outline" size={20} color="#059669" />
               <Text className="ml-2 font-semibold text-emerald-600">
                 Edit & Resubmit
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Mark as Sold Button for Approved gems */}
+        {isApproved && (
+          <View className="px-4 pb-4">
+            <TouchableOpacity
+              onPress={() => handleMarkAsSold(gem)}
+              className="flex-row items-center justify-center py-3 border-2 border-orange-500 rounded-lg bg-orange-50"
+            >
+              <Ionicons name="checkmark-done-outline" size={20} color="#ea580c" />
+              <Text className="ml-2 font-semibold text-orange-600">
+                Mark as Sold
               </Text>
             </TouchableOpacity>
           </View>
