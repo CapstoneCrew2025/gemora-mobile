@@ -59,6 +59,16 @@ class ProfileService {
       throw new Error('Failed to update profile data');
     }
   }
+
+  async markAsSold(gemId: number): Promise<string> {
+    try {
+      const response = await apiClient.put<string>(`/profile/mark-sold/${gemId}`);
+      return response;
+    } catch (error) {
+      console.error('Mark as sold error:', error);
+      throw new Error('Failed to mark gem as sold');
+    }
+  }
 }
 
 export const profileService = new ProfileService();
