@@ -1,11 +1,13 @@
 // app/(main)/(home)/index.tsx
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 import { Alert, BackHandler, Image, Text, TouchableOpacity, View } from "react-native";
-
 import { ChatbotButton } from "../../../components/chatbot";
 import { useTheme } from "../../../context/ThemeContext";
 import { useAuth } from "../../../store/useAuthStore";
+
+<Feather name="bell" size={24} color="#000" />
 
 
 export default function Home() {
@@ -65,83 +67,106 @@ export default function Home() {
     );
   }
 
-  
-   return (
-  <View className="flex-1" style={styles.header}>
-    {/* Header Section with background diamond */}
-    <View className="relative px-6 pt-16 pb-12">
-      {/* Background diamond image with opacity - centered in emerald area */}
-      <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
-        <Image
-          source={require("../../../assets/images/diamond.png")}
-          resizeMode="contain"
-          className="w-40 h-40"
-        />
-      </View>
-      
-      <View className="z-10 flex-row items-center justify-between mb-6">
-        <View>
-          <Text className="text-xl font-bold" style={styles.text}>Welcome GeMora</Text>
-          <Text className="text-sm" style={styles.subtext}>Discover Precious Gems</Text>
+
+  return (
+    <View className="flex-1" style={styles.header}>
+      {/* Header Section with background diamond */}
+      <View className="relative px-6 pt-16 pb-12">
+        {/* Background diamond image with opacity - centered in emerald area */}
+        <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center opacity-15">
+          <Image
+            source={require("../../../assets/images/diamond.png")}
+            resizeMode="contain"
+            className="w-40 h-40"
+          />
         </View>
-        <TouchableOpacity className="p-2">
-          {/* Notification Bell Icon Only */}
-          <Text className="text-3xl">🔔</Text>
+
+        <View className="z-10 flex-row items-center justify-between mb-10">
+          <View>
+            <Text className="mt-3 text-2xl font-bold" style={styles.text}>Welcome GeMora</Text>
+            <Text className="text-m" style={styles.subtext}>Discover Precious Gems</Text>
+          </View>
+          <TouchableOpacity className="p-2">
+
+            <Feather name="bell" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Main Content Area */}
+      <View className="flex-1 px-6 pt-8 rounded-t-[40px]" style={styles.cardContainer}>
+
+        {/* Buy Gem Card - Increased Size */}
+        <TouchableOpacity className="flex-row items-center mb-5 overflow-hidden rounded-3xl h-28"
+          style={{ backgroundColor: theme.colors.primary }}
+          onPress={() => router.push('/(main)/(market)')}>
+          {/* Icon Section with vertical divider */}
+          <View className="items-center justify-center w-28 h-28">
+            <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
+             <MaterialCommunityIcons name="diamond-stone" size={32} />
+            </View>
+          </View>
+
+          {/* Vertical Divider */}
+          <View className="w-px h-20 bg-white/30" />
+
+          {/* Text Section */}
+          <View className="flex-1 px-6">
+            <Text className="mb-1 text-xl font-bold text-white">Buy Gem</Text>
+            <Text className="text-sm text-white/90">Bid For Your Gem</Text>
+          </View>
         </TouchableOpacity>
+
+        {/* Sell Gem Card - Increased Size */}
+        <TouchableOpacity
+          className="flex-row items-center mb-5 overflow-hidden rounded-3xl h-28"
+          style={{ backgroundColor: theme.colors.primary }}
+          onPress={() => router.push('./sellgem')}
+        >
+          {/* Icon Section with vertical divider */}
+          <View className="items-center justify-center w-28 h-28">
+            <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
+             <Feather name="dollar-sign" size={32} />
+            </View>
+          </View>
+
+          {/* Vertical Divider */}
+          <View className="w-px h-20 bg-white/30" />
+
+          {/* Text Section */}
+          <View className="flex-1 px-6">
+            <Text className="mb-1 text-xl font-bold text-white">Sell Gem</Text>
+            <Text className="text-sm text-white/90">Sell Your Precious Gems</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Predict Gem Card - Increased Size */}
+        <TouchableOpacity
+          className="flex-row items-center mb-6 overflow-hidden rounded-3xl h-28"
+          style={{ backgroundColor: theme.colors.primary }}
+          onPress={() => router.push('/(main)/(predict)')}
+        >
+          {/* Icon Section with vertical divider */}
+          <View className="items-center justify-center w-28 h-28">
+            <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
+             <MaterialCommunityIcons name="brain" size={32} />
+            </View>
+          </View>
+
+          {/* Vertical Divider */}
+          <View className="w-px h-20 bg-white/30" />
+
+          {/* Text Section */}
+          <View className="flex-1 px-6">
+            <Text className="mb-1 text-xl font-bold text-white">Predict Gem</Text>
+            <Text className="text-sm text-white/90">AI-Powered Gem Identification</Text>
+          </View>
+        </TouchableOpacity>
+
       </View>
+
+      {/* Chatbot Button */}
+      <ChatbotButton />
     </View>
-
-    {/* Main Content Area */}
-    <View className="flex-1 px-6 pt-8 rounded-t-[40px]" style={styles.cardContainer}>
-      
-      {/* Buy Gem Card - Increased Size */}
-      <TouchableOpacity className="flex-row items-center mb-5 overflow-hidden rounded-3xl h-28"
-       style={{ backgroundColor: theme.colors.primary }}
-       onPress={() => router.push('/(main)/(market)')}>
-        {/* Icon Section with vertical divider */}
-        <View className="items-center justify-center w-28 h-28">
-          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
-            <Text className="text-4xl">💎</Text>
-          </View>
-        </View>
-        
-        {/* Vertical Divider */}
-        <View className="w-px h-20 bg-white/30" />
-        
-        {/* Text Section */}
-        <View className="flex-1 px-6">
-          <Text className="mb-1 text-xl font-bold text-white">Buy Gem</Text>
-          <Text className="text-sm text-white/90">Bid For Your Gem</Text>
-        </View>
-      </TouchableOpacity>
-
-      {/* Sell Gem Card - Increased Size */}
-      <TouchableOpacity 
-        className="flex-row items-center mb-6 overflow-hidden rounded-3xl h-28"
-        style={{ backgroundColor: theme.colors.primary }}
-        onPress={() => router.push('./sellgem')}
-      >
-        {/* Icon Section with vertical divider */}
-        <View className="items-center justify-center w-28 h-28">
-          <View className="items-center justify-center w-20 h-20 border-4 border-white rounded-full" style={{ backgroundColor: theme.colors.primary }}>
-            <Text className="text-4xl">💰</Text>
-          </View>
-        </View>
-        
-        {/* Vertical Divider */}
-        <View className="w-px h-20 bg-white/30" />
-        
-        {/* Text Section */}
-        <View className="flex-1 px-6">
-          <Text className="mb-1 text-xl font-bold text-white">Sell Gem</Text>
-          <Text className="text-sm text-white/90">Sell Your Precious Gems</Text>
-        </View>
-      </TouchableOpacity>
-
-    </View>
-
-    {/* Chatbot Button */}
-    <ChatbotButton />
-  </View>
-);
+  );
 }
