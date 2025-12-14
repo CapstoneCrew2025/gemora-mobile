@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router, Stack } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -205,22 +205,22 @@ export default function EditProfile() {
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Emerald header */}
-      <View className="px-6 pt-12 pb-40 relative" style={{ backgroundColor: theme.colors.primary }}>
+      <View className="relative px-6 pt-12 pb-40" style={{ backgroundColor: theme.colors.primary }}>
         {/* Top row: back, centered title, notification (icon only) */}
-        <View className="flex-row items-center justify-between z-20">
+        <View className="z-20 flex-row items-center justify-between">
           <TouchableOpacity
             onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center"
+            className="items-center justify-center w-10 h-10"
           >
-            <Text className="text-white text-2xl font-bold">←</Text>
+            <Text className="text-2xl font-bold text-white">←</Text>
           </TouchableOpacity>
 
           {/* Title sits visually centered */}
-          <Text className="text-lg font-semibold" style={styles.headerTitle}>Edit My Profile</Text>
+          <Text className="mt-3 text-lg font-semibold" style={styles.headerTitle}>Edit My Profile</Text>
 
           <TouchableOpacity className="p-2">
             {/* Notification icon only */}
-            <Text className="text-2xl">🔔</Text>
+           <Feather name="bell" size={24} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
@@ -229,7 +229,7 @@ export default function EditProfile() {
       <View className="flex-1 rounded-t-[40px] -mt-16 px-6 pt-20 relative" style={styles.card}>
         
         {/* Profile picture circle with camera icon positioned at the boundary */}
-        <View className="absolute left-0 right-0 items-center z-30" style={{ top: -64 }}>
+        <View className="absolute left-0 right-0 z-30 items-center" style={{ top: -64 }}>
           <View style={{ position: 'relative', width: 128, height: 128 }}>
             <TouchableOpacity
               onPress={handleImagePicker}
@@ -308,8 +308,8 @@ export default function EditProfile() {
         </View>
 
         {/* Name and ID */}
-        <View className="items-center mb-6 mt-0">
-          <Text className="text-xl font-bold mb-1" style={styles.text}>
+        <View className="items-center mt-0 mb-6">
+          <Text className="mb-1 text-xl font-bold" style={styles.text}>
             {profileData?.name}
           </Text>
           <Text className="text-sm" style={styles.subtext}>
@@ -322,16 +322,16 @@ export default function EditProfile() {
           <View style={{ gap: 16, paddingBottom: 32 }}>
           
             {/* User ID Display (Read-only) */}
-            <View className="rounded-2xl p-4" style={styles.card}>
-              <Text className="text-sm font-medium mb-2" style={styles.subtext}>User ID</Text>
+            <View className="p-4 rounded-2xl" style={styles.card}>
+              <Text className="mb-2 text-sm font-medium" style={styles.subtext}>User ID</Text>
               <Text className="text-base font-medium" style={styles.text}>
                 {(profileData?.id).toString().padStart(8, '0')}
               </Text>
             </View>
 
             {/* Full Name Input */}
-            <View className="rounded-2xl p-4" style={styles.card}>
-              <Text className="font-medium mb-2" style={styles.text}>Name</Text>
+            <View className="p-4 rounded-2xl" style={styles.card}>
+              <Text className="mb-2 font-medium" style={styles.text}>Name</Text>
               <Input
                 value={formData.name}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, name: text }))}
@@ -342,8 +342,8 @@ export default function EditProfile() {
             </View>
 
             {/* Phone Number Input */}
-            <View className="rounded-2xl p-4" style={styles.card}>
-              <Text className="font-medium mb-2" style={styles.text}>Phone</Text>
+            <View className="p-4 rounded-2xl" style={styles.card}>
+              <Text className="mb-2 font-medium" style={styles.text}>Phone</Text>
               <Input
                 value={formData.contactNumber}
                 onChangeText={(text) => setFormData(prev => ({ ...prev, contactNumber: text }))}
@@ -355,15 +355,15 @@ export default function EditProfile() {
             </View>
 
             {/* Email Display (Read-only) */}
-            <View className="rounded-2xl p-4" style={styles.card}>
-              <Text className="text-sm font-medium mb-2" style={styles.subtext}>Email Address</Text>
+            <View className="p-4 rounded-2xl" style={styles.card}>
+              <Text className="mb-2 text-sm font-medium" style={styles.subtext}>Email Address</Text>
               <Text className="text-base font-medium" style={styles.text}>
                 {profileData.email}
               </Text>
             </View>
 
             {/* Dark Theme Toggle */}
-            <View className="flex-row items-center justify-between rounded-2xl p-4 mb-6" style={styles.card}>
+            <View className="flex-row items-center justify-between p-4 mb-6 rounded-2xl" style={styles.card}>
               <Text className="font-medium" style={styles.text}>Turn Dark Theme</Text>
               <TouchableOpacity
                 accessibilityRole="switch"
@@ -400,10 +400,10 @@ export default function EditProfile() {
             <TouchableOpacity
               onPress={handleSave}
               disabled={isUpdating}
-              className="py-4 rounded-full items-center"
+              className="items-center py-4 rounded-full"
               style={{ backgroundColor: isUpdating ? theme.colors.muted : theme.colors.primary }}
             >
-              <Text className="text-white font-bold text-base">
+              <Text className="text-base font-bold text-white">
                 {isUpdating ? 'Updating Profile...' : 'Update Profile'}
               </Text>
             </TouchableOpacity>

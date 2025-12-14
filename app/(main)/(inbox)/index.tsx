@@ -56,30 +56,27 @@ export default function Inbox() {
 
   return (
     <View className="flex-1" style={styles.background}>
-      <View className="flex-row items-center justify-between px-4 py-3" style={styles.header}>
+      <View className="flex-row items-center justify-between px-4 py-3 pt-5 " style={styles.header}>
         <View>
-          <Text className="text-2xl font-bold text-white">Inbox</Text>
-          <Text className="text-white/80">Messages & Offers</Text>
+          <Text className="mt-12 text-2xl font-bold text-white">Inbox</Text>
+          <Text className=" text-white/80">Messages & Offers</Text>
         </View>
-        <TouchableOpacity onPress={fetchInbox} className="px-3 py-1.5 rounded-full" style={styles.badgeBg}>
-          <Text className="text-white font-medium">Refresh</Text>
-        </TouchableOpacity>
       </View>
 
       {loading ? (
-        <View className="flex-1 items-center justify-center" style={styles.background}>
+        <View className="items-center justify-center flex-1" style={styles.background}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text className="mt-3" style={styles.subtext}>
             Loading conversations...
           </Text>
         </View>
       ) : conversations.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-6" style={styles.background}>
+        <View className="items-center justify-center flex-1 px-6" style={styles.background}>
           <View className="p-4 rounded-xl" style={styles.card}>
             <Text className="text-lg font-semibold text-center" style={styles.text}>
               No Messages Yet
             </Text>
-            <Text className="text-center mt-2" style={styles.subtext}>
+            <Text className="mt-2 text-center" style={styles.subtext}>
               Start a conversation by exploring gems in the marketplace.
             </Text>
           </View>
@@ -96,8 +93,8 @@ export default function Inbox() {
               style={[styles.card, styles.border, { borderBottomWidth: 1 }]}
             >
               <View className="flex-row items-center">
-                <View className="h-14 w-14 rounded-full overflow-hidden mr-3" style={styles.border}>
-                  <View className="h-14 w-14 items-center justify-center" style={[styles.background, styles.border]}>
+                <View className="mr-3 overflow-hidden rounded-full h-14 w-14" style={styles.border}>
+                  <View className="items-center justify-center h-14 w-14" style={[styles.background, styles.border]}>
                     <Text className="text-xl font-semibold" style={styles.text}>
                       {item.gemName?.charAt(0) || 'G'}
                     </Text>
@@ -108,7 +105,7 @@ export default function Inbox() {
                     <Text className="text-lg font-semibold" style={styles.text} numberOfLines={1}>
                       {item.gemName || 'Gem conversation'}
                     </Text>
-                    <Text className="text-xs ml-2" style={styles.subtext}>
+                    <Text className="ml-2 text-xs" style={styles.subtext}>
                       {item.lastSentAt}
                     </Text>
                   </View>
@@ -117,8 +114,8 @@ export default function Inbox() {
                       {item.lastMessage}
                     </Text>
                     {item.unreadCount > 0 && (
-                      <View className="ml-2 rounded-full px-2 py-1" style={styles.badgeBg}>
-                        <Text className="text-white text-xs font-semibold">{item.unreadCount}</Text>
+                      <View className="px-2 py-1 ml-2 rounded-full" style={styles.badgeBg}>
+                        <Text className="text-xs font-semibold text-white">{item.unreadCount}</Text>
                       </View>
                     )}
                   </View>

@@ -215,7 +215,7 @@ export default function MyAds() {
           <View className="px-4 pb-4">
             <TouchableOpacity
               onPress={() => handleEditGem(gem)}
-              className="flex-row items-center justify-center py-3 border-2 border-emerald-500 rounded-lg bg-emerald-50"
+              className="flex-row items-center justify-center py-3 border-2 rounded-lg border-emerald-500 bg-emerald-50"
             >
               <Ionicons name="create-outline" size={20} color="#059669" />
               <Text className="ml-2 font-semibold text-emerald-600">
@@ -253,7 +253,7 @@ export default function MyAds() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 mt-3 bg-gray-50">
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-12 pb-4 bg-white shadow-sm">
         <View className="flex-row items-center flex-1">
@@ -263,15 +263,15 @@ export default function MyAds() {
           >
             <Ionicons name="arrow-back" size={24} color="#1f2937" />
           </TouchableOpacity>
-          <Text className="text-2xl font-bold text-gray-800">My Ads</Text>
+          <Text className="mt-3 text-2xl font-bold text-gray-800">My Ads</Text>
         </View>
         <TouchableOpacity
           onPress={() => router.push('/(main)/(home)/sellgem')}
-          className="px-4 py-2 rounded-lg bg-emerald-500"
+          className="px-4 py-2 mt-3 rounded-lg bg-emerald-500"
         >
-          <View className="flex-row items-center">
+          <View className="flex-row items-center ">
             <Ionicons name="add" size={20} color="white" />
-            <Text className="ml-1 font-semibold text-white">New Ad</Text>
+            <Text className="ml-1 font-semibold text-white ">New Ad</Text>
           </View>
         </TouchableOpacity>
       </View>

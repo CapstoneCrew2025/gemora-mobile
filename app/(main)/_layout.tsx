@@ -2,6 +2,7 @@ import { Tabs, useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import { Text } from "react-native";
 import { useAuth } from "../../store/useAuthStore";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function MainLayout() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -60,7 +61,7 @@ export default function MainLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 24 }}>🏠</Text>
+            <Feather name="home" size={24} color={color} />
           ),
         }}
       />
@@ -69,7 +70,7 @@ export default function MainLayout() {
         options={{
           title: 'Market',
           tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 24 }}>📊</Text>
+            <Feather name="bar-chart-2" size={24} color={color} />
           ),
         }}
       />
@@ -78,7 +79,7 @@ export default function MainLayout() {
         options={{
           title: 'Inbox',
           tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 24 }}>💬</Text>
+          <Feather name="message-circle" size={24} color={color} />
           ),
         }}
       />
@@ -87,11 +88,11 @@ export default function MainLayout() {
         options={{
           title: 'Predict',
           tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 24 }}>🔮</Text>
+         <MaterialCommunityIcons name="brain" size={24} color={color} />
           ),
         }}
       />
-      <Tabs.Screen 
+      {/* <Tabs.Screen 
         name="history" 
         options={{
           title: 'History',
@@ -99,7 +100,7 @@ export default function MainLayout() {
             <Text style={{ color, fontSize: 24 }}>📜</Text>
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen 
         name="inbox" 
         options={{
@@ -111,7 +112,7 @@ export default function MainLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 24 }}>👤</Text>
+           <Feather name="user" size={24} color={color} />
           ),
         }}
       />

@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    KeyboardAvoidingView,
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import chatService, { ChatMessage } from '../../../lib/chatService';
@@ -59,6 +59,9 @@ export default function ChatScreen() {
       if (sellerId && gemId) {
         const history = await chatService.getChatHistory(Number(sellerId), Number(gemId));
         setMessages(history); // Keep original order - newest at bottom
+        
+        // Mark messages as read when opening the chat
+        chatService.markAsRead(Number(sellerId), Number(gemId));
         
         // Scroll to bottom after messages load
         setTimeout(() => {
@@ -111,6 +114,32 @@ export default function ChatScreen() {
     } else {
       router.push('/(main)/(inbox)');
     }
+  };
+
+  const handleDeleteChat = () => {
+    Alert.alert(
+      'Delete Conversation',
+      'Are you sure you want to delete this entire conversation? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await chatService.deleteChat(Number(sellerId), Number(gemId));
+              Alert.alert('Success', 'Conversation deleted successfully');
+              handleGoBack();
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'Failed to delete conversation');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const renderMessage = ({ item }: { item: ChatMessage }) => {
@@ -217,8 +246,12 @@ export default function ChatScreen() {
               )}
             </View>
           </View>
-          <TouchableOpacity className="p-2" activeOpacity={0.7}>
-            <Ionicons name="information-circle-outline" size={24} color={theme.colors.text} />
+          <TouchableOpacity
+            className="p-2 rounded-full"
+            onPress={handleDeleteChat}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="trash-outline" size={24} color="#ef4444" />
           </TouchableOpacity>
         </View>
       </View>
