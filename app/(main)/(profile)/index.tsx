@@ -1,11 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { Stack, router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
-import { Feather } from '@expo/vector-icons';
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
@@ -257,7 +256,10 @@ export default function Profile() {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl">
+            <TouchableOpacity 
+              onPress={() => router.push('./security')}
+              className="flex-row items-center p-4 bg-white border border-gray-200 shadow-sm rounded-2xl"
+            >
               <View className="items-center justify-center w-12 h-12 mr-4 bg-blue-100 rounded-full">
                 <Ionicons name="shield-checkmark-outline" size={22} color="#1e3a8a" />
               </View>
