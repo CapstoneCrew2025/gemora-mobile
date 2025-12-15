@@ -2,14 +2,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
@@ -325,15 +325,15 @@ export default function RegisterScreen() {
         selfiePhoto: '',
       });
       
-      // Show success message and navigate directly
+      // Show success message and navigate to login page
       Alert.alert(
         'Registration Successful!', 
-        'Your account has been created successfully.',
+        'Your account has been created successfully. Please login with your credentials.',
         [
           {
             text: 'OK',
             onPress: () => {
-              // No manual navigation - let auth state change handle it
+              router.replace('/login');
             }
           }
         ]
@@ -341,27 +341,7 @@ export default function RegisterScreen() {
       
     } catch (error: any) {
       console.error('Registration failed:', error);
-      
-      // Check if the user was actually authenticated despite the error
-      setTimeout(() => {
-        if (isAuthenticated) {
-          Alert.alert(
-            'Registration Successful!',
-            'Your account has been created successfully.',
-            [
-              {
-                text: 'OK',
-                onPress: () => {
-                  // No manual navigation - let auth state handle it
-                }
-              }
-            ]
-          );
-        } else {
-          // Only show error if user is not authenticated
-          Alert.alert('Registration Failed', error.message || 'Please try again.');
-        }
-      }, 500);
+      Alert.alert('Registration Failed', error.message || 'Please try again.');
     }
   };
 
