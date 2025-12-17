@@ -1,6 +1,6 @@
 // app/(main)/(home)/sellgem.tsx
-import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -198,7 +198,11 @@ export default function SellGem() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      router.back();
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(main)/(home)');
+      }
     }
   };
 
@@ -242,7 +246,13 @@ export default function SellGem() {
         [
           {
             text: 'OK',
-            onPress: () => router.back(),
+            onPress: () => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(main)/(home)');
+              }
+            },
           },
         ]
       );

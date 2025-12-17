@@ -145,7 +145,7 @@ export default function Profile() {
         {/* Top row: back, centered title, notification (icon only) */}
         <View className="z-20 flex-row items-center justify-between">
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => router.canGoBack() ? router.back() : router.replace('/(main)/(home)')}
             className="items-center justify-center w-10 h-10"
           >
             <Text className="text-2xl font-bold text-white">←</Text>

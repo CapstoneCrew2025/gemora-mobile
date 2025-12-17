@@ -66,7 +66,11 @@ export default function Security() {
             setDescription('');
             setPriority(TicketPriority.MEDIUM);
             // Navigate back to profile
-            router.back();
+            if (router.canGoBack()) {
+              router.back();
+            } else {
+              router.replace('/(main)/(profile)');
+            }
           },
         },
       ]);

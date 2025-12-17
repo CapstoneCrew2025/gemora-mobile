@@ -2,14 +2,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Input } from '../../components/common/Input';
@@ -270,7 +270,7 @@ export default function LoginScreen() {
 
       {/* Back button (top-left) */}
       <TouchableOpacity
-        onPress={() => router.back()}
+        onPress={() => router.canGoBack() ? router.back() : router.replace('/')}
         className="absolute items-center justify-center w-10 h-10 rounded-full left-4 top-12"
         activeOpacity={0.85}
         style={{ backgroundColor: '#ffffff33' }}
