@@ -25,20 +25,16 @@ cd gemora-mobile
    npx expo start
    ```
 
-## 📂 Project Structure
+🤝 Contributing
+Contributions are welcome!
+Fork the repository
+Create a new branch
+Commit your changes
+Push to your branch
+Open a Pull Request
 
-gemora-mobile/
-│
-├── src/
-│   ├── components/
-│   ├── screens/
-│   ├── services/
-│   ├── models/
-│   └── utils/
-│
-├── assets/
-├── README.md
-└── package.json / pubspec.yaml
+📄 License
+This project is licensed under the MIT License.
 
-
-
+👨‍💻 Author
+Developed by Rukmal Ravindu
