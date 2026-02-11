@@ -37,4 +37,4 @@ Open a Pull Request
 This project is licensed under the MIT License.
 
 👨‍💻 Author
-Developed by Rukmal Ravindu
+Developed by Group 06 Undergraduate Engineers.
