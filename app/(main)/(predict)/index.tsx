@@ -2,13 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import predictService, { PredictResponse } from '../../../lib/predictService';
@@ -27,6 +27,7 @@ export default function Predict() {
     border: { borderColor: theme.colors.border },
     primaryBg: { backgroundColor: theme.colors.primary },
     primaryText: { color: theme.colors.primary },
+    header: { backgroundColor: theme.colors.primary },
   }), [theme]);
 
   const requestPermissions = async () => {
@@ -107,18 +108,20 @@ export default function Predict() {
   };
 
   return (
-    <View className="flex-1" style={styles.background}>
+    <View className="flex-1" style={styles.header}>
       {/* Header */}
-      <View className="px-4 pt-12 pb-4" style={styles.card}>
-        <Text className="mb-1 text-2xl font-bold" style={styles.text}>
+      <View className="px-6 pt-16 pb-6">
+        <Text className="text-2xl font-bold text-white">
           Gem Predictor
         </Text>
-        <Text className="text-sm" style={styles.subtext}>
-          Upload or capture a gem image to identify its type
+        <Text className="text-sm text-white/90">
+          AI-Powered Gem Identification
         </Text>
       </View>
 
-      <ScrollView className="flex-1 px-4 pt-6">
+      {/* Main Content Area */}
+      <View className="flex-1 rounded-t-[40px]" style={styles.background}>
+        <ScrollView className="flex-1 px-4 pt-6">
         {/* Image Selection Area */}
         {!selectedImage ? (
           <View className="mb-6">
@@ -301,7 +304,8 @@ export default function Predict() {
             </View>
           </View>
         </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 }

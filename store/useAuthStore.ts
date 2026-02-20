@@ -99,18 +99,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const response: AuthResponse = await authService.registerWithImages(userData);
       
-      const user: User = {
-        name: userData.name,
-        email: userData.email,
-        role: response.role,
-      };
-      
-      await authService.storeUser(user);
-      
+      // Don't authenticate user automatically after registration
+      // User should login with their credentials
       set({
-        isAuthenticated: true,
-        user,
-        role: response.role,
+        isAuthenticated: false,
+        user: null,
+        role: null,
         isLoading: false,
         error: null,
       });

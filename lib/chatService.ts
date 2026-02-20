@@ -80,6 +80,32 @@ class ChatService {
       throw new Error(error.response?.data?.message || 'Failed to fetch inbox');
     }
   }
+
+  /**
+   * Mark messages as read
+   */
+  async markAsRead(otherUserId: number, gemId: number): Promise<void> {
+    try {
+      await apiClient.post(`/chat/mark-as-read?otherUserId=${otherUserId}&gemId=${gemId}`);
+      console.log('Messages marked as read successfully');
+    } catch (error: any) {
+      console.error('Error marking messages as read:', error.response?.data || error.message);
+      // Don't throw error - marking as read is not critical
+    }
+  }
+
+  /**
+   * Delete chat conversation
+   */
+  async deleteChat(otherUserId: number, gemId: number): Promise<void> {
+    try {
+      await apiClient.delete(`/chat/delete?otherUserId=${otherUserId}&gemId=${gemId}`);
+      console.log('Chat deleted successfully');
+    } catch (error: any) {
+      console.error('Error deleting chat:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'Failed to delete chat');
+    }
+  }
 }
 
 export const chatService = new ChatService();

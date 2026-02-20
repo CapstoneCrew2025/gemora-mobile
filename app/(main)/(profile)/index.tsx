@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, Vi
 import { getAccessibleImageUrl } from "../../../lib/apiClient";
 import { ProfileData, profileService } from "../../../lib/profileService";
 import { useAuth, useAuthActions } from "../../../store/useAuthStore";
+import { Feather } from '@expo/vector-icons';
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
@@ -152,11 +153,11 @@ export default function Profile() {
           </TouchableOpacity>
 
           {/* Title sits visually centered */}
-          <Text className="text-lg font-semibold text-gray-800">Profile</Text>
+          <Text className="mt-3 text-xl font-semibold text-gray-800">Profile</Text>
 
           <TouchableOpacity className="p-2">
             {/* Notification icon only */}
-            <Text className="text-2xl">🔔</Text>
+            <Feather name="bell" size={24} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
@@ -251,7 +252,7 @@ export default function Profile() {
                 <Ionicons name="pricetags-outline" size={22} color="#047857" />
               </View>
               <Text className="flex-1 text-base font-medium text-gray-800">My Ads</Text>
-              <View className="items-center justify-center px-2 py-1 bg-emerald-100 rounded-full">
+              <View className="items-center justify-center px-2 py-1 rounded-full bg-emerald-100">
                 <Text className="text-xs font-semibold text-emerald-700">View</Text>
               </View>
             </TouchableOpacity>

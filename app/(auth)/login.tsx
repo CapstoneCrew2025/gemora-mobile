@@ -120,7 +120,8 @@ export default function LoginScreen() {
       
       clearError();
       
-      // No manual navigation - let the index page handle routing based on auth state
+      // Navigate to home screen after successful login
+      router.replace('/(main)/(home)');
       
     } catch (error: any) {
       console.error('Login failed:', error);
@@ -129,7 +130,7 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = () => { 
     Alert.alert('Google Login', 'Google authentication coming soon!');
   };
 
@@ -149,7 +150,7 @@ export default function LoginScreen() {
       className="flex-1"
     >
       {/* Top emerald section with background diamond and welcome text - Increased height */}
-      <View className="pt-16 pb-12 items-center relative" style={styles.header}>
+      <View className="relative items-center pt-16 pb-12" style={styles.header}>
         {/* Background diamond image with opacity */}
         <View className="absolute inset-0 items-center justify-center opacity-15">
           <Image
@@ -160,7 +161,7 @@ export default function LoginScreen() {
         </View>
         
         {/* Welcome text on top of diamond */}
-        <Text className="text-3xl font-bold z-10 mt-4" style={styles.text}>Welcome</Text>
+        <Text className="z-10 mt-4 text-3xl font-bold" style={styles.text}>Welcome</Text>
       </View>
 
       {/* White rounded card container with larger border radius */}
@@ -169,7 +170,7 @@ export default function LoginScreen() {
         <View className="space-y-4">
           {/* Email Input */}
           <View className="mb-4">
-            <Text className="font-medium mb-2" style={styles.text}>Username Or Email</Text>
+            <Text className="mb-2 font-medium" style={styles.text}>Username Or Email</Text>
             <Input
               value={email}
               onChangeText={setEmail}
@@ -184,7 +185,7 @@ export default function LoginScreen() {
 
           {/* Password Input */}
           <View className="mb-8">
-            <Text className="font-medium mb-2" style={styles.text}>Password</Text>
+            <Text className="mb-2 font-medium" style={styles.text}>Password</Text>
             <Input
               value={password}
               onChangeText={setPassword}
@@ -198,7 +199,7 @@ export default function LoginScreen() {
 
           {/* Error Message */}
           {error && (
-            <View className="rounded-lg p-3 mb-4" style={{ backgroundColor: '#fef2f2', borderColor: '#fecaca', borderWidth: 1 }}>
+            <View className="p-3 mb-4 rounded-lg" style={{ backgroundColor: '#fef2f2', borderColor: '#fecaca', borderWidth: 1 }}>
               <Text className="text-sm text-center" style={{ color: '#b91c1c' }}>
                 {error}
               </Text>
@@ -209,11 +210,11 @@ export default function LoginScreen() {
           <TouchableOpacity
             onPress={handleLogin}
             disabled={isLoading}
-            className="w-full py-4 rounded-full items-center mb-4"
+            className="items-center w-full py-4 mb-4 rounded-full"
             style={{ backgroundColor: theme.colors.primary, opacity: isLoading ? 0.8 : 1 }}
             activeOpacity={0.85}
           >
-            <Text className="text-white font-bold text-base">
+            <Text className="text-base font-bold text-white">
               {isLoading ? 'Signing In...' : 'Log In'}
             </Text>
           </TouchableOpacity>
@@ -233,10 +234,10 @@ export default function LoginScreen() {
           </View>
 
           {/* Social Login Buttons */}
-          <View className="flex-row justify-center items-center mb-6">
+          <View className="flex-row items-center justify-center mb-6">
             {/* Google */}
             <TouchableOpacity 
-              className="w-12 h-12 rounded-full items-center justify-center mr-4"
+              className="items-center justify-center w-12 h-12 mr-4 rounded-full"
               style={{ borderWidth: 2, borderColor: theme.colors.border, backgroundColor: theme.colors.card }}
               activeOpacity={0.7}
               onPress={handleGoogleLogin}
@@ -246,7 +247,7 @@ export default function LoginScreen() {
 
             {/* Facebook */}
             <TouchableOpacity 
-              className="w-12 h-12 rounded-full items-center justify-center"
+              className="items-center justify-center w-12 h-12 rounded-full"
               style={{ borderWidth: 2, borderColor: theme.colors.border, backgroundColor: theme.colors.card }}
               activeOpacity={0.7}
               onPress={handleFacebookLogin}
@@ -256,11 +257,11 @@ export default function LoginScreen() {
           </View>
 
           {/* Don't have account */}
-          <View className="flex-row justify-center items-center">
+          <View className="flex-row items-center justify-center">
             <Text className="text-sm" style={styles.subtext}>Don't have an account? </Text>
             <Link href="/(auth)/register" asChild>
               <TouchableOpacity>
-                <Text className="font-semibold text-sm" style={{ color: theme.colors.primary }}>Sign Up</Text>
+                <Text className="text-sm font-semibold" style={{ color: theme.colors.primary }}>Sign Up</Text>
               </TouchableOpacity>
             </Link>
           </View>
@@ -270,11 +271,11 @@ export default function LoginScreen() {
       {/* Back button (top-left) */}
       <TouchableOpacity
         onPress={() => router.back()}
-        className="absolute left-4 top-12 w-10 h-10 rounded-full items-center justify-center"
+        className="absolute items-center justify-center w-10 h-10 rounded-full left-4 top-12"
         activeOpacity={0.85}
         style={{ backgroundColor: '#ffffff33' }}
       >
-        <Text className="text-white text-xl">‹</Text>
+        <Text className="text-xl text-white">‹</Text>
       </TouchableOpacity>
     </ScrollView>
   </KeyboardAvoidingView>
