@@ -2,14 +2,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Input } from '../../components/common/Input';
 import { useAuth, useAuthActions } from '../../store/useAuthStore';
@@ -193,7 +193,11 @@ export default function RegisterScreen() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      router.back();
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(auth)/login');
+      }
     }
   };
 

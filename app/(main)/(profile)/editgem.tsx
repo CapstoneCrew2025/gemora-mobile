@@ -72,7 +72,11 @@ export default function EditGemScreen() {
     } catch (error: any) {
       console.error('Error loading gem:', error);
       Alert.alert('Error', 'Failed to load gem details');
-      router.back();
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(main)/(profile)/myads');
+      }
     } finally {
       setLoading(false);
     }
@@ -196,7 +200,13 @@ export default function EditGemScreen() {
         [
           {
             text: 'OK',
-            onPress: () => router.back(),
+            onPress: () => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(main)/(profile)/myads');
+              }
+            },
           },
         ]
       );

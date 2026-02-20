@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    RefreshControl,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { getAccessibleImageUrl } from '../../../lib/apiClient';
 import { ApprovedGem, gemMarketService } from '../../../lib/gemMarketService';
@@ -258,7 +258,7 @@ export default function MyAds() {
       <View className="flex-row items-center justify-between px-4 pt-12 pb-4 bg-white shadow-sm">
         <View className="flex-row items-center flex-1">
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => router.canGoBack() ? router.back() : router.replace('/(main)/(profile)')}
             className="mr-3"
           >
             <Ionicons name="arrow-back" size={24} color="#1f2937" />
