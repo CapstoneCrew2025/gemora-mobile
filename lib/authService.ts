@@ -306,6 +306,32 @@ class AuthService {
       return null;
     }
   }
+
+  async forgotPassword(email: string): Promise<{ message: string; email: string }> {
+    try {
+      const response = await apiClient.post<{ message: string; email: string }>(
+        '/auth/forgot-password',
+        { email }
+      );
+      return response;
+    } catch (error: any) {
+      console.error('Forgot password error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to send password reset OTP');
+    }
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.post<{ message: string }>(
+        '/auth/reset-password',
+        { email, otp, newPassword }
+      );
+      return response;
+    } catch (error: any) {
+      console.error('Reset password error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to reset password');
+    }
+  }
 }
 
 
